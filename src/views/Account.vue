@@ -24,7 +24,12 @@
 								<v-toolbar-title>Account Status</v-toolbar-title>
 								<v-spacer></v-spacer>
 							</v-toolbar>
-							<v-card-text></v-card-text>
+							<v-card-text>
+								<label>Created</label>
+								<div>{{formatDate(created) | date}}</div>
+								<label>Last Updated</label>
+								<div>{{formatDate(lastUpdated) | date}}</div>
+							</v-card-text>
 						</v-card>
 					</v-flex>
 					<v-flex xs12>
@@ -60,9 +65,8 @@
 										</v-text-field>
 									</v-flex>
 									<v-flex xs12>
-										<v-divider></v-divider>
-										<div class="text-xs-right">
-											<v-btn @click="login" color="primary">Reset</v-btn>
+										<div class="text-xs-right mt-3">
+											<v-btn @click="reset" color="primary">Reset</v-btn>
 										</div>
 									</v-flex>
 								</v-layout>
@@ -76,6 +80,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
 	data() {
 		return {
@@ -89,6 +94,23 @@ export default {
 
 		email() {
 			return this.$store.getters['user/email']
+		},
+
+		created() {
+			return this.$store.state.user.user.created
+		},
+
+		lastUpdated() {
+			return this.$store.state.user.user.lastUpdate
+		}
+	},
+	methods: {
+		formatDate(d) {
+			return moment(d).valueOf()
+		},
+
+		reset() {
+
 		}
 	}
 }

@@ -1,7 +1,9 @@
 <template>
-	<keep-alive>
-		<router-view></router-view>
-	</keep-alive>
+	<v-container fluid>
+		<keep-alive>
+			<router-view></router-view>
+		</keep-alive>
+	</v-container>
 </template>
 
 <script>

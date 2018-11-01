@@ -74,7 +74,9 @@
 					this.$router.push({path: '/'});
 				})
 				.catch((e) => {
-					this.error = 'Invalid email or password!';
+					if(e.status == 403) {
+						this.error = 'Invalid email or password!';
+					}
 				})
 			}
 		}

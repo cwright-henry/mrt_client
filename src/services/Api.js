@@ -18,10 +18,20 @@ export default () => {
       return response;
     }, 
     function (error) {
+      //
+      // Hmmm not quite right here
+      //
+
       // Forbidden reasons
       // 1. DB got rolled and new _id got generated for user
       if (error.response.status === 403) {
-        EventBus.$emit('server-logout', 'Please login again to update your security token');
+        EventBus.$emit('api-auth', 'Please login again to update your security token');
+      }
+
+      // General Server error
+      // 1. Server gone down
+      if (error.response.status === 500) {
+        EventBus.$emit('api-error', 'Server is temporaily unavailable. Please try again later');  
       }
       
       return Promise.reject(error);

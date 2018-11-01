@@ -84,7 +84,6 @@ export default {
 				commit('setLoading', false);
 			}
 			catch(e) {
-				console.log(e)
 				commit('setLoading', false);
 				throw e;
 			}

@@ -104,7 +104,7 @@ export default {
 
 		// Weird effect based on load time
 		// Not sure if this is gone
-		setTimeout(() => {this.redraw},  2000)
+		setTimeout(() => {this.redraw()},  2000)
 	},
 	methods: {
 		load: function() {
@@ -125,9 +125,11 @@ export default {
 		},
 
 		redraw() {
-			const chart = this.$refs.linechart.chart;
-			chart.redraw();
-			chart.reflow();
+			if(this.$refs.linechart) {
+				const chart = this.$refs.linechart.chart;
+				chart.redraw();
+				chart.reflow();
+			}
 		},
 
 		clearSeries() {
