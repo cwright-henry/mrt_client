@@ -170,7 +170,7 @@ export default {
 		async upload() {
 			this.uploading = true;
 			try {
-				await ApiController.upload(this.fileName, this.timeseriesC, this.fit)
+				await ApiController.upload(this.fileName, this.timeseriesC, this.fit, 'Alphavantage')
 				this.reset();
 				this.$store.dispatch('library/load', {page: 1, nameFilter: ''});
 				this.$emit('close')

@@ -5,11 +5,12 @@ export default {
     return Api().post('api/login', credentials).then(response => response.data)
   },
   
-  upload (name, ts, fit) {
+  upload (name, ts, fit, source) {
     return Api().post('api/upload', {
       name,
       ts,
-      fit
+      fit,
+      source
     }).then(response => response.data)
   },
 
