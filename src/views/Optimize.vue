@@ -48,7 +48,6 @@
 import mrtMultichart from '@/components/MultiChart'
 import mrtFit from '@/components/Fit'
 import ApiController from '@/services/ApiController'
-import moment from 'moment'
 
 const ONE_YEAR 					= 1000*60*60*24*365
 const PRIMARY_COLOR 		= '#00E676'
@@ -133,7 +132,12 @@ export default {
 					return this.series.fit.start_date <= item[0] && item[0] <= this.series.fit.end_date
 				})
 				const data = await ApiController.fit(series);
-				this.series.fit = Object.assign(this.series.fit, data)
+				this.series.fit.kappa 		= data.kappa
+				this.series.fit.sigma 		= data.sigma
+				this.series.fit.theta 		= data.theta
+				this.series.fit.adf_stat 	= data.adf_stat
+				this.series.fit.p_val 		= data.p_val
+				this.series.fit.sig_lev 	= data.sig_lev
 				this.isFitting = false;
 			}
 			catch(e) {
@@ -143,13 +147,13 @@ export default {
 		},
 
 		startDate(d) {
-			 this.series.fit.start_date = d
-			 this.fit()
+			this.series.fit.start_date = d
+			this.fit()
 		},
 
 		endDate(d) {
-			 this.series.fit.end_date = d
-			 this.fit()
+			this.series.fit.end_date = d
+			this.fit()
 		},
 
 		async sltp() {
@@ -172,17 +176,17 @@ export default {
 				this.secondarys.push({
 					color: STOP_LOSS_COLOR,
 					name: 'opt SL',
-					ts: createSeries(this.series.fit.end_date, data['optSLTP']['opt SL'])
+					ts: createSeries(this.series.fit.end_date, data['opt']['opt SL'])
 				})
 				this.secondarys.push({
 					color: TAKE_PROFIT_COLOR,
 					name: 'opt TP',
-					ts: createSeries(this.series.fit.end_date, data['optSLTP']['opt TP'])
+					ts: createSeries(this.series.fit.end_date, data['opt']['opt TP'])
 				})
 				this.secondarys.push({
 					color: OPTIMAL_COLOR,
 					name: 'E[x_T] NBC',
-					ts: createSeries(this.series.fit.end_date, data['optSLTP']['E[x_T] NBC'])
+					ts: createSeries(this.series.fit.end_date, data['opt']['E[x_T] NBC'])
 				})
 				this.isSltp = false
 			}
