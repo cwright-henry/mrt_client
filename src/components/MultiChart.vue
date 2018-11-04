@@ -86,22 +86,21 @@ export default {
 	},
 	watch: {
 		secondarys(v) {
-			this.clearSeries() 
 			const chart = this.$refs.multichart.chart
+			if(chart.get('secondary_0')) {
+				chart.get('secondary_0').remove()
+				chart.get('secondary_1').remove()
+				chart.get('secondary_2').remove()
+			}
 			for(let i = 0; i < v.length; i++) {
 				chart.addSeries({
 					type: 'spline',
 					data: v[i].ts,
 					name: v[i].name,
-					color: v[i].color
+					color: v[i].color,
+					id: 'secondary_' + i
 				});
 			}
-			chart.addSeries({
-				type: 'line',
-				data: this.primary.ts,
-				name: this.primary.name,
-				color: this.primary.color
-			});
 		}
 	},
 	methods: {
