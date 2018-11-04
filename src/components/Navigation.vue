@@ -1,7 +1,7 @@
 <template>
 	<v-navigation-drawer v-model="dialog" fixed clipped app mini-variant>
 		<v-list dense>
-			<router-link to="/library" exact>
+			<router-link to="/library">
 				<div class="mrt-menu--item">
 					<v-icon dark>home</v-icon>
 					<div>Library</div>

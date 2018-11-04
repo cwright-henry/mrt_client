@@ -41,12 +41,31 @@
 				<v-btn outline small color="primary" :loading="isSltp" @click="sltp" flat>SLTP</v-btn>
 			</v-card-actions>
 		</v-card>
+		<v-divider></v-divider>
+		<v-layout row wrap>
+			<v-flex md2 xs12>
+				<mrt-surface-chart id="graphET" title="ET" :values="ET"></mrt-surface-chart>
+			</v-flex>
+			<v-flex md2 xs12>
+				<mrt-surface-chart id="graphEIR" title="EIR" :values="EIR"></mrt-surface-chart>
+			</v-flex>
+			<v-flex md2 xs12>
+				<mrt-surface-chart id="graphEPnl" title="EPnl" :values="EPnl"></mrt-surface-chart>
+			</v-flex>
+			<v-flex md2 xs12>
+				<mrt-surface-chart id="graphER" title="ER" :values="ER"></mrt-surface-chart>
+			</v-flex>
+			<v-flex md2 xs12>
+				<mrt-surface-chart id="graphpblta" title="pblta" :values="pblta"></mrt-surface-chart>
+			</v-flex>
+		</v-layout>
 	</div>
 </template>
 
 <script>
 import mrtMultichart from '@/components/MultiChart'
 import mrtFit from '@/components/Fit'
+import mrtSurfaceChart from '@/components/SurfaceChart'
 import ApiController from '@/services/ApiController'
 
 const ONE_YEAR 					= 1000*60*60*24*365
@@ -85,7 +104,12 @@ export default {
 				ts: [],
 				color: ''
 			},
-			secondarys: []
+			secondarys: [],
+			ET: {},
+			ER: {},
+			EIR: {},
+			EPnl: {},
+			pblta: {}
 		}
 	},
 	watch: {
@@ -101,7 +125,8 @@ export default {
 	},
 	components: {
 		mrtMultichart,
-		mrtFit
+		mrtFit,
+		mrtSurfaceChart
 	},
 	// Triggered by refresh
 	mounted() {
@@ -188,6 +213,11 @@ export default {
 					name: 'E[x_T] NBC',
 					ts: createSeries(this.series.fit.end_date, data['opt']['E[x_T] NBC'])
 				})
+				this.ER 	= data['ER']
+				this.ET 	= data['ET']
+				this.EIR 	= data['EIR']
+				this.EPnl = data['EPnL']
+				this.pblta 	= data['pblta']
 				this.isSltp = false
 			}
 			catch(e) {
