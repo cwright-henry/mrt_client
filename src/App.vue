@@ -82,5 +82,8 @@ export default {
   [v-cloak] {
      display: none;
   }
+	.container.fluid {
+    max-width: 1785px;
+	}
 </style>
 

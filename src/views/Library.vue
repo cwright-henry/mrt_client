@@ -31,7 +31,7 @@
 					</div>
 				</v-flex>
 			</v-layout>
-			<mrt-series/>
+			<mrt-cardlist/>
 			<div class="text-xs-center text-md-right">
 				<v-pagination v-if="total > 0"
 					v-model="page"
@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import mrtSeries from '@/components/Series'
+import mrtCardlist from '@/components/CardList'
 import mrtCsvImport from './ImportCsvDialog'
 import mrtAvImport from './ImportAvDialog'
 import {debounce} from 'lodash'
@@ -124,7 +124,7 @@ export default {
 		}
 	},
 	components: {
-		mrtSeries,
+		mrtCardlist,
 		mrtCsvImport,
 		mrtAvImport
 	},

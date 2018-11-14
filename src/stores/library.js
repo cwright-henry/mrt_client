@@ -99,7 +99,7 @@ export default {
 				ts: data.ts
 			}
 			commit('updateSeries', update)
-			return data.ts;
+			return data;
 		},
 
 		async remove({commit}, payload) {

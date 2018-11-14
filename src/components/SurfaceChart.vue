@@ -18,7 +18,7 @@ const options = {
 	showShadow: false,
 	keepAspectRatio: true,
 	verticalRatio: 0.5,
-	axisColor: '#fff'
+	axisColor: '#eee'
 	// xLabel: 'stoploss',
 	// yLabel: 'takeprofit',
 	// zLabel: 'Ex(T)'
@@ -44,8 +44,6 @@ export default {
 	data() {
 		return {
 		}
-	},
-	mounted() {
 	},
 	watch: {
 		values(v) {

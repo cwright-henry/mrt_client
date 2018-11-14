@@ -9,9 +9,11 @@ import './registerServiceWorker'
 import Highcharts from 'highcharts'
 import HighchartsVue from 'highcharts-vue'
 import stockInit from 'highcharts/modules/stock'
+import histogramBellcurve from 'highcharts/modules/histogram-bellcurve'
 import theme from './components/charts/theme'
 
 stockInit(Highcharts)
+histogramBellcurve(Highcharts)
 
 Highcharts.createElement('link', {
 	href: 'https://fonts.googleapis.com/css?family=Unica+One',
@@ -37,7 +39,7 @@ const optionsCompact = {
 
 Vue.filter('number', function (value) {
 	if(value && !isNaN(value)) {
-		return new Intl.NumberFormat().format(value);
+		return new Intl.NumberFormat(navigator.language, {minimumFractionDigits:4}).format(value);
 	}
 	return ''
 });

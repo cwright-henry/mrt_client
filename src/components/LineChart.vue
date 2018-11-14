@@ -70,7 +70,7 @@ export default {
 		},
 		backgroundColor: {
 			type: String,
-			default: 'rgba(0, 0, 0, 0.1)'
+			default: 'rgba(0, 0, 0, 0.0)'
 		}
 	},
 	watch: {
