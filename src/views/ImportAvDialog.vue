@@ -21,10 +21,14 @@
 							placeholder="Select Ticker A..."
 							v-model="tickerNameA"
 							single-line
-							clearable
 							hide-details
-							box
+							background-color="rgba(0,0,0,0.1)"
 							ref="fileTextFieldA">
+							<template slot="append">
+								<v-btn color="primary" class="mx-1" flat icon @click="submitTickerA">
+									<v-icon>search</v-icon>
+								</v-btn>
+							</template>
 						</v-text-field>
 					</v-flex>
 					<v-flex xs6>
@@ -35,10 +39,14 @@
 							placeholder="Select Ticker B..."
 							v-model="tickerNameB"
 							single-line
-							clearable
+							background-color="rgba(0,0,0,0.1)"
 							hide-details
-							box
 							ref="fileTextFieldB">
+							<template slot="append">
+								<v-btn color="primary" class="mx-1" flat icon @click="submitTickerB">
+									<v-icon>search</v-icon>
+								</v-btn>
+							</template>
 						</v-text-field>
 					</v-flex>
 					<v-flex xs6>
@@ -49,18 +57,6 @@
 					</v-flex>
 					<v-flex xs12>
 						<mrt-linechart :ts="timeseriesC" :height=120 :name="tickerNameC" backgroundColor="rgba(0, 0, 0, 0.1)"></mrt-linechart>
-					</v-flex>
-					<v-flex xs12>
-						<mrt-fit 
-							:kappa.sync="fit.kappa"
-							:sigma.sync="fit.sigma"
-							:theta.sync="fit.theta"
-							:adf_stat.sync="fit.adf_stat"
-							:p_val.sync="fit.p_val"
-							:sig_lev.sync="fit.sig_lev"
-							breakpoints="md2 xs4"
-							:readonly=true>
-						</mrt-fit>
 					</v-flex>
 					<v-flex xs12>
 						<v-text-field
@@ -85,7 +81,6 @@
 
 <script>
 import mrtLinechart from '@/components/LineChart'
-import mrtFit from '@/components/Fit'
 import ApiController from '@/services/ApiController'
 
 export default {
@@ -110,13 +105,11 @@ export default {
 			timeseriesB: [],
 			timeseriesC: [],
 			uploading: false,
-			fit: {},
 			fileName: ''
 		}
 	},
 	components: {
-		mrtLinechart,
-		mrtFit
+		mrtLinechart
 	},
 	computed: {
     dialog: {
@@ -199,8 +192,6 @@ export default {
 				const bucketsA = {}
 				const bucketsB = {}
 				const series = []
-				this.loadingA = true
-				this.loadingB = true
 
 				for(let i = 0; i < this.timeseriesA.length; i++) {
 					bucketsA[this.timeseriesA[i][0]] = this.timeseriesA[i][1]
@@ -216,23 +207,9 @@ export default {
 						series.push([parseInt(p), y])	
 					}
 				}
-				
-				if(series.length > 0) {
-					this.timeseriesC = series;
-					ApiController.fit(series)
-					.then((data) => {
-						this.fit = data
-						this.loadingA = false
-						this.loadingB = false
-						this.tickerNameC = this.fileName = `${this.tickerNameA} vs ${this.tickerNameB}`
-						this.$refs.namefield.focus()
-					})
-					.catch((e) => {
-						console.log(e)
-						this.loadingA = false
-						this.loadingB = false
-					})
-				}
+				this.timeseriesC = series;
+				this.tickerNameC = this.fileName = `${this.tickerNameA} vs ${this.tickerNameB}`
+				this.$refs.namefield.focus()
 			}
 		}
 	}
@@ -268,5 +245,11 @@ export default {
 	}
 	.v-list--dense .v-list__tile {
 		height:32px;
+	}
+	.v-text-field__slot {
+		padding: 8px;
+	}
+	.v-input__slot {
+		border-radius: 2px 2px 0 0;
 	}
 </style>

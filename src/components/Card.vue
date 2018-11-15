@@ -117,15 +117,6 @@ export default {
 
 		this.observer.observe(this.$el);
 	},
-	computed: {
-		isxsOnly () {
-			const binding = ''
-			if (this.$vuetify.breakpoint.xsOnly) {
-				'xyz'
-			}
-			return binding
-		}
-	},
 	components: {
 		mrtSerieschart,
 		mrtRisdualschart
@@ -192,7 +183,7 @@ export default {
 	display:flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	padding:16px 24px 16px 16px;
+	padding:16px;
 
 	.mrt-card--graphs {
 		width: calc(100% - 208px);
@@ -211,6 +202,13 @@ export default {
 		margin: 12px 0 0 24px;
 		.mrt-card--details-goodness, .mrt-card--details-stats, .mrt-card--details-residuals, .mrt-card--details-process {
 			padding: 0 0 16px;
+			h1 {
+				background-color: #4CAF50;
+				padding: 0 4px;
+				font-weight:400;
+				border-radius: 2px 2px 0 0;
+				margin: 0 0 2px;	
+			}
 			label {
 				font-size: 13px;
 				font-weight: 300;
@@ -220,6 +218,8 @@ export default {
 			> div {
 				display:flex;
 				justify-content: space-between;
+				align-items: baseline;
+				padding: 0 4px;
 				div {
 					padding:1px 0px;
 					text-align:right;
@@ -227,10 +227,10 @@ export default {
 			}
 		}
 	}
-			
 }
 @media screen and (max-width: 600px) {
 	.mrt-card {
+		justify-content: center;
 		.mrt-card--graphs {
 			width: 100%;
 		}
@@ -240,12 +240,15 @@ export default {
 			display: flex;
 			flex-direction: row;
 			flex-wrap: wrap;
-			justify-content: space-between;
+			justify-content: space-around;
 			.mrt-card--details-goodness, .mrt-card--details-stats, .mrt-card--details-residuals {
 				max-width: 200px;
+				min-width:150px;
+				width:100%;
 			}
 			.mrt-card--details-process {
 				width:100%;
+				justify-content: space-around;
 				display: flex;
 				> div {
 					display: flex;

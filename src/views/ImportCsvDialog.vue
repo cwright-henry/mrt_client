@@ -39,18 +39,6 @@
 						<mrt-linechart :ts="timeseries" :name="timeseriesName" backgroundColor="rgba(0, 0, 0, 0.1)"></mrt-linechart>
 					</v-flex>
 					<v-flex xs12>
-						<mrt-fit 
-							:kappa.sync="fit.kappa"
-							:sigma.sync="fit.sigma"
-							:theta.sync="fit.theta"
-							:adf_stat.sync="fit.adf_stat"
-							:p_val.sync="fit.p_val"
-							:sig_lev.sync="fit.sig_lev"
-							breakpoints="md2 xs4"
-							:readonly=true>
-						</mrt-fit>
-					</v-flex>
-					<v-flex xs12>
 						<v-text-field
 							v-model="fileName"
 							label="Save As..."
@@ -79,7 +67,6 @@
 import moment from 'moment'
 import {dateFormats} from '@/utils/dateformats'
 import mrtLinechart from '@/components/LineChart'
-import mrtFit from '@/components/Fit'
 import mrtParseErrors from '@/views/ParseCsvErrorsDialog'
 import ApiController from '@/services/ApiController'
 
@@ -122,13 +109,11 @@ export default {
 			uploading: false,
 			parsing: false,
 			dateFormat: dateFormats[0],
-			fit:{},
 			showErrors: false
 		}
 	},
 	components: {
 		mrtLinechart,
-		mrtFit,
 		mrtParseErrors
 	},
 	computed: {
@@ -206,18 +191,8 @@ export default {
 				this.timeseries = series
 				this.errors = errors;
 				this.parsing = false
-				
-				if(this.timeseries.length > 0) {
-					ApiController.fit(this.timeseries)
-					.then((data) => {
-						this.fit = data
-						this.timeseriesName = this.fileName = this.fileName.substring(0, this.fileName.lastIndexOf('.'));
-						this.$refs.namefield.focus()
-					})
-					.catch((e) => {
-						console.log(e)
-					})
-				}
+				this.timeseriesName = this.fileName = this.fileName.substring(0, this.fileName.lastIndexOf('.'));
+				this.$refs.namefield.focus()
 			}
 			filereader.onError = (e) => {
 				this.parsing = false
@@ -248,7 +223,6 @@ export default {
 			this.errors = []
 			this.uploading = false
 			this.parsing = false
-			this.fit = {}
 		}
 	}
 }
