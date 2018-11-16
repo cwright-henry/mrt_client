@@ -61,7 +61,7 @@ export default {
 		}
 	},
 	watch: {
-		ts(ts) {
+		ts() {
 			this.update()
 		}
 	},

@@ -81,7 +81,7 @@ export default {
 		}
 	},
 	watch: {
-		ts(ts) {
+		ts() {
 			this.update()
 		}
 	},
@@ -104,7 +104,6 @@ export default {
 					borderColor:'rgba(0,0,0, 0.2)'
 				});
 				chart.addSeries({
-					name: 'Data',
 					type: 'scatter',
 					xAxis: 1,
 					yAxis: 1,

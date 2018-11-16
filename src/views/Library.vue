@@ -88,7 +88,7 @@
 import mrtCardlist from '@/components/CardList'
 import mrtCsvImport from './ImportCsvDialog'
 import mrtAvImport from './ImportAvDialog'
-import {debounce} from 'lodash'
+import debounce from 'lodash/debounce'
 
 export default {
 	name: 'Home',
