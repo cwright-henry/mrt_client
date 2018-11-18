@@ -46,6 +46,9 @@
 			<mrt-av-import 
 				:show="showAlphavantageUpload"
 				@close="showAlphavantageUpload=false"/>
+			<mrt-invest-import 
+				:show="showInvestUpload"
+				@close="showInvestUpload=false"/>
 			<v-speed-dial
 				v-model="fab"
 				bottom
@@ -79,6 +82,14 @@
 					color="cyan">
 					Av
 				</v-btn>
+				<v-btn
+					fab
+					dark
+					small
+					@click.stop="showInvestUpload=true"
+					color="orange">
+					In
+				</v-btn>
 			</v-speed-dial>
 		</div>
 	</div>
@@ -88,6 +99,7 @@
 import mrtCardlist from '@/components/CardList'
 import mrtCsvImport from './ImportCsvDialog'
 import mrtAvImport from './ImportAvDialog'
+import mrtInvestImport from './ImportInvestDialog'
 import debounce from 'lodash/debounce'
 
 export default {
@@ -97,6 +109,7 @@ export default {
 			fab: false,
 			showCSVUpload: false,
 			showAlphavantageUpload: false,
+			showInvestUpload: false,
 			page: 1,
 			search: ''
 		}
@@ -126,7 +139,8 @@ export default {
 	components: {
 		mrtCardlist,
 		mrtCsvImport,
-		mrtAvImport
+		mrtAvImport,
+		mrtInvestImport
 	},
 	created() {
 		this.debounceSearch = debounce(this.searchLibrary, 500)

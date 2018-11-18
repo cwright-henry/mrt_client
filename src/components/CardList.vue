@@ -2,7 +2,7 @@
 	<transition-group name="list" tag="ul">
 		<li v-for="i in series" :key="`${i._id}`" class="mb-4 mt-3">
 			<v-card>
-				<v-toolbar dense flat class="mrt--toolbar">
+				<v-toolbar dense flat>
 					<v-toolbar-title class="mrt--header-color">{{i.name}}</v-toolbar-title>
 					<v-spacer></v-spacer>
 					<v-btn color="primary" flat icon @click.stop="remove(i._id)">
@@ -54,7 +54,7 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 	.mrt-no-wrap {
 		white-space: nowrap;
 	}

@@ -64,5 +64,15 @@ export default {
         ticker: ticker
       }
     }).then(response => response.data)
+  },
+
+  loadInvest (curr_id, startDate, endDate) {
+    return Api().get('/api/investing', {
+      params: {
+        curr_id: curr_id,
+        startDate: startDate,
+        endDate: endDate
+      }
+    }).then(response => response.data)
   }
 }

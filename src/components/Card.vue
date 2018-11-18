@@ -1,6 +1,9 @@
 <template>
 	<div class="mrt-card">
-		<div class="mrt-card--graphs">
+		<v-layout class="mt-4" justify-center v-if="isLoading">
+			Loading...
+		</v-layout>
+		<div class="mrt-card--graphs" v-if="!isLoading">
 			<div class="mrt-card--graphs-series">
 				<h1>Series</h1>
 				<mrt-serieschart :ts="timeseries"></mrt-serieschart>
@@ -10,7 +13,7 @@
 				<mrt-risdualschart :ts="residuals"></mrt-risdualschart>
 			</div>
 		</div>
-		<div class="mrt-card--details">
+		<div class="mrt-card--details" v-if="!isLoading">
 			<div class="mrt-card--details-process">
 				<div>
 					<label>Fit Process</label>
@@ -98,7 +101,7 @@ export default {
 			startDate: '',
 			endDate: '',
 			process: '',
-			isLoading: false
+			isLoading: true
 		}
 	},
 	props: {
@@ -123,11 +126,11 @@ export default {
 	},
 	methods: {
 		async load() {
-			this.isLoading = true
+			this.isLoading = true;
+			const payload = {
+				id: this.id
+			}
 			try {
-				const payload = {
-					id: this.id
-				}
 				const res = await this.$store.dispatch('library/findTs', payload)
 				const ts = {}
 				ts.data = res.ts;
@@ -164,9 +167,6 @@ export default {
 				this.endDate = res.fit.end_date
 				this.process = res.proctype
 			}
-			catch(e) {
-				// TODO 
-			}
 			finally {
 				this.isLoading = false
 			}
@@ -184,6 +184,7 @@ export default {
 	flex-direction: row;
 	flex-wrap: wrap;
 	padding:16px;
+	min-height: 500px;
 
 	.mrt-card--graphs {
 		width: calc(100% - 208px);

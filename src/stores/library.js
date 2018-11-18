@@ -73,6 +73,8 @@ export default {
 			for(let ts of state.series) {
 				if(ts._id === payload.id) {
 					ts.ts = payload.ts
+					ts.fit = payload.fit
+					break;
 				}
 			}
 		}
@@ -93,10 +95,11 @@ export default {
 		},
 
 		async findTs({commit}, payload) {
-			const data =  await ApiController.findTs(payload.id);
+			const data = await ApiController.findTs(payload.id)
 			const update = {
 				id: payload.id,
-				ts: data.ts
+				ts: data.ts,
+				fit: data.fit
 			}
 			commit('updateSeries', update)
 			return data;
@@ -106,7 +109,6 @@ export default {
 			commit('setLoading', true)
 			await ApiController.remove(payload.id)
 			
-
 			commit('setLoading', false)
 		}
   }
