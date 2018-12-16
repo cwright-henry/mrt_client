@@ -132,7 +132,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .axis-label {
 	width: 22px;
 	height: 22px;

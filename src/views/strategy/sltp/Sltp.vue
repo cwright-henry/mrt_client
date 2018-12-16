@@ -42,23 +42,23 @@
 			</v-card-actions>
 		</v-card>
 		<v-divider></v-divider>
-		<v-layout row wrap>
-			<v-flex md2 xs12>
+		<div class="mrt-optimize--surfaces">
+			<div class="mrt-optimize--surface">
 				<mrt-surface-chart id="graphET" title="ET" :values="ET"></mrt-surface-chart>
-			</v-flex>
-			<v-flex md2 xs12>
+			</div>
+			<div class="mrt-optimize--surface">
 				<mrt-surface-chart id="graphEIR" title="EIR" :values="EIR"></mrt-surface-chart>
-			</v-flex>
-			<v-flex md2 xs12>
+			</div>
+			<div class="mrt-optimize--surface">
 				<mrt-surface-chart id="graphEPnl" title="EPnl" :values="EPnl"></mrt-surface-chart>
-			</v-flex>
-			<v-flex md2 xs12>
+			</div>
+			<div class="mrt-optimize--surface">
 				<mrt-surface-chart id="graphER" title="ER" :values="ER"></mrt-surface-chart>
-			</v-flex>
-			<v-flex md2 xs12>
+			</div>
+			<div class="mrt-optimize--surface">
 				<mrt-surface-chart id="graphpblta" title="pblta" :values="pblta"></mrt-surface-chart>
-			</v-flex>
-		</v-layout>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -68,6 +68,9 @@ import mrtFit from '@/components/Fit'
 import mrtSurfaceChart from '@/components/SurfaceChart'
 import ApiController from '@/services/ApiController'
 
+/**
+ * Change to one business year - 260 days
+ */
 const ONE_YEAR 					= 1000*60*60*24*365
 const PRIMARY_COLOR 		= '#00E676'
 const STOP_LOSS_COLOR 	= '#EF5350'
@@ -239,6 +242,13 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less">
+	.mrt-optimize--surfaces {
+		margin: 0 -8px;
+		display: flex;
+		.mrt-optimize--surface {
+			width: 20%;
+			margin:0 8px;
+		}
+	}
 </style>

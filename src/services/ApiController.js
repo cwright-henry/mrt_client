@@ -5,18 +5,27 @@ export default {
     return Api().post('api/login', credentials).then(response => response.data)
   },
   
-  upload (name, ts, fit, source) {
+  upload (name, ts, source) {
     return Api().post('api/upload', {
       name,
       ts,
-      fit,
       source
     }).then(response => response.data)
   },
 
-  fit (ts) {
-    return Api().post('api/fit', {
-      ts
+  fit (params) {
+    return Api().post('api/fit', params)
+      .then(response => response.data)
+  },
+
+  saveOUFit (params) {
+    return Api().post('api/save-ou-Fit', params)
+      .then(response => response.data)
+  },
+
+  scenarios (payload) {
+    return Api().get('api/data-get-scenarios',  {
+      params: payload
     }).then(response => response.data)
   },
 
@@ -50,7 +59,7 @@ export default {
     }).then(response => response.data)
   },
 
-  findTs (id) {
+  loadStrategy (id) {
     return Api().get('api/findTs', {
       params: {
         timeseriesId: id

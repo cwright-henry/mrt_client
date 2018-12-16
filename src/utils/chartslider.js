@@ -1,9 +1,31 @@
 
+const startTypes = ['mousedown', 'touchstart']
+const moveTypes = ['mousemove', 'touchmove']
+const endTypes = ['mouseup', 'touchend']
+
+const addListeners = (container, types, fn) => {
+	types.forEach(type => {
+		container.addEventListener(type, fn, {
+			capture: false,
+			passive: true
+		});
+	})
+}
+
+const removeListeners = (container, types, fn) => {
+	types.forEach(type => {
+		container.removeEventListener(type, fn, {
+			capture: false,
+			passive: true
+		});
+	})
+}
+
 const getPlotBand = (from, to) => {
 	return  {
 		from,
 		to,
-		color: 'rgba(0,0,0, 0.1)',
+		color: 'rgba(255, 152, 0, 0.05)',
 		id: 'plot-band'
 	}
 }
@@ -11,7 +33,7 @@ const getPlotBand = (from, to) => {
 const getPlotLine = (value, type) => {
 	return {
 		value,
-		color: '#42A5F5',
+		color: '#FF9800',
 		width: 1,
 		label: {
 			align:'center',
@@ -25,37 +47,32 @@ const getPlotLine = (value, type) => {
 
 export default class {
 
-	constructor(vm, chart, min, max, isFixed) {
+	constructor(vm, chart) {
 		this.vm = vm
 		this.container = vm.$el;
 		this.chart = chart;
-		this.min = min;
-		this.max = max;
-		this.isFixed = isFixed
-
-		this.minPos = min;
-		this.maxPos = max;
-		this.currentWidth = this.width()
-
-		this.init()
 	}
 
-	init() {
-		this.addPlotLine(this.min, 'min')
-		this.addPlotLine(this.max, 'max')
-		this.addPlotBand(this.min, this.max)
+	setRange(currentMin, currentMax, start, end) {
+		this.minPos = currentMin;
+		this.maxPos = currentMax;
+		this.min = start;
+		this.max = end;
+		this.currentWidth = this.width()
 
-		if(!this.isFixed) {
-			let line = document.querySelector('.axis-label.min')
-			line.addEventListener('mousedown', () => {
-				this.moveMin()
-			});
+		this.updatePlotLine(this.minPos, 'min');
+		this.updatePlotLine(this.maxPos, 'max');
+		this.updatePlotband(this.minPos, this.maxPos);
 
-			line = document.querySelector('.axis-label.max')
-			line.addEventListener('mousedown', () => {
-				this.moveMax()
-			});
-		}
+		let line = document.querySelector('.axis-label.min')
+		addListeners(line, startTypes, () => {
+			this.moveMin()
+		})
+
+		line = document.querySelector('.axis-label.max')
+		addListeners(line, startTypes, () => {
+			this.moveMax()
+		})
 	}
 
 	addPlotLine(value, type) {
@@ -86,17 +103,18 @@ export default class {
 			}
 		}
 		const stop = () => {
-			this.container.removeEventListener('mousemove', step);
-			this.container.removeEventListener('mouseup', stop);
+			removeListeners(this.container, moveTypes, step)
+			removeListeners(this.container, endTypes, stop)
 			let line = document.querySelector('.axis-label.min')
-			line.addEventListener('mousedown', () => {
+			addListeners(line, startTypes, () => {
 				this.moveMin()
 			})
+			
 			this.vm.$emit('startdate', this.minPos)
 		}
 	
-		this.container.addEventListener('mousemove', step);
-		this.container.addEventListener('mouseup', stop);
+		addListeners(this.container, moveTypes, step)
+		addListeners(this.container, endTypes, stop)
 	}
 
 	moveMax() {
@@ -109,18 +127,18 @@ export default class {
 			}
 		}
 		const stop = () => {
-			this.container.removeEventListener('mousemove', step);
-			this.container.removeEventListener('mouseup', stop);
+			removeListeners(this.container, moveTypes, step)
+			removeListeners(this.container, endTypes, stop)
 			let line = document.querySelector('.axis-label.max')
-			line.addEventListener('mousedown', () => {
+			addListeners(line, startTypes, () => {
 				this.moveMax()
 			})
 
 			this.vm.$emit('enddate', this.maxPos)
 		}
-	
-		this.container.addEventListener('mousemove', step);
-		this.container.addEventListener('mouseup', stop);
+
+		addListeners(this.container, moveTypes, step)
+		addListeners(this.container, endTypes, stop)
 	}
 
 	scale(value) {

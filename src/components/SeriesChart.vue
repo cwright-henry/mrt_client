@@ -1,8 +1,40 @@
 <template>
-	<highcharts :options="options" :ts="ts" ref="linechart"></highcharts>
+	<highcharts :options="options" ref="linechart"></highcharts>
 </template>
 
 <script>
+import {mean} from '@/utils/stats'
+
+const getPlotBand = (from, to) => {
+	return  {
+		from,
+		to,
+		color: 'rgba(255, 152, 0, 0.05)',
+		id: 'plot-band'
+	}
+}
+
+const getStartPlotLine = (value) => {
+	return {
+		value,
+		color: '#FF9800',
+		dashStyle: 'Dash',
+		width: 1,
+		id:'plot-line-start',
+		zIndex:999
+	}
+}
+
+const getEndPlotLine = (value) => {
+	return {
+		value,
+		color: '#FF9800',
+		dashStyle: 'Dash',
+		width: 1,
+		id:'plot-line-end',
+		zIndex:999
+	}
+}
 
 const options = (vm) => {
 	return {
@@ -34,6 +66,22 @@ const options = (vm) => {
 		},
 		tooltip: {
 			enabled: true
+		},
+		plotOptions: {
+			series: {
+				states: {
+					hover: {
+						enabled: false
+					}
+				}
+			},
+			area: {
+				fillColor: '#00B0FF',
+				negativeFillColor: '#1E88E5',
+				negativeColor: '#FFFFFF',
+				color: '#FFFFFF',
+				lineWidth: 0.5,
+			}
 		}
 	}
 }
@@ -45,15 +93,18 @@ export default {
 		}
 	},
 	props: {
-		ts: {
+		strategy: {
 			type: Object,
 			default: () => {
-				return {}
+				return {
+					ts:[],
+					fit:{}
+				}
 			}
 		},
 		height: {
 			type: Number,
-			default: 200
+			default: 220
 		},
 		backgroundColor: {
 			type: String,
@@ -61,8 +112,11 @@ export default {
 		}
 	},
 	watch: {
-		ts() {
-			this.update()
+		strategy: {
+			handler: function() {
+				this.update()
+			},
+			deep: true
 		}
 	},
 	mounted() {
@@ -71,13 +125,21 @@ export default {
 	methods: {
 		update() {
 			const chart = this.$refs.linechart.chart
-			if(this.ts.name) {
+			if(this.strategy.ts) {
 				this.clearSeries()
 				chart.addSeries({
-					type: 'line',
-					data: this.ts.data,
-					name: this.ts.name
+					type: 'area',
+					data: this.strategy.ts,
+					name: this.strategy.name,
+					threshold: mean(this.strategy.ts),
+					clip: false
 				});
+
+				if(this.strategy.fit.proctype === 'OU') {
+					chart.xAxis[0].addPlotLine(getStartPlotLine(this.strategy.fit.start_date))
+					chart.xAxis[0].addPlotLine(getEndPlotLine(this.strategy.fit.end_date))
+					chart.xAxis[0].addPlotBand(getPlotBand(this.strategy.fit.start_date, this.strategy.fit.end_date))
+				}
 			}
 			chart.reflow()
 		},
@@ -86,7 +148,10 @@ export default {
       const chart = this.$refs.linechart.chart
       while(chart.series.length > 0) {
         chart.series[0].remove(false);
-      }
+			}
+			chart.xAxis[0].removePlotBand('plot-band');
+			chart.xAxis[0].removePlotLine('plot-line-start');
+			chart.xAxis[0].removePlotLine('plot-line-end');
 		}
 	}
 }

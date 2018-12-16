@@ -67,7 +67,7 @@
 import moment from 'moment'
 import {dateFormats} from '@/utils/dateformats'
 import mrtLinechart from '@/components/LineChart'
-import mrtParseErrors from '@/views/ParseCsvErrorsDialog'
+import mrtParseErrors from './ParseCsvErrorsDialog'
 import ApiController from '@/services/ApiController'
 
 const tsSorter = (a, b) => {
@@ -205,10 +205,14 @@ export default {
 		async upload() {
 			this.uploading = true;
 			try {
-				await ApiController.upload(this.fileName, this.timeseries, this.fit, 'CSV')
+				this.$store.dispatch('strategies/uploadCSV', {
+					fileName: this.fileName,
+					timeseries: this.timeseries,
+					source: 'CSV'
+				});
 				this.reset();
-				this.$store.dispatch('library/load', {page: 1, nameFilter: ''});
 				this.$emit('close')
+				window.scrollTo(0,0);
 			}
 			catch(e) {
 				this.uploading = false;

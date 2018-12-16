@@ -165,7 +165,7 @@ export default {
 			try {
 				await ApiController.upload(this.fileName, this.timeseriesC, this.fit, 'Alphavantage')
 				this.reset();
-				this.$store.dispatch('library/load', {page: 1, nameFilter: ''});
+				this.$store.dispatch('strategies/load', {nameFilter: ''});
 				this.$emit('close')
 			}
 			catch(e) {

@@ -28,6 +28,20 @@
 					Close
 				</v-btn>
 			</v-snackbar>
+			<v-snackbar
+				v-model="apisuccess"
+				:timeout="2000"
+				top
+				color="secondary"
+				:vertical="$vuetify.breakpoint.mdAndDown">
+				{{ text }}
+				<v-btn
+					dark
+					flat
+					@click="apisuccess = false">
+					Close
+				</v-btn>
+			</v-snackbar>
     </v-app>
   </div>
 </template>
@@ -40,7 +54,8 @@ export default {
   data() {
     return {
       apiauth: false,
-      apierror: false,
+			apierror: false,
+			apisuccess: false,
       text: '',
       timeout: 6000
     }
@@ -63,6 +78,10 @@ export default {
     EventBus.$on('api-error', (reason) => {
 			this.apierror = true
 			this.text=reason
+		});
+		EventBus.$on('api-strategy-save', (reason) => {
+			this.apisuccess = true
+			this.text = reason
 		});
 	}
 }

@@ -1,5 +1,5 @@
-const standardDeviation = (values) => {
-  var avg = average(values);
+const std = (values) => {
+  var avg = mean(values);
   
   var squareDiffs = values.map(function(value){
     var diff = value - avg;
@@ -7,22 +7,34 @@ const standardDeviation = (values) => {
     return sqrDiff;
   });
   
-  var avgSquareDiff = average(squareDiffs);
+  var avgSquareDiff = mean(squareDiffs);
 
   var stdDev = Math.sqrt(avgSquareDiff);
   return stdDev;
 }
 
-const average = (data) => {
-  var sum = data.reduce(function(sum, value){
-    return sum + value;
-  }, 0);
-
-  var avg = sum / data.length;
-  return avg;
+const mean = (data) => {
+  let sum = 0
+  for(let i = 0; i < data.length; i++) {
+    sum += data[i][1]
+  }
+  return sum / data.length;
 }
 
-exports = {
-  std: standardDeviation,
-  av: average
+const gaussionData = (mean, std, bins) => {
+  const data = [];
+
+  for (let i = 0; i < bins.length; i++) {
+    let x = bins[i][0];
+    let y = (1 / (std * Math.sqrt(2 * Math.PI))) * (Math.exp(-0.5 * Math.pow((x - mean)/std, 2)));
+    data.push([x, y]);
+  }
+
+  return data;
+}
+
+export {
+  std,
+  mean,
+  gaussionData
 }

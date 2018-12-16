@@ -1,10 +1,15 @@
 <template>
 	<v-navigation-drawer v-model="dialog" fixed clipped app mini-variant>
 		<v-list dense>
-			<router-link to="/library">
+			<router-link to="/strategy">
 				<div class="mrt-menu--item">
-					<v-icon dark>home</v-icon>
-					<div>Library</div>
+					<v-badge right>
+						<span slot="badge">{{ total }}</span>
+						<v-icon dark>
+							build
+						</v-icon>
+					</v-badge>
+					<div>Strategy</div>
 				</div>
 			</router-link>
 			<router-link to="/account">
@@ -28,6 +33,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
 export default {
 	props: {
 		show: {
@@ -45,7 +52,8 @@ export default {
           this.$emit('close')
         }
       }
-    }
+		},
+		...mapState('strategies', ['total'])
   },
 	data: () => ({
 		menuitems: [
@@ -64,12 +72,20 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 	.router-link-active .mrt-menu--item {
-		color:var(--green);
+		color:var(--blue);
 		i {
-			color:var(--green);
+			color:var(--blue);
 		}
+	}
+	.router-link-active .v-badge__badge {
+		background-color: #B3E5FC !important;
+	}
+	.v-badge__badge {
+		font-size:12px;
+		color:#424242;
+		background-color: #fff !important;
 	}
 	.mrt-menu--item {
 		display:flex;
@@ -78,9 +94,9 @@ export default {
 		justify-content: center;
 		align-items: center;
 		cursor: pointer;
-		color:var(--blue);
+		color: var(--light-gray);
 		i {
-			color:var(--blue);
+			color: var(--light-gray);
 		}
 	}
 </style>

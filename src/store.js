@@ -1,13 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import library from '@/stores/library'
+import strategies from '@/stores/strategies'
 import user from '@/stores/user'
+import fit from '@/stores/fit'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     user,
-    library
+    strategies,
+    fit
   }
 })

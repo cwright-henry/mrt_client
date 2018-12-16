@@ -1,9 +1,8 @@
 <template>
-	<v-card height="256">
-		<h1>{{title}}</h1>
-		
+	<div class="mrt-surface-chart">
 		<div :id="id"></div>
-	</v-card>
+		<h1>{{title}}</h1>
+	</div>
 </template>
 
 <script>
@@ -12,16 +11,15 @@ import vis from 'vis'
 const options = {
 	width: '100%',
 	height: '200px',
-	style: 'surface',
-	showPerspective: false,
-	showGrid: true,
+	style: 'bar',
+	showPerspective: true,
+	showGrid: false,
+	showXAxis: false,
+	showYAxis: false,
+	showZAxis: false,
 	showShadow: false,
 	keepAspectRatio: true,
-	verticalRatio: 0.5,
-	axisColor: '#eee'
-	// xLabel: 'stoploss',
-	// yLabel: 'takeprofit',
-	// zLabel: 'Ex(T)'
+	verticalRatio: 0.5
 };
 
 export default {
@@ -68,6 +66,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less">
+	.mrt-surface-chart {
+		min-height:200px;
+		background-color: #424242;
+	}
 </style>

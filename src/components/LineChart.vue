@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import {mean} from '@/utils/stats'
 
 const options = (vm) => {
 	return {
@@ -34,6 +35,22 @@ const options = (vm) => {
 		},
 		tooltip: {
 			enabled: true
+		},
+		plotOptions: {
+			series: {
+				states: {
+					hover: {
+						enabled: false
+					}
+				}
+			},
+			area: {
+				fillColor: '#00B0FF',
+				negativeFillColor: '#1E88E5',
+				negativeColor: '#FFFFFF',
+				color: '#FFFFFF',
+				lineWidth: 0.5,
+			}
 		}
 	}
 }
@@ -41,8 +58,7 @@ const options = (vm) => {
 export default {
 	data() {
 		return {
-			options: options(this),
-			observer: null,
+			options: options(this)
 		}
 	},
 	props: {
@@ -78,72 +94,21 @@ export default {
 			this.clearSeries()
 			const chart = this.$refs.linechart.chart
 			chart.addSeries({
-				type: 'line',
-				data: data
+				type: 'area',
+				data: data,
+				threshold: mean(data)
 			})
+			chart.reflow()
 		}
-	},
-	mounted() {
-		const chart = this.$refs.linechart.chart
-		chart.addSeries({
-			type: 'line',
-			data: this.ts,
-			name: this.name
-		});
-
-		if(this.lazyload) {
-			this.observer = new IntersectionObserver(([entry], self) => {
-				if (entry && entry.isIntersecting) {
-					this.load()
-					self.unobserve(entry.target)
-				}
-			}, options);
-
-			this.observer.observe(this.$el);
-		}
-
-		// Weird effect based on load time
-		// Not sure if this is gone
-		setTimeout(() => {this.redraw()},  2000)
 	},
 	methods: {
-		load: function() {
-			const payload = {
-				id: this.id
-			}
-			this.$store.dispatch('library/findTs', payload)
-			.then((data) => {
-				this.clearSeries()
-				const chart = this.$refs.linechart.chart;
-				chart.addSeries({
-					type: 'line',
-					data: data,
-					name: this.name
-				});
-				chart.xAxis[0].update({visible:true})
-			})
-		},
-
-		redraw() {
-			if(this.$refs.linechart) {
-				const chart = this.$refs.linechart.chart;
-				chart.redraw();
-				chart.reflow();
-			}
-		},
-
 		clearSeries() {
       const chart = this.$refs.linechart.chart
       while(chart.series.length > 0) {
         chart.series[0].remove(false);
       }
 		}
-	},
-	destroyed() {
-		if(this.lazyload) {
-			this.observer.disconnect();
-		}
-  }
+	}
 }
 </script>
 

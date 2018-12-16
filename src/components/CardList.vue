@@ -1,54 +1,57 @@
 <template>
-	<transition-group name="list" tag="ul">
-		<li v-for="i in series" :key="`${i._id}`" class="mb-4 mt-3">
-			<v-card>
-				<v-toolbar dense flat>
-					<v-toolbar-title class="mrt--header-color">{{i.name}}</v-toolbar-title>
-					<v-spacer></v-spacer>
-					<v-btn color="primary" flat icon @click.stop="remove(i._id)">
-						<v-icon>delete</v-icon>
-					</v-btn>
-				</v-toolbar>
-				<mrt-card :id="i._id"></mrt-card>
-				<v-divider></v-divider>
-				<v-card-actions>
-					<div class="mrt--fit lastupdated hidden-sm-and-down">
-						<div class="mrt-no-wrap">Last Updated</div>
-						<div class="mrt-no-wrap">{{i.lastUpdate | date}}</div>
-					</div>
-					<v-spacer></v-spacer>
-					<v-btn outline small color="primary" flat :to="`/library/${i._id}/optimize`">Optimize</v-btn>
-				</v-card-actions>
-			</v-card>
-		</li>
-	</transition-group>
+	<div>
+		<transition-group name="list" tag="ul">
+			<li v-for="strategy in strategies" :key="`${strategy._id}`" class="mb-4 mt-3">
+				<v-card>
+					<v-toolbar dense flat>
+						<v-toolbar-title class="mrt--header-color">{{strategy.name}}</v-toolbar-title>
+						<v-spacer></v-spacer>
+						<v-btn color="primary" flat icon @click.stop.passive="remove(strategy._id)">
+							<v-icon>delete</v-icon>
+						</v-btn>
+					</v-toolbar>
+					<mrt-card :strategy="strategy"></mrt-card>
+					<v-divider></v-divider>
+					<v-card-actions class="mrt-cardlist--actions">
+						<div class="mrt--fit lastupdated hidden-sm-and-down">
+							<div class="mrt-no-wrap">Last Updated</div>
+							<div class="mrt-no-wrap">{{strategy.lastUpdate | date}}</div>
+						</div>
+						<v-spacer></v-spacer>
+						<v-btn outline small color="primary" :to="`/strategy/${strategy._id}/fit`">Fit Strategy</v-btn>
+						<v-btn :disabled="strategy.fit && strategy.fit.proctype === 'NONE'" outline small color="primary" flat :to="`/strategy/${strategy._id}/sltp`">SLTP</v-btn>
+					</v-card-actions>
+				</v-card>
+			</li>
+		</transition-group>
+		<mrt-infinite-scroll v-if="!loading" @loadmore="loadmore"/>
+	</div>
 </template>
 
 <script>
 import mrtCard from '@/components/Card'
+import mrtInfiniteScroll from '@/components/InfiniteScroll'
+import {mapState} from 'vuex'
 
 export default {
 	name: 'CardList',
 	computed: {
-		series() {
-			return this.$store.state.library.series;
-		}
+		...mapState('strategies', ['strategies', 'loading'])
 	},
 	components: {
-		mrtCard
+		mrtCard,
+		mrtInfiniteScroll
 	},
 	methods: {
+		loadmore() {
+			this.$store.dispatch('strategies/loadMore')
+		},
+
 		remove(id) {
 			const payload = {
 				id: id
 			}
-			this.$store.dispatch('library/remove', payload)
-			.then(() => {
-				this.$store.dispatch('library/load', payload)
-			})
-			.catch((e) => {
-				console.log(e)
-			})
+			this.$store.dispatch('strategies/remove', payload)
 		}
 	}
 }
@@ -70,5 +73,27 @@ export default {
 	ul {
 		list-style: none;
 		padding: 0;
+	}
+	.mrt-cardlist--actions {
+		margin: 0 16px;
+		.v-btn + .v-btn {
+			margin: 0 0 0 24px;
+		}
+	}
+	.list {
+		transition: all 0.5s;
+	}
+	.list-enter, .list-leave-to {
+		opacity: 0;
+		transform: scale(0);
+	}
+	.list-enter-to {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	.list-move {
+		opacity: 1;
+		transition: all 0.5s;
 	}
 </style>

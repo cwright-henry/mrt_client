@@ -1,9 +1,8 @@
 <template>
-	<highcharts :options="options" :ts="ts" ref="residuals"></highcharts>
+	<highcharts :options="options" :ts="ts" :name="name" ref="residuals"></highcharts>
 </template>
 
 <script>
-
 const options = (vm) => {
 	return {
 		chart: {
@@ -23,35 +22,21 @@ const options = (vm) => {
 		tooltip: {
 			enabled: true
 		},
-		xAxis: [{
-				title: { 
-					text: '' 
-				},
-				alignTicks: true
-			},{
-				title: { 
-					text: '' 
-				},
-				alignTicks: false,
-				type: 'datetime',
-				opposite: true,
-				visible:false
-    }],
-		yAxis: [ {
-				title: { 
-					text: '' 
-				},
-				opposite: true,
-				visible:false
-			},{
-				title: { 
-					text: '' 
-				},
-				visible:true
-		}],
+		xAxis: {
+			title: { 
+				text: '' 
+			},
+			alignTicks: true,
+			type: 'datetime'
+		},
+		yAxis: {
+			title: { 
+				text: '' 
+			}
+		},
 		plotOptions: {
-			histogram: {
-				binWidth: 0.05
+			scatter: {
+				clip: false
 			}
 		},
 		series: []
@@ -61,18 +46,22 @@ const options = (vm) => {
 export default {
 	props: {
 		ts: {
-			type: Object,
+			type: Array,
 			default: () => {
-				return {}
+				return []
 			}
+		},
+		name: {
+			type: String,
+			default: ''
 		},
 		height: {
 			type: Number,
-			default: 200
+			default: 180
 		},
 		backgroundColor: {
 			type: String,
-			default: 'rgba(0, 0, 0, 0.0)'
+			default: 'rgba(0, 0, 0, 0)'
 		}
 	},
 	data() {
@@ -92,28 +81,16 @@ export default {
 		update() {
 			const chart = this.$refs.residuals.chart;
 			this.clearSeries()
-			if(this.ts.id) {
-				chart.addSeries({
-					name: 'Histogram',
-					type: 'histogram',
-					xAxis: 0,
-					yAxis: 0,
-					baseSeries: this.ts.id,
-					zIndex: -1,
-					color:'#C8E6C9',
-					borderColor:'rgba(0,0,0, 0.2)'
-				});
+			if(this.name) {
 				chart.addSeries({
 					type: 'scatter',
-					xAxis: 1,
-					yAxis: 1,
-					color: '#00E676',
+					color: '#00B0FF',
 					marker: {
 						radius: 1.5
 					},
-					data: this.ts.data,
-					id: this.ts.id,
-					name: this.ts.name
+					data: this.ts,
+					name: this.name,
+					clip: false
 				});
 			}
 			chart.reflow()	

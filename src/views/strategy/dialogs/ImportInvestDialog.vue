@@ -171,7 +171,7 @@ export default {
 			try {
 				await ApiController.upload(this.fileName, this.timeseriesC, this.fit, 'Investing.com')
 				this.reset();
-				this.$store.dispatch('library/load', {page: 1, nameFilter: ''});
+				this.$store.dispatch('strategies/load', {nameFilter: ''});
 				this.$emit('close')
 			}
 			catch(e) {
@@ -221,7 +221,7 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 	.mrt-upload-controls {
 		display: flex;
 		justify-content: flex-end;
@@ -252,7 +252,7 @@ export default {
 		height:32px;
 	}
 	.v-text-field__slot {
-		padding: 8px;
+		padding: 0px;
 	}
 	.v-input__slot {
 		border-radius: 2px 2px 0 0;
