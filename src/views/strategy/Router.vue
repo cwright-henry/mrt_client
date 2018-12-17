@@ -1,6 +1,6 @@
 <template>
 	<v-container fluid>
-    <transition name="fade" mode="out-in">
+    <transition name="fade" mode="out-in" appear>
 		  <keep-alive>
 				<router-view></router-view>
 		  </keep-alive>

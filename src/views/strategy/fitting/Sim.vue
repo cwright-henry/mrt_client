@@ -5,22 +5,7 @@
 			<v-spacer></v-spacer>
 		</v-toolbar>
 		<div class="mrt-simulations">
-			<div class="parameters">
-				<div>
-					<div>
-						<label>Kappa</label>
-						<div>{{strategy.fit.kappa | number}}</div>
-					</div>
-					<div>
-						<label>Sigma</label>
-						<div>{{strategy.fit.sigma | number}}</div>
-					</div>
-					<div>
-						<label>Theta</label>
-						<div>{{strategy.fit.theta | number}}</div>
-					</div>
-				</div>
-			</div>
+			<mrt-fit-process :fit="strategy.fit"/>
 			<mrt-sim-chart 
 				:ts="strategy.ts" 
 				@fetchsims="loadSims"
@@ -97,6 +82,7 @@
 import {mapState} from 'vuex'
 import mrtSimChart from '@/components/SimsChart'
 import mrtSimsSparklineChart from '@/components/SimsSparklineChart'
+import mrtFitProcess from '@/components/fit/Fit'
 
 export default {
 	data() {
@@ -113,7 +99,8 @@ export default {
 	},
 	components: {
 		mrtSimChart,
-		mrtSimsSparklineChart
+		mrtSimsSparklineChart,
+		mrtFitProcess
 	},
 	computed: {
 		...mapState('fit', ['strategy', 'sims'])
@@ -154,30 +141,6 @@ export default {
 		font-weight:400;
 		color: var(--light-gray); 
 		margin: 0 0 12px 0;
-	}
-	.parameters {
-		display: flex;
-		flex-direction: column;
-		margin: 0 0 16px 0;
-		h1 {
-			font-size: 18px;
-			font-weight:400;
-			color:#ffeb3b;
-			margin: 0 0 2px 0;
-		}
-		> div {
-			display:flex;
-			label {
-				color: var(--light-gray);
-				font-size: 13px;
-			}
-			> div {
-				font-size:18px;
-			}
-			> div:not(:last-child) {
-				margin: 0 32px 0 0;
-			}
-		}
 	}
 }
 </style>

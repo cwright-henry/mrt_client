@@ -90,8 +90,8 @@ export default {
 						});
 						strategy.fit= fit;
 					}
-					commit('setStrategy', strategy)
 				}
+				commit('setStrategy', strategy)
 			}
 			finally {
 				commit('isFittingTS', false)

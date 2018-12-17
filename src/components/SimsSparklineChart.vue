@@ -1,5 +1,5 @@
 <template>
-	<div class="mrt-simulation elevation-15"  @click="toggleSparkLine">
+	<div class="mrt-simulation elevation-2"  @click="toggleSparkLine">
 		<div class="mrt-simulation--sparkline">
 			<highcharts :options="options" :ts="ts" :id="id" ref="sparkchart"></highcharts>
 		</div>
@@ -8,6 +8,7 @@
 
 <script>
 import { EventBus } from '@/events.js';
+import {mean} from '@/utils/stats'
 
 const options = (vm) => {
 	return {
@@ -56,15 +57,18 @@ const options = (vm) => {
 		},
 		plotOptions: {
 			series: {
-				lineWidth: 0.5,
 				states: {
 					hover: {
 						enabled: false
 					}
 				}
 			},
-			line: {
-				color: '#fff'
+			area: {
+				fillColor: '#00B0FF',
+				negativeFillColor: '#1E88E5',
+				negativeColor: '#FFFFFF',
+				color: '#FFFFFF',
+				lineWidth: 0.5,
 			}
 		}
 	}
@@ -94,11 +98,11 @@ export default {
 		},
 		width: {
 			type: Number,
-			default: 140
+			default: 150
 		},
 		backgroundColor: {
 			type: String,
-			default: '#2E7D32'
+			default: 'rgba(0,0,0, 0.1)'
 		}
 	},
 	watch: {
@@ -121,8 +125,9 @@ export default {
 				const chart = this.$refs.sparkchart.chart
 				this.clearSeries();
 				chart.addSeries({
-					type: 'line',
-					data: this.ts
+					type: 'area',
+					data: this.ts,
+					threshold: mean(this.ts),
 				});
 				chart.reflow();
 				this.clicked = false
