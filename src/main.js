@@ -39,7 +39,7 @@ const optionsCompact = {
 
 Vue.filter('number', function (value) {
 	if(value && !isNaN(value)) {
-		return new Intl.NumberFormat(navigator.language, {minimumFractionDigits:4}).format(value);
+		return new Intl.NumberFormat(navigator.language, {minimumFractionDigits:3}).format(value);
 	}
 	return ''
 });

@@ -175,7 +175,8 @@ export default {
 					hData[i][1] = 0;
 				}
 
-				hData[i][1] = hData[i][1] / size
+				hData[i][1] = hData[i][1] / (size * width)
+                
 			}
 			hData.sort((a, b) => {
 				if (a[0] < b[0]) return -1;
