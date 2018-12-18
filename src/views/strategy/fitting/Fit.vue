@@ -24,8 +24,7 @@
 				<div class="panel">
 					<div class="timestrategy">
 						<mrt-fitchart 
-							@startdate="setStartDate"
-							@enddate="setEndDate">
+							@dateRangeChange="setDateRange">
 						</mrt-fitchart>
 					</div>
 					<div class="result">
@@ -148,7 +147,6 @@
 				<div class="actions">
 					<v-btn outline small color="primary" :loading="isSavingFit" flat @click="save">Save Fitting</v-btn>
 					<v-btn outline small color="primary" flat to="fit/sim">Run Simulations</v-btn>
-					<v-btn outline small color="primary" flat @click="reset">Reset</v-btn>
 				</div>
 			</div>
 		</v-card>
@@ -221,10 +219,6 @@ export default {
 			}
 		},
 
-		async reset() {
-			await this.$store.dispatch('fit/reset')
-		},
-
 		async save() {
 			const strategy = await this.$store.dispatch('fit/save', {id: this.id});
 			this.$store.commit('strategies/updateStrategy', strategy);
@@ -232,13 +226,8 @@ export default {
 			this.$router.push('/strategy')
 		},
 
-		async setStartDate(d) {
-			this.$store.commit('fit/setStartDate', d)
-			await this.$store.dispatch('fit/fit')
-		},
-
-		async setEndDate(d) {
-			this.$store.commit('fit/setEndDate', d)
+		async setDateRange(dates) {
+			this.$store.commit('fit/setDateRange', dates)
 			await this.$store.dispatch('fit/fit')
 		}
 	}

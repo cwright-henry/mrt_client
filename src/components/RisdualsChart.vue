@@ -3,11 +3,36 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
+const getPlotBand = (from, to) => {
+	return  {
+		from,
+		to,
+		color: 'rgba(255, 152, 0, 0.05)',
+		id: 'plot-band'
+	}
+}
+
+const getPlotLine = (value, type) => {
+	return {
+		value,
+		color: '#FF9800',
+		width: 0.5,
+		label: {
+			align:'center',
+			useHTML: true,
+			text: `<span class="axis-label ${type}"></span>`
+		},
+		id:`${type}-plotline`,
+		zIndex:999
+	}
+}
+
 const options = (vm) => {
 	return {
 		chart: {
 			height: vm._props.height,
-			zoomType: 'x',
 			backgroundColor: vm._props.backgroundColor
 		},
 		title: {
@@ -32,7 +57,8 @@ const options = (vm) => {
 		yAxis: {
 			title: { 
 				text: '' 
-			}
+			},
+			opposite: true
 		},
 		plotOptions: {
 			scatter: {
@@ -69,7 +95,16 @@ export default {
 			options: options(this)
 		}
 	},
+	computed: {
+		...mapState('fit', ['startDate' ,'endDate'])
+	},
 	watch: {
+		startDate() {
+			this.updateRange()
+		},
+		endDate() {
+			this.updateRange()
+		},
 		ts() {
 			this.update()
 		}
@@ -82,6 +117,7 @@ export default {
 			const chart = this.$refs.residuals.chart;
 			this.clearSeries()
 			if(this.name) {
+				this.updateRange()
 				chart.addSeries({
 					type: 'scatter',
 					color: '#00B0FF',
@@ -96,6 +132,16 @@ export default {
 			chart.reflow()	
 		},
 
+		updateRange() {
+			const chart = this.$refs.residuals.chart;
+			chart.xAxis[0].removePlotLine(`min-plotline`);
+			chart.xAxis[0].removePlotLine(`max-plotline`);
+			chart.xAxis[0].removePlotBand('plot-band');
+			chart.xAxis[0].addPlotBand(getPlotBand(this.startDate, this.endDate))
+			chart.xAxis[0].addPlotLine(getPlotLine(this.startDate, 'min'))
+			chart.xAxis[0].addPlotLine(getPlotLine(this.endDate, 'max'))
+		},
+
 		clearSeries() {
       const chart = this.$refs.residuals.chart
       while(chart.series.length > 0) {
@@ -107,6 +153,17 @@ export default {
 </script>
 
 <style>
-
+.axis-label {
+	width: 0px;
+	height: 0px;
+	border-radius: 50%;
+	display: inline-block;
+	overflow: hidden;
+	cursor: ew-resize;
+	background-color: #FF9800;
+	position: relative;
+	top:6px;
+	left:158px;
+}
 </style>
 

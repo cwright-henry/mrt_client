@@ -3,7 +3,10 @@
 </template>
 
 <script>
+import {trimData} from '@/utils/sorting'
 import {gaussionData} from '@/utils/stats'
+import {mapState} from 'vuex'
+
 const MAX_BIN_NUMBER = 20;
 
 const options = (vm) => {
@@ -48,7 +51,7 @@ const options = (vm) => {
 			},
 			areaspline: {
 				lineWidth: 0.5,
-				fillColor: 'rgba(76, 175, 80, 0.15)',
+				fillColor: 'rgba(255, 152, 0, 0.55)',
 				color: '#00B0FF'
 			}
     },
@@ -86,6 +89,9 @@ export default {
 			options: options(this)
 		}
 	},
+	computed: {
+		...mapState('fit', ['startDate' ,'endDate'])
+	},
 	watch: {
 		ts() {
 			this.update()
@@ -100,18 +106,19 @@ export default {
 			this.clearSeries()
 			
 			if(this.ts) {
-				const bins = this.createBins()
-
-				chart.addSeries({
-					name: 'Distribution',
-					data: bins,
-					color: '#00B0FF'
-				});
+				const series = trimData(this.ts, this.startDate, this.endDate)
+				const bins = this.createBins(series)
 
 				chart.addSeries({
 					name: 'Normal Distribution',
 					type: 'areaspline',
 					data: gaussionData(0, 1, bins)
+				});
+
+				chart.addSeries({
+					name: 'Distribution',
+					data: bins,
+					color: '#00B0FF'
 				});
 			}
 			chart.reflow()	
@@ -124,11 +131,11 @@ export default {
       }
 		},
 
-		createBins() {
+		createBins(series) {
 			const data = [];
 			
-			for(let i = 0; i < this.ts.length; i++) {
-				data.push(this.ts[i][1])
+			for(let i = 0; i < series.length; i++) {
+				data.push(series[i][1])
 			}
 			const hData = []; //the output array
 			let size = data.length; //how many data points
@@ -189,8 +196,3 @@ export default {
 	}
 }
 </script>
-
-<style>
-
-</style>
-

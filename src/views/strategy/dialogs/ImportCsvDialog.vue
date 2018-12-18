@@ -78,7 +78,7 @@ const tsSorter = (a, b) => {
 
 const sniffFormat = (date) => {
 	for(let format of dateFormats) {
-		if(moment(date, format, true).isValid()) {
+		if(moment.utc(date, format, true).isValid()) {
 			return format;
 		}
 	}
@@ -158,13 +158,13 @@ export default {
         for (let i = 1; i < lines.length; i++) {
 					let data = lines[i].split(',')
 					if(data[0] && data[1]) {
-						let date = moment(data[0], this.dateFormat, true)
+						let date = moment.utc(data[0], this.dateFormat, true)
 						let value = data[1]
 						if(!date.isValid()) {
 							const format = sniffFormat(data[0])
 							if(format) {
 								this.dateFormat = format;
-								date = moment(data[0], this.dateFormat, true)
+								date = moment.utc(data[0], this.dateFormat, true)
 								if(!isNaN(value)) {
 									series.push([date.valueOf(), parseFloat(value)])		
 								}

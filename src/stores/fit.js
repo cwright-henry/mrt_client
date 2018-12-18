@@ -13,7 +13,11 @@ export default {
 		isLoadingTS: false,
 		isFittingTS: false,
 		isSavingFit: false,
-		isLoadingSims: false
+		isLoadingSims: false,
+
+		// User defined temp data
+		startDate: null,
+		endDate: null,
 	},
 
 	mutations: {
@@ -45,12 +49,9 @@ export default {
 			state.sims = sims
 		},
 
-		setStartDate(state, date) {
-			state.strategy.fit.start_date = date;
-		},
-
-		setEndDate(state, date) {
-			state.strategy.fit.end_date = date;
+		setDateRange(state, dates) {
+			state.endDate = dates.endDate;
+			state.startDate = dates.startDate;
 		}
 	},
 	
@@ -71,6 +72,10 @@ export default {
 					}
 					
 					commit('setStrategy', strategy)
+					commit('setDateRange', {
+						startDate: state.strategy.fit.start_date,
+						endDate: state.strategy.fit.end_date
+					})
 				}
 			}
 			finally {
@@ -92,6 +97,10 @@ export default {
 					}
 				}
 				commit('setStrategy', strategy)
+				commit('setDateRange', {
+					startDate: state.strategy.fit.start_date,
+					endDate: state.strategy.fit.end_date
+				})
 			}
 			finally {
 				commit('isFittingTS', false)
@@ -104,8 +113,8 @@ export default {
 				const fit = await ApiController.fit({
 					ts: state.strategy.ts
 				});
-				commit('setStartDate', null)
-				commit('setEndDate', null)
+				commit('setStartDate', state.strategy.ts[0][0])
+				commit('setEndDate', state.strategy.ts[state.strategy.ts.length - 1][0])
 				commit('updateFit', fit)
 			}
 			finally {
@@ -118,8 +127,8 @@ export default {
 			try {
 				const fit = await ApiController.fit({
 					ts: state.strategy.ts,
-					start_date: state.strategy.fit.start_date,
-					end_date: state.strategy.fit.end_date
+					start_date: state.startDate,
+					end_date: state.endDate
 				});
 				commit('updateFit', fit)
 			}

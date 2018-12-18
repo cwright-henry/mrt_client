@@ -1,3 +1,4 @@
+
 const sorter = (sort) => {
 	return function(a, b) {
 		if (a < b) return sort ? (sort == 'desc' ? -1 : 1) : -1;
@@ -23,8 +24,27 @@ const tsExtremes = (arr) => {
 	return {min: min, max: max}
 }
 
+const closestNeighbour = (arr, value) => {
+	return arr.reduce(function(prev, curr) {
+		return (Math.abs(curr[0] - value) < Math.abs(prev[0] - value) ? curr : prev);
+	})[0];
+}
+
+const trimData = (arr, startDate, endDate) => {
+	let minNeighbour = closestNeighbour(arr, startDate)
+	let maxNeighbour = closestNeighbour(arr, endDate)
+	let minBound = arr.findIndex(elm => elm[0] === minNeighbour)
+	let maxBound = arr.findIndex(elm => elm[0] === maxNeighbour)
+
+	console.log(minBound)
+	console.log(maxBound)
+
+	return arr.slice(minBound, maxBound)
+}
+
 export {
   sorter,
 	objectSorter,
-	tsExtremes
+	tsExtremes,
+	trimData
 }

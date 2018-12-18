@@ -45,19 +45,47 @@ const getPlotLine = (value, type) => {
 	}
 }
 
+/**
+ * Highcharts does not support ordinal values so weekend days are on graph
+ * but there is no data on the weekends so if user selects one of these points
+ * then find the nearest neighbour
+ * 
+ * @param {Array} arr 
+ * @param {timeestamp} value 
+ */
+const closestNeighbour = (arr, value) => {
+	return arr.reduce(function(prev, curr) {
+		return (Math.abs(curr[0] - value) < Math.abs(prev[0] - value) ? curr : prev);
+	})[0];
+}
+
 export default class {
 
+	/**
+	 * Create a dual horizontal slider to be used on a Vue instance.
+	 * 
+	 * @param {Vue} vm The Vue instance
+	 * @param {Highcharts} chart The chart
+	 */
 	constructor(vm, chart) {
 		this.vm = vm
 		this.container = vm.$el;
 		this.chart = chart;
 	}
 
-	setRange(currentMin, currentMax, start, end) {
+	/**
+	 * Set the intial range for the slider. Requires a visible DOM element i.e not display:none
+	 * 
+	 * @param {timestamp} currentMin User selected current min
+	 * @param {timestamp} currentMax User selected current mac
+	 * @param {Array} ts Array of [[timestamp, value], ...], required to find closest neighbour
+	 */
+	setRange(currentMin, currentMax, ts) {
 		this.minPos = currentMin;
 		this.maxPos = currentMax;
-		this.min = start;
-		this.max = end;
+		this.min = ts[0][0];
+		this.max = ts[ts.length - 1][0];
+		this.ts = ts;
 		this.currentWidth = this.width()
 
 		this.updatePlotLine(this.minPos, 'min');
@@ -110,7 +138,7 @@ export default class {
 				this.moveMin()
 			})
 			
-			this.vm.$emit('startdate', this.minPos)
+			this.vm.$emit('startdate', closestNeighbour(this.ts, this.minPos))
 		}
 	
 		addListeners(this.container, moveTypes, step)
@@ -134,7 +162,7 @@ export default class {
 				this.moveMax()
 			})
 
-			this.vm.$emit('enddate', this.maxPos)
+			this.vm.$emit('enddate', closestNeighbour(this.ts, this.maxPos))
 		}
 
 		addListeners(this.container, moveTypes, step)

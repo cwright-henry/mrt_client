@@ -1,5 +1,8 @@
 
 export default {
+    time: {
+        useUTC: true
+    },
 	colors: ['#00E676', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066',
         '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
     chart: {
@@ -124,10 +127,10 @@ export default {
     // scroll charts
     rangeSelector: {
         buttonTheme: {
-            fill: '#505053',
+            fill: '#42A5F5',
             stroke: '#000000',
             style: {
-                color: '#CCC'
+                color: '#fff'
             },
             states: {
                 hover: {
@@ -138,10 +141,10 @@ export default {
                     }
                 },
                 select: {
-                    fill: '#000003',
+                    fill: '#FF9800',
                     stroke: '#000000',
                     style: {
-                        color: 'white'
+                        color: '#fff'
                     }
                 }
             }
