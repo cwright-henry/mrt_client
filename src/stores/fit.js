@@ -1,6 +1,5 @@
 
 import ApiController from '@/services/ApiController'
-import moment from 'moment'
 
 export default {
 	namespaced: true,
@@ -61,10 +60,9 @@ export default {
 			try {
 				if(params.id !== state.strategy._id) {
 					commit('isLoadingTS', true)
+					commit('setStrategy', strategy)
 					const strategy = await ApiController.loadStrategy(params.id);
 
-					// Default strategy if no strategy is picked
-					console.log('loadStrategy')
 					if(strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
 						console.log('loadStrategy - fitting')
@@ -72,9 +70,9 @@ export default {
 							ts: strategy.ts
 						});
 						strategy.fit= fit;
+						commit('setStrategy', strategy)
 					}
 					
-					commit('setStrategy', strategy)
 					commit('setDateRange', {
 						startDate: state.strategy.fit.start_date,
 						endDate: state.strategy.fit.end_date
@@ -92,6 +90,7 @@ export default {
 				if(strategy._id !== state.strategy._id) {
 					commit('isFittingTS', true)
 					commit('setStrategy', strategy)
+
 					if(strategy.fit.proctype === 'NONE') {
 						const fit = await ApiController.fit({
 							ts: strategy.ts
@@ -99,7 +98,6 @@ export default {
 						strategy.fit= fit;
 						commit('setStrategy', strategy)
 					}
-
 					commit('setDateRange', {
 						startDate: strategy.fit.start_date,
 						endDate: strategy.fit.end_date
@@ -115,6 +113,7 @@ export default {
 			commit('isFittingTS', true)
 			try {
 				if(state.startDate !== range.startDate || state.endDate !== range.endDate) {
+					console.log('fit - fitting')
 					const fit = await ApiController.fit({
 						ts: state.strategy.ts,
 						start_date: range.startDate,

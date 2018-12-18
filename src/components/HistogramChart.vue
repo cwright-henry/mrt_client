@@ -43,7 +43,7 @@ const options = (vm) => {
 			min: 0
     },
 		plotOptions: {
-			series: {
+			bar: {
 				borderWidth: 0.5,
 				borderColor: 'rgba(255,255,255,0.5)',
 				groupPadding: 0,
@@ -51,8 +51,11 @@ const options = (vm) => {
 			},
 			areaspline: {
 				lineWidth: 0.5,
-				fillColor: 'rgba(255, 152, 0, 0.55)',
-				color: '#00B0FF'
+				fillColor: 'rgba(255, 152, 0, 0.5)',
+				color: '#00B0FF',
+				marker: {
+					enabled: false
+				}
 			}
     },
 		series: []
@@ -110,15 +113,15 @@ export default {
 				const bins = this.createBins(series)
 
 				chart.addSeries({
-					name: 'Normal Distribution',
-					type: 'areaspline',
-					data: gaussionData(0, 1, bins)
-				});
-
-				chart.addSeries({
 					name: 'Distribution',
 					data: bins,
 					color: '#00B0FF'
+				});
+
+				chart.addSeries({
+					name: 'Normal Distribution',
+					type: 'areaspline',
+					data: gaussionData(0, 1, bins)
 				});
 			}
 			chart.reflow()	

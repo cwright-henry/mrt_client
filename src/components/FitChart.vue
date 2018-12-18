@@ -4,6 +4,7 @@
 
 <script>
 import {mapState} from 'vuex'
+import {mean} from '@/utils/stats'
 
 const options = (vm) => {
 	return {
@@ -51,6 +52,11 @@ const options = (vm) => {
 			handles: {
 				borderColor: '#FF9800',
 				lineWidth: 0.5
+			},
+			series: {
+				type: 'spline',
+				color: '#00B0FF',
+				lineWidth: 1
 			}
     },
 		yAxis: {
@@ -80,7 +86,7 @@ const options = (vm) => {
 			area: {
 				fillColor: '#00B0FF',
 				color: '#FFFFFF',
-				lineWidth: 0.5
+				lineWidth: 0.5,
 			},
 			line: {
 				color:'#00B0FF',
@@ -132,12 +138,13 @@ export default {
 				this.clearSeries()
 
 				chart.addSeries({
-					type: 'line',
+					type: 'area',
 					data: this.strategy.ts,
-					name: this.strategy.name
+					name: this.strategy.name,
+					threshold: mean(this.strategy.ts)
 				});
 
-			//	chart.rangeSelector.clickButton(5, true);
+				chart.rangeSelector.clickButton(5, true);
 			}
 			setTimeout(() => {
 				chart.reflow()

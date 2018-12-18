@@ -30,13 +30,15 @@
 			</v-snackbar>
 			<v-snackbar
 				v-model="apisuccess"
-				:timeout="2000"
-				top
-				color="secondary"
+				dark
+				:timeout="4000"
+				:left="true"
+				:bottom="true"
 				:vertical="$vuetify.breakpoint.mdAndDown">
 				{{ text }}
 				<v-btn
 					dark
+					color="secondary"
 					flat
 					@click="apisuccess = false">
 					Close
