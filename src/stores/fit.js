@@ -1,5 +1,6 @@
 
 import ApiController from '@/services/ApiController'
+import moment from 'moment'
 
 export default {
 	namespaced: true,
@@ -63,8 +64,10 @@ export default {
 					const strategy = await ApiController.loadStrategy(params.id);
 
 					// Default strategy if no strategy is picked
+					console.log('loadStrategy')
 					if(strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
+						console.log('loadStrategy - fitting')
 						const fit = await ApiController.fit({
 							ts: strategy.ts
 						});
@@ -88,49 +91,39 @@ export default {
 			try {
 				if(strategy._id !== state.strategy._id) {
 					commit('isFittingTS', true)
-					// Default strategy if no strategy is picked
+					commit('setStrategy', strategy)
 					if(strategy.fit.proctype === 'NONE') {
 						const fit = await ApiController.fit({
 							ts: strategy.ts
 						});
 						strategy.fit= fit;
+						commit('setStrategy', strategy)
 					}
+
+					commit('setDateRange', {
+						startDate: strategy.fit.start_date,
+						endDate: strategy.fit.end_date
+					})
 				}
-				commit('setStrategy', strategy)
-				commit('setDateRange', {
-					startDate: state.strategy.fit.start_date,
-					endDate: state.strategy.fit.end_date
-				})
 			}
 			finally {
 				commit('isFittingTS', false)
 			}
 		},
 
-		async reset({commit, state}) {
+		async fit({commit, state}, range) {
 			commit('isFittingTS', true)
 			try {
-				const fit = await ApiController.fit({
-					ts: state.strategy.ts
-				});
-				commit('setStartDate', state.strategy.ts[0][0])
-				commit('setEndDate', state.strategy.ts[state.strategy.ts.length - 1][0])
-				commit('updateFit', fit)
-			}
-			finally {
-				commit('isFittingTS', false)
-			}
-		},
+				if(state.startDate !== range.startDate || state.endDate !== range.endDate) {
+					const fit = await ApiController.fit({
+						ts: state.strategy.ts,
+						start_date: range.startDate,
+						end_date: range.endDate
+					});
 
-		async fit({commit, state}) {
-			commit('isFittingTS', true)
-			try {
-				const fit = await ApiController.fit({
-					ts: state.strategy.ts,
-					start_date: state.startDate,
-					end_date: state.endDate
-				});
-				commit('updateFit', fit)
+					commit('setDateRange', range)
+					commit('updateFit', fit)
+				}
 			}
 			finally {
 				commit('isFittingTS', false)

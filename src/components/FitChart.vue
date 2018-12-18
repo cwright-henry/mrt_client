@@ -68,6 +68,9 @@ const options = (vm) => {
 		},
 		plotOptions: {
 			series: {
+				dataGrouping: {
+					enabled: false /* By default highstocks groups data into weeks */
+				},
 				states: {
 					hover: {
 						enabled: false
@@ -81,7 +84,7 @@ const options = (vm) => {
 			},
 			line: {
 				color:'#00B0FF',
-				lineWidth: 1.5
+				lineWidth: 1
 			}
 		}
 	}
@@ -96,7 +99,7 @@ export default {
 	props: {
 		height: {
 			type: Number,
-			default: 380
+			default: 370
 		},
 		backgroundColor: {
 			type: String,
@@ -134,7 +137,7 @@ export default {
 					name: this.strategy.name
 				});
 
-				chart.rangeSelector.clickButton(5, true);
+			//	chart.rangeSelector.clickButton(5, true);
 			}
 			setTimeout(() => {
 				chart.reflow()

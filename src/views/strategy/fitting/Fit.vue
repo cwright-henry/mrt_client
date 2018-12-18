@@ -227,8 +227,9 @@ export default {
 		},
 
 		async setDateRange(dates) {
-			this.$store.commit('fit/setDateRange', dates)
-			await this.$store.dispatch('fit/fit')
+			if(!isNaN(dates.startDate) && !isNaN(dates.endDate)) {
+				await this.$store.dispatch('fit/fit', dates)	
+			}
 		}
 	}
 }

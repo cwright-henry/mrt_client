@@ -31,15 +31,16 @@ const closestNeighbour = (arr, value) => {
 }
 
 const trimData = (arr, startDate, endDate) => {
-	let minNeighbour = closestNeighbour(arr, startDate)
-	let maxNeighbour = closestNeighbour(arr, endDate)
-	let minBound = arr.findIndex(elm => elm[0] === minNeighbour)
-	let maxBound = arr.findIndex(elm => elm[0] === maxNeighbour)
+	if(arr.length) {
+		let minNeighbour = closestNeighbour(arr, startDate)
+		let maxNeighbour = closestNeighbour(arr, endDate)
+		let minBound = arr.findIndex(elm => elm[0] === minNeighbour)
+		let maxBound = arr.findIndex(elm => elm[0] === maxNeighbour)
 
-	console.log(minBound)
-	console.log(maxBound)
+		return arr.slice(minBound, maxBound)
+	}
 
-	return arr.slice(minBound, maxBound)
+	return arr;
 }
 
 export {
