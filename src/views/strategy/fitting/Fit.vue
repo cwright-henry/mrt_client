@@ -27,6 +27,46 @@
 			</div>
 			<fullscreen :fullscreen.sync="fullscreen" ref="fullscreen">
 				<div class="mrt-fit--process-ou">
+					<div class="overrides">
+						<div class="param-override">
+							<v-text-field
+								v-model="kappa"
+								:rules="[rules.isNumber]"
+								label="kappa"
+								box
+								hide-details
+								clearable
+								maxlength="10"
+								placeholder="Fix Kappa">
+							</v-text-field>
+						</div>
+						<div class="param-override">
+							<v-text-field
+								v-model="sigma"
+								:rules="[rules.isNumber]"
+								label="Sigma"
+								box
+								hide-details
+								clearable
+								maxlength="10"
+								placeholder="Fix Sigma">
+							</v-text-field>
+						</div>
+						<div class="param-override">
+							<v-text-field
+								v-model="theta"
+								:rules="[rules.isNumber]"
+								box
+								clearable
+								hide-details
+								label="Theta"
+								maxlength="10"
+								placeholder="Fix Theta">
+							</v-text-field>
+						</div>
+						<v-btn small outline color="primary" @click="fixParamaters">Fix</v-btn>
+						<v-btn small outline color="primary" @click="resetParameters">reset</v-btn>
+					</div>
 					<div class="top-panel">
 						<div class="strategy-graph">
 							<mrt-fitchart 
@@ -41,21 +81,21 @@
 									<div>Full</div>
 								</div>
 								<div>
-									<label>kappa</label>
+									<label class="input-param">kappa<v-icon color="#FFE0B2" size=16>{{userKappa ? 'lock' : 'lock_open'}}</v-icon></label>
 									<div v-if="isFittingTS">...</div>
 									<div v-else>{{strategy.fit.kappa | number}}</div>
 									<div v-if="isLoadingTS">...</div>
 									<div v-else>{{strategy.fit.kappa_full | number}}</div>
 								</div>
 								<div>
-									<label>Sigma</label>
+									<label class="input-param">Sigma<v-icon color="#FFE0B2" size=16>{{userSigma ? 'lock' : 'lock_open'}}</v-icon></label>
 									<div v-if="isFittingTS">...</div>
 									<div v-else>{{strategy.fit.sigma | number}}</div>
 									<div v-if="isLoadingTS">...</div>
 									<div v-else>{{strategy.fit.sigma_full | number}}</div>
 								</div>
 								<div>
-									<label>Theta</label>
+									<label class="input-param">Theta<v-icon color="#FFE0B2" size=16>{{userTheta ? 'lock' : 'lock_open'}}</v-icon></label>
 									<div v-if="isFittingTS">...</div>
 									<div v-else>{{strategy.fit.theta | number}}</div>	
 									<div v-if="isLoadingTS">...</div>
@@ -168,6 +208,18 @@ export default {
 	data() {
 		return {
 			fullscreen: false,
+			kappa: this.$store.state.fit.userKappa,
+			sigma: this.$store.state.fit.userSigma,
+			theta: this.$store.state.fit.userTheta,
+			rules: {
+				isNumber: value => {
+					if(value) {
+						const pattern = /^((-)?(0|([1-9][0-9]*))(\.[0-9]+)?)$/
+						return pattern.test(value) || 'Not a number!';
+					}
+					return true;
+				}
+			},
 			proctype: { value: 'OU', text: 'Ornstein-Uhlenbeck' },
 			proctypes: [
 				{value: 'OU', text: 'Ornstein-Uhlenbeck'},
@@ -202,7 +254,7 @@ export default {
 		mrtBreadcrumb
 	},
 	computed: {
-		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isSavingFit']),
+		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isSavingFit', 'userKappa', 'userSigma', 'userTheta']),
 		...mapGetters('strategies', ['findStrategy'])
 	},
 	methods: {
@@ -236,6 +288,27 @@ export default {
 			}
 		},
 
+		fixParamaters() {
+			const params = {
+				kappa: this.kappa ? parseFloat(this.kappa) : null,
+				sigma: this.sigma ? parseFloat(this.sigma) : null,
+				theta: this.theta ? parseFloat(this.theta) : null
+			}
+			this.$store.dispatch('fit/fixFit', params);
+		},
+
+		resetParameters() {
+			this.kappa = null
+			this.sigma = null
+			this.theta = null
+			const params = {
+				kappa: null,
+				sigma: null,
+				theta: null
+			}
+			this.$store.dispatch('fit/fixFit', params);
+		},
+
 		toggle () {
 			this.$refs['fullscreen'].toggle()
 		}
@@ -264,11 +337,21 @@ export default {
 }
 .mrt-fit--process-ou {
 	margin: 0 16px 16px 16px;
-	h3 {
-		font-size: 18px;
-		font-weight:400;
-		color: var(--light-gray); 
-		margin: 0 0 16px 0;
+	.overrides {
+		display:flex;
+		justify-content: flex-start;
+		align-items: baseline;
+		margin-bottom: 16px;
+		h3 {
+			color:#FF9800;
+		}
+		.param-override {
+			margin: 0 12px;
+			width:160px;
+			&:last-child {
+				margin-right:8px
+			}
+		}
 	}
 	.top-panel {
 		display: flex;
@@ -289,19 +372,24 @@ export default {
 				}
 				> div {
 					display: flex;
-					margin: 0 0 2px 0;
+					margin: 0 0 4px 0;
 					align-items: baseline;
 					label {
 						width: 120px;
 						color: var(--light-gray);
 						font-size: 13px;
+						&.input-param {
+							display:flex;
+							justify-content: space-between;
+							cursor: pointer;
+						}
 					}
 					> div {
 						flex: 1;
 						text-align: right;
 					}
 					&.header {
-						margin: 0;
+						margin: 0 0 4px 0;
 						label {
 							color:#FF9800;
 							font-size: 16px;

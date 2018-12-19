@@ -96,7 +96,7 @@ export default {
     text-decoration: none;
   }
   :root {
-    --blue: #42A5F5;
+    --blue: #64B5F6;
     --orange: #FFA726;
     --green: #00E676;
     --error: #EF5350;

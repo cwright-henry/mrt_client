@@ -105,7 +105,7 @@ export default {
 	props: {
 		height: {
 			type: Number,
-			default: 370
+			default: 410
 		},
 		backgroundColor: {
 			type: String,

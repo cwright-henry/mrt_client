@@ -18,6 +18,9 @@ export default {
 		// User defined temp data
 		startDate: null,
 		endDate: null,
+		userKappa: null,
+		userSigma: null,
+		userTheta: null
 	},
 
 	mutations: {
@@ -37,12 +40,21 @@ export default {
 			state.isSavingFit = status;
 		},
 
+		setUserParameters(state, params) {
+			state.userKappa = params.kappa || null;
+			state.userSigma = params.sigma || null;
+			state.userTheta = params.theta || null;
+		},
+
 		setStrategy(state, strategy) {
 			state.strategy = strategy;
 
 			// Set the transient start and end dates
 			state.startDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts[0][0] : state.strategy.fit.start_date;
 			state.endDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts[state.strategy.ts.length - 1][0] : state.strategy.fit.end_date;
+			state.userKappa = null;
+			state.userSigma = null;
+			state.userTheta = null;
 		},
 
 		updateFit(state, fit) {
@@ -107,16 +119,38 @@ export default {
 			commit('isFittingTS', true)
 			try {
 				if(state.startDate !== range.startDate || state.endDate !== range.endDate) {
-					console.log('fit - fitting')
 					const fit = await ApiController.fit({
 						ts: state.strategy.ts,
 						start_date: range.startDate,
-						end_date: range.endDate
+						end_date: range.endDate,
+						kappa: state.userKappa,
+						sigma: state.userSigma,
+						theta: state.userTheta
 					});
 
 					commit('setDateRange', range)
 					commit('updateFit', fit)
 				}
+			}
+			finally {
+				commit('isFittingTS', false)
+			}
+		},
+
+		async fixFit({commit, state}, params) {
+			commit('isFittingTS', true)
+			try {
+				const fit = await ApiController.fit({
+					ts: state.strategy.ts,
+					start_date: state.startDate,
+					end_date: state.endDate,
+					kappa: params.kappa,
+					sigma: params.sigma,
+					theta: params.theta
+				});
+
+				commit('setUserParameters', params)
+				commit('updateFit', fit)
 			}
 			finally {
 				commit('isFittingTS', false)
