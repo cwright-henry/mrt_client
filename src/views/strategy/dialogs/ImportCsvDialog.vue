@@ -205,7 +205,7 @@ export default {
 		async upload() {
 			this.uploading = true;
 			try {
-				this.$store.dispatch('strategies/uploadCSV', {
+				this.$store.dispatch('strategies/upload', {
 					fileName: this.fileName,
 					timeseries: this.timeseries,
 					source: 'CSV'

@@ -39,6 +39,10 @@ export default {
 
 		setStrategy(state, strategy) {
 			state.strategy = strategy;
+
+			// Set the transient start and end dates
+			state.startDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts[0][0] : state.strategy.fit.start_date;
+			state.endDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts[state.strategy.ts.length - 1][0] : state.strategy.fit.end_date;
 		},
 
 		updateFit(state, fit) {
@@ -60,23 +64,17 @@ export default {
 			try {
 				if(params.id !== state.strategy._id) {
 					commit('isLoadingTS', true)
-					commit('setStrategy', strategy)
 					const strategy = await ApiController.loadStrategy(params.id);
+					commit('setStrategy', strategy)
 
 					if(strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
-						console.log('loadStrategy - fitting')
 						const fit = await ApiController.fit({
 							ts: strategy.ts
 						});
 						strategy.fit= fit;
 						commit('setStrategy', strategy)
 					}
-					
-					commit('setDateRange', {
-						startDate: state.strategy.fit.start_date,
-						endDate: state.strategy.fit.end_date
-					})
 				}
 			}
 			finally {
@@ -98,10 +96,6 @@ export default {
 						strategy.fit= fit;
 						commit('setStrategy', strategy)
 					}
-					commit('setDateRange', {
-						startDate: strategy.fit.start_date,
-						endDate: strategy.fit.end_date
-					})
 				}
 			}
 			finally {

@@ -113,7 +113,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState('fit', ['strategy' ,'isLoadingTS'])
+		...mapState('fit', ['strategy', 'startDate', 'endDate', 'isLoadingTS'])
 	},
 	watch: {
 		strategy() {
@@ -144,7 +144,8 @@ export default {
 					threshold: mean(this.strategy.ts)
 				});
 
-				chart.rangeSelector.clickButton(5, true);
+				//chart.rangeSelector.clickButton(5, true);
+				chart.xAxis[0].setExtremes(this.startDate, this.endDate)
 			}
 			setTimeout(() => {
 				chart.reflow()

@@ -20,135 +20,138 @@
 				</div>
 			</div>
 			<v-divider></v-divider>
-			<div class="mrt-fit--process-ou">
-				<div class="panel">
-					<div class="timestrategy">
-						<mrt-fitchart 
-							@dateRangeChange="setDateRange">
-						</mrt-fitchart>
-					</div>
-					<div class="result">
-						<div class="fittings elevation-1">
-							<div class="header">
-								<label>Parameters</label>
-								<div>Selection</div>
-								<div>Full</div>
-							</div>
-							<div>
-								<label>kappa</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.kappa | number}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.kappa_full | number}}</div>
-							</div>
-							<div>
-								<label>Sigma</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.sigma | number}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.sigma_full | number}}</div>
-							</div>
-							<div>
-								<label>Theta</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.theta | number}}</div>	
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.theta_full | number}}</div>
-							</div>
-						</div>
-						<div class="fittings elevation-1">
-							<div class="header">
-								<label>Goodness of Fit</label>
-								<div>Selection</div>
-								<div>Full</div>
-							</div>
-							<div>
-								<label>ADF Stat</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.adf_stat | number}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.adf_stat_full | number}}</div>
-							</div>
-							<div>
-								<label>ADF Sig Level</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.sig_lev}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.sig_lev_full}}</div>
-							</div>
-							<div>
-								<label>P value</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.p_val | number}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.p_val_full | number}}</div>
-							</div>
-						</div>
-						<div class="fittings elevation-1">
-							<div class="header">
-								<label>Residuals</label>
-								<div>Selection</div>
-								<div>Full</div>
-							</div>
-							<div>
-								<label>R2</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.R2 | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.R2_full | number }}</div>
-							</div>
-							<div>
-								<label>Mean</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.resid_mean | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.resid_mean_full | number }}</div>
-							</div>
-							<div>
-								<label>Std</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.resid_std | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.resid_std_full | number }}</div>
-							</div>
-							<div>
-								<label>Skew</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.resid_skew | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.resid_skew_full | number }}</div>
-							</div>
-							<div>
-								<label>Kurtosis</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.resid_kurt | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.resid_kurt_full | number }}</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<h3>Residuals</h3>
-				<div class="panel">
-					<div class="timestrategy">
-						<mrt-risdualschart 
-							:ts="strategy.fit.resid"
-							:name="strategy.name">
-						</mrt-risdualschart>
-					</div>
-					<div class="histogram">
-						<mrt-histogramchart 
-							:ts="strategy.fit.resid"
-							:mean="strategy.fit.resid_mean"
-							:std="strategy.fit.resid_std">
-						</mrt-histogramchart>
-					</div>
-				</div>
-				<div class="actions">
-					<v-btn outline small color="primary" :loading="isSavingFit" flat @click="save">Save Fitting</v-btn>
-					<v-btn outline small color="primary" flat to="fit/sim">Run Simulations</v-btn>
-				</div>
+			<div class="mrt-fit--actions">
+				<v-btn small outline color="#B0BEC5" :loading="isSavingFit" @click="save">Save Fitting<v-icon right color="primary">cloud_upload</v-icon></v-btn>
+				<v-btn small outline color="#B0BEC5" to="fit/sim">Monte Carlo<v-icon right color="primary">directions_run</v-icon></v-btn>
+				<v-btn small outline color="#B0BEC5" @click="toggle">Full Screen<v-icon right color="primary">fullscreen</v-icon></v-btn>
 			</div>
+			<fullscreen :fullscreen.sync="fullscreen" ref="fullscreen">
+				<div class="mrt-fit--process-ou">
+					<div class="top-panel">
+						<div class="strategy-graph">
+							<mrt-fitchart 
+								@dateRangeChange="setDateRange">
+							</mrt-fitchart>
+						</div>
+						<div class="result">
+							<div class="fittings elevation-1">
+								<div class="header">
+									<label>Parameters</label>
+									<div>Selection</div>
+									<div>Full</div>
+								</div>
+								<div>
+									<label>kappa</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.kappa | number}}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.kappa_full | number}}</div>
+								</div>
+								<div>
+									<label>Sigma</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.sigma | number}}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.sigma_full | number}}</div>
+								</div>
+								<div>
+									<label>Theta</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.theta | number}}</div>	
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.theta_full | number}}</div>
+								</div>
+							</div>
+							<div class="fittings elevation-1">
+								<div class="header">
+									<label>Goodness of Fit</label>
+									<div>Selection</div>
+									<div>Full</div>
+								</div>
+								<div>
+									<label>ADF Stat</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.adf_stat | number}}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.adf_stat_full | number}}</div>
+								</div>
+								<div>
+									<label>ADF Sig Level</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.sig_lev}}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.sig_lev_full}}</div>
+								</div>
+								<div>
+									<label>P value</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.p_val | number}}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.p_val_full | number}}</div>
+								</div>
+							</div>
+							<div class="fittings elevation-1">
+								<div class="header">
+									<label>Residuals</label>
+									<div>Selection</div>
+									<div>Full</div>
+								</div>
+								<div>
+									<label>R2</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.R2 | number }}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.R2_full | number }}</div>
+								</div>
+								<div>
+									<label>Mean</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.resid_mean | number }}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.resid_mean_full | number }}</div>
+								</div>
+								<div>
+									<label>Std</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.resid_std | number }}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.resid_std_full | number }}</div>
+								</div>
+								<div>
+									<label>Skew</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.resid_skew | number }}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.resid_skew_full | number }}</div>
+								</div>
+								<div>
+									<label>Kurtosis</label>
+									<div v-if="isFittingTS">...</div>
+									<div v-else>{{strategy.fit.resid_kurt | number }}</div>
+									<div v-if="isLoadingTS">...</div>
+									<div v-else>{{strategy.fit.resid_kurt_full | number }}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<h3>Residuals</h3>
+					<div class="bottom-panel">
+						<div class="residual-graph">
+							<mrt-risdualschart 
+								:ts="strategy.fit.resid"
+								:name="strategy.name">
+							</mrt-risdualschart>
+						</div>
+						<div class="histogram-graph">
+							<mrt-histogramchart 
+								:ts="strategy.fit.resid"
+								:mean="strategy.fit.resid_mean"
+								:std="strategy.fit.resid_std">
+							</mrt-histogramchart>
+						</div>
+					</div>
+				</div>
+			</fullscreen>
 		</v-card>
 	</div>
 </template>
@@ -164,6 +167,7 @@ import {mapState, mapGetters} from 'vuex'
 export default {
 	data() {
 		return {
+			fullscreen: false,
 			proctype: { value: 'OU', text: 'Ornstein-Uhlenbeck' },
 			proctypes: [
 				{value: 'OU', text: 'Ornstein-Uhlenbeck'},
@@ -230,6 +234,10 @@ export default {
 			if(!isNaN(dates.startDate) && !isNaN(dates.endDate)) {
 				await this.$store.dispatch('fit/fit', dates)	
 			}
+		},
+
+		toggle () {
+			this.$refs['fullscreen'].toggle()
 		}
 	}
 }
@@ -245,23 +253,28 @@ export default {
 		width:300px;
 	}
 }
+.mrt-fit--actions {
+	margin: 8px 16px 16px 16px;
+	display:flex;
+	align-items: center;
+	justify-content: flex-end;
+	button {
+		width:160px;
+	}
+}
 .mrt-fit--process-ou {
-	margin: 16px;
+	margin: 0 16px 16px 16px;
 	h3 {
 		font-size: 18px;
 		font-weight:400;
 		color: var(--light-gray); 
 		margin: 0 0 16px 0;
 	}
-	.panel {
+	.top-panel {
 		display: flex;
-		align-items: stretch;
 		margin:0px 0 16px 0;
-		.timestrategy {
+		.strategy-graph {
 			width: calc(100% - 300px);
-		}
-		.histogram {
-			width: 300px;
 		}
 		.result {
 			width: 300px;
@@ -302,14 +315,25 @@ export default {
 			}
 		}
 	}
-	.actions {
-		text-align: center;
-		padding: 16px;
-		background-color: rgba(0, 0, 0, 0.2);
-		margin: 0 -16px;
-		border-top: 1px solid #616161;
+	.bottom-panel {
+		display:flex;
+		.residual-graph {
+			width: calc(100% - 300px);
+		}
+		.histogram-graph {
+			width: 300px;
+		}
 	}
 }
+.fullscreen {
+	.mrt-fit--process-ou {
+		margin-top:48px;
+		.top-panel {
+			margin-bottom: 48px;
+		}
+	}
+}
+
 
 @media screen and (max-width: 600px) {
 }

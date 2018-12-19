@@ -179,7 +179,7 @@ export default {
 		/**
 		 * Upload a new one
 		 */
-		async uploadCSV({commit}, payload) {
+		async upload({commit}, payload) {
 			try {
 				const strategy = await ApiController.upload(payload.fileName, payload.timeseries, payload.source)
 				commit('addStrategy', strategy)

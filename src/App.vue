@@ -17,6 +17,8 @@
 			</v-snackbar>
       <v-snackbar
 				v-model="apierror"
+				:top="true"
+				:right="true"
 				:timeout="timeout"
 				color="error"
 				:vertical="$vuetify.breakpoint.mdAndDown">

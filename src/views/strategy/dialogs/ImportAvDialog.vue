@@ -160,13 +160,17 @@ export default {
 			}
 		},
 
-		async upload() {
+		upload() {
 			this.uploading = true;
 			try {
-				await ApiController.upload(this.fileName, this.timeseriesC, this.fit, 'Alphavantage')
+				this.$store.dispatch('strategies/upload', {
+					fileName: this.fileName,
+					timeseries: this.timeseriesC,
+					source: 'AV'
+				});
 				this.reset();
-				this.$store.dispatch('strategies/load', {nameFilter: ''});
 				this.$emit('close')
+				window.scrollTo(0,0);
 			}
 			catch(e) {
 				this.uploading = false;

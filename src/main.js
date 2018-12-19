@@ -12,6 +12,9 @@ import stockInit from 'highcharts/modules/stock'
 import histogramBellcurve from 'highcharts/modules/histogram-bellcurve'
 import theme from './components/charts/theme'
 
+import fullscreen from 'vue-fullscreen'
+Vue.use(fullscreen)
+
 stockInit(Highcharts)
 histogramBellcurve(Highcharts)
 
