@@ -32,7 +32,7 @@
 							<v-text-field
 								v-model="kappa"
 								:rules="[rules.isNumber]"
-								:append-icon="'update'"
+								:append-icon="'refresh'"
 								:loading="isFittingTS"
 								label="kappa"
 								box
@@ -48,7 +48,7 @@
 							<v-text-field
 								v-model="sigma"
 								:rules="[rules.isNumber]"
-								:append-icon="'update'"
+								:append-icon="'refresh'"
 								:loading="isFittingTS"
 								label="Sigma"
 								box
@@ -64,7 +64,7 @@
 							<v-text-field
 								v-model="theta"
 								:rules="[rules.isNumber]"
-								:append-icon="'update'"
+								:append-icon="'refresh'"
 								:loading="isFittingTS"
 								box
 								clearable
@@ -84,35 +84,35 @@
 							</mrt-fitchart>
 						</div>
 						<div class="result">
-							<div class="fittings elevation-1">
+							<div class="fittings">
 								<div class="header">
 									<label>Parameters</label>
 									<div>Selection</div>
 									<div>Full</div>
 								</div>
 								<div>
-									<label class="input-param">kappa<v-icon color="#FFE0B2" size=16>{{userKappa ? 'lock' : 'lock_open'}}</v-icon></label>
+									<label class="input-param">kappa<v-icon :color="userKappa ? 'primary' : '#FFE0B2'" size=16>{{userKappa ? 'lock' : 'lock_open'}}</v-icon></label>
 									<div v-if="isFittingTS">...</div>
 									<div v-else>{{strategy.fit.kappa | number}}</div>
 									<div v-if="isLoadingTS">...</div>
 									<div v-else>{{strategy.fit.kappa_full | number}}</div>
 								</div>
 								<div>
-									<label class="input-param">Sigma<v-icon color="#FFE0B2" size=16>{{userSigma ? 'lock' : 'lock_open'}}</v-icon></label>
+									<label class="input-param">Sigma<v-icon :color="userSigma ? 'primary' : '#FFE0B2'" size=16>{{userSigma ? 'lock' : 'lock_open'}}</v-icon></label>
 									<div v-if="isFittingTS">...</div>
 									<div v-else>{{strategy.fit.sigma | number}}</div>
 									<div v-if="isLoadingTS">...</div>
 									<div v-else>{{strategy.fit.sigma_full | number}}</div>
 								</div>
 								<div>
-									<label class="input-param">Theta<v-icon color="#FFE0B2" size=16>{{userTheta ? 'lock' : 'lock_open'}}</v-icon></label>
+									<label class="input-param">Theta<v-icon :color="userTheta ? 'primary' : '#FFE0B2'" size=16>{{userTheta ? 'lock' : 'lock_open'}}</v-icon></label>
 									<div v-if="isFittingTS">...</div>
 									<div v-else>{{strategy.fit.theta | number}}</div>	
 									<div v-if="isLoadingTS">...</div>
 									<div v-else>{{strategy.fit.theta_full | number}}</div>
 								</div>
 							</div>
-							<div class="fittings elevation-1">
+							<div class="fittings">
 								<div class="header">
 									<label>Goodness of Fit</label>
 									<div>Selection</div>
@@ -140,7 +140,7 @@
 									<div v-else>{{strategy.fit.p_val_full | number}}</div>
 								</div>
 							</div>
-							<div class="fittings elevation-1">
+							<div class="fittings">
 								<div class="header">
 									<label>Residuals</label>
 									<div>Selection</div>
@@ -368,7 +368,7 @@ export default {
 	}
 	.top-panel {
 		display: flex;
-		margin:0px 0 16px 0;
+		margin:0 0 16px 0;
 		.strategy-graph {
 			width: calc(100% - 300px);
 		}
@@ -402,10 +402,11 @@ export default {
 						text-align: right;
 					}
 					&.header {
-						margin: 0 0 4px 0;
+						margin: 0 0 2px 0;
 						label {
 							color:#FF9800;
 							font-size: 16px;
+							font-weight: 300;
 						}
 						> div {
 							color: #FFE0B2;
@@ -427,13 +428,64 @@ export default {
 	}
 }
 .fullscreen {
+	--bg-color: #424242;
+	--border-color: #757575;
 	.overrides {
 		justify-content: center;
+		background-color:var(--bg-color);
+		padding:16px;
+		border: solid var(--border-color);
+		border-width: 1px 1px 1px 1px;
+		border-radius: 2px 2px 0 0;
+		margin-bottom: 0px;
 	}
 	.mrt-fit--process-ou {
-		margin-top:48px;
+		padding-top:16px;
+		h3 {
+			background-color:var(--bg-color);
+			padding: 16px 0 0 12px;
+			font-weight: 300;
+			border: solid var(--border-color);
+			border-width: 0 1px 0 1px;
+		}
+		.bottom-panel {
+			background-color:var(--bg-color);
+			border: solid var(--border-color);
+			border-width: 0 1px 1px 1px;
+			border-radius: 0 0 2px 2px;
+			padding: 16px 0;
+		}
 		.top-panel {
-			margin-bottom: 48px;
+			margin-bottom: 0px;
+			border: solid var(--border-color);
+			border-width: 0 1px 1px 1px;
+
+			.strategy-graph {
+				padding: 32px 0;
+				background-color:var(--bg-color);
+			}
+			.result {
+				padding: 16px 0;
+				background-color:var(--bg-color);
+				border: solid var(--border-color);
+				border-width: 0 0 0 1px;
+				justify-content: space-evenly;
+				display: flex;
+				flex-direction: column;
+				font-weight: 300;
+				.fittings {
+					background-color:var(--bg-color);
+					> div.header {
+						border-bottom: 1px solid var(--border-color);
+						padding: 2px 8px;
+						margin: 0 -8px 4px -8px;
+						label {
+							color:#fff;
+							font-size: 14px;
+						}
+					}
+				}
+			}
 		}
 	}
 }
