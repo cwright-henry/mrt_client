@@ -32,40 +32,50 @@
 							<v-text-field
 								v-model="kappa"
 								:rules="[rules.isNumber]"
+								:append-icon="'update'"
+								:loading="isFittingTS"
 								label="kappa"
 								box
 								hide-details
 								clearable
 								maxlength="10"
-								placeholder="Fix Kappa">
+								placeholder="Fix Kappa"
+								@click:clear="clearKappa"
+								@click:append="fixParamaters">
 							</v-text-field>
 						</div>
 						<div class="param-override">
 							<v-text-field
 								v-model="sigma"
 								:rules="[rules.isNumber]"
+								:append-icon="'update'"
+								:loading="isFittingTS"
 								label="Sigma"
 								box
 								hide-details
 								clearable
 								maxlength="10"
-								placeholder="Fix Sigma">
+								placeholder="Fix Sigma"
+								@click:clear="clearSigma"
+								@click:append="fixParamaters">
 							</v-text-field>
 						</div>
 						<div class="param-override">
 							<v-text-field
 								v-model="theta"
 								:rules="[rules.isNumber]"
+								:append-icon="'update'"
+								:loading="isFittingTS"
 								box
 								clearable
 								hide-details
 								label="Theta"
 								maxlength="10"
-								placeholder="Fix Theta">
+								placeholder="Fix Theta"
+								@click:clear="clearTheta"
+								@click:append="fixParamaters">
 							</v-text-field>
 						</div>
-						<v-btn small outline color="primary" @click="fixParamaters">Fix</v-btn>
-						<v-btn small outline color="primary" @click="resetParameters">reset</v-btn>
 					</div>
 					<div class="top-panel">
 						<div class="strategy-graph">
@@ -288,23 +298,26 @@ export default {
 			}
 		},
 
+		clearKappa() {
+			this.kappa = null;
+			this.fixParamaters();
+		},
+
+		clearSigma() {
+			this.sigma = null;
+			this.fixParamaters();
+		},
+
+		clearTheta() {
+			this.theta = null;
+			this.fixParamaters();
+		},
+
 		fixParamaters() {
 			const params = {
 				kappa: this.kappa ? parseFloat(this.kappa) : null,
 				sigma: this.sigma ? parseFloat(this.sigma) : null,
 				theta: this.theta ? parseFloat(this.theta) : null
-			}
-			this.$store.dispatch('fit/fixFit', params);
-		},
-
-		resetParameters() {
-			this.kappa = null
-			this.sigma = null
-			this.theta = null
-			const params = {
-				kappa: null,
-				sigma: null,
-				theta: null
 			}
 			this.$store.dispatch('fit/fixFit', params);
 		},
@@ -330,7 +343,7 @@ export default {
 	margin: 8px 16px 16px 16px;
 	display:flex;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content: center;
 	button {
 		width:160px;
 	}
@@ -339,7 +352,7 @@ export default {
 	margin: 0 16px 16px 16px;
 	.overrides {
 		display:flex;
-		justify-content: flex-start;
+		justify-content: flex-end;
 		align-items: baseline;
 		margin-bottom: 16px;
 		h3 {
@@ -414,6 +427,9 @@ export default {
 	}
 }
 .fullscreen {
+	.overrides {
+		justify-content: center;
+	}
 	.mrt-fit--process-ou {
 		margin-top:48px;
 		.top-panel {
