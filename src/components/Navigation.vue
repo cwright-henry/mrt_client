@@ -1,15 +1,15 @@
 <template>
 	<v-navigation-drawer v-model="dialog" fixed clipped app mini-variant>
 		<v-list dense>
-			<router-link to="/strategy">
+			<router-link to="/library">
 				<div class="mrt-menu--item">
 					<v-badge right>
 						<span slot="badge">{{ total }}</span>
 						<v-icon dark>
-							build
+							home
 						</v-icon>
 					</v-badge>
-					<div>Strategy</div>
+					<div>Library</div>
 				</div>
 			</router-link>
 			<router-link to="/account">

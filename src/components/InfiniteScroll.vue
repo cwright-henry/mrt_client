@@ -40,7 +40,8 @@ export default {
 	},
 	computed: {
 		...mapState('strategies', ['hasNext', 'loading', 'pageSize']),
-		...mapGetters('strategies', ['isInfiniteScrolling'])
+		...mapGetters('strategies', ['isInfiniteScrolling']),
+		...mapGetters('user', ['isAuthenticated'])
 	},
 	mounted() {
 		this.observer = new IntersectionObserver(([entry], self) => {
@@ -53,7 +54,7 @@ export default {
 	},
 	methods: {
 		autoMore() {
-			if(this.isInfiniteScrolling) {
+			if(this.isInfiniteScrolling && this.isAuthenticated) {
 				this.$emit('loadmore')
 			}
 		},

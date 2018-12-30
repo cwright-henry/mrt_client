@@ -5,10 +5,10 @@ export default {
     return Api().post('api/login', credentials).then(response => response.data)
   },
   
-  upload (name, ts, source) {
+  upload (name, data, source) {
     return Api().post('api/upload', {
       name,
-      ts,
+      data,
       source
     }).then(response => response.data)
   },
@@ -42,7 +42,7 @@ export default {
   },
 
   list (page, nameFilter, pageSize) {
-    return Api().get('api/list', {
+    return Api().get('api/list-strategies', {
       params: {
         page,
         nameFilter,
@@ -51,18 +51,10 @@ export default {
     }).then(response => response.data)
   },
 
-  find (id) {
-    return Api().get('api/find', {
-      params: {
-        id: id
-      }
-    }).then(response => response.data)
-  },
-
   loadStrategy (id) {
-    return Api().get('api/findTs', {
+    return Api().get('api/find-strategy', {
       params: {
-        timeseriesId: id
+        strategyId: id
       }
     }).then(response => response.data)
   },
@@ -81,6 +73,23 @@ export default {
         curr_id: curr_id,
         startDate: startDate,
         endDate: endDate
+      }
+    }).then(response => response.data)
+  },
+
+  findDict (type) {
+    return Api().get('/api/find-dict', {
+      params: {
+        type
+      }
+    }).then(response => response.data)
+  },
+
+  findSeries (type, source) {
+    return Api().get('/api/find-timeseries', {
+      params: {
+        type,
+        source
       }
     }).then(response => response.data)
   }

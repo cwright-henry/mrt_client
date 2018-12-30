@@ -46,7 +46,7 @@ export default new Router({
       path: '/',
       name: 'Mrt',
       component: Mrt,
-      redirect: '/strategy',
+      redirect: '/library',
       beforeEnter (to, from, next) {
         store.commit('user/initialize');
         if (!store.getters['user/isAuthenticated']) {
@@ -58,7 +58,7 @@ export default new Router({
       },
       children: [
         {
-          path: 'strategy',
+          path: 'library',
           component: StrategyRouter,
           children: [
             {

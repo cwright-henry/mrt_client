@@ -207,7 +207,7 @@ export default {
 			try {
 				this.$store.dispatch('strategies/upload', {
 					fileName: this.fileName,
-					timeseries: this.timeseries,
+					data: this.timeseries,
 					source: 'CSV'
 				});
 				this.reset();

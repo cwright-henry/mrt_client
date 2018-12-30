@@ -7,16 +7,13 @@
 			clearable
 			v-model="search"
 			prepend-inner-icon="search"
-			label="Search Strategies">
+			label="Search Library">
 		</v-text-field>
 		<mrt-cardlist/>
 		<mrt-csv-import
 			:show="showCSVUpload"
 			@close="showCSVUpload=false"/>
-		<mrt-av-import 
-			:show="showAlphavantageUpload"
-			@close="showAlphavantageUpload=false"/>
-		<mrt-invest-import 
+		<mrt-import 
 			:show="showInvestUpload"
 			@close="showInvestUpload=false"/>
 		<v-speed-dial
@@ -48,17 +45,9 @@
 				fab
 				dark
 				small
-				@click.stop="showAlphavantageUpload=true"
-				color="cyan">
-				Av
-			</v-btn>
-			<v-btn
-				fab
-				dark
-				small
 				@click.stop="showInvestUpload=true"
 				color="orange">
-				In
+				<v-icon>exposure_plus_1</v-icon>
 			</v-btn>
 		</v-speed-dial>
 	</div>
@@ -67,8 +56,7 @@
 <script>
 import mrtCardlist from '@/components/CardList'
 import mrtCsvImport from './dialogs/ImportCsvDialog'
-import mrtAvImport from './dialogs/ImportAvDialog'
-import mrtInvestImport from './dialogs/ImportInvestDialog'
+import mrtImport from './dialogs/ImportDialog'
 import debounce from 'lodash/debounce'
 
 export default {
@@ -77,7 +65,6 @@ export default {
 		return {
 			fab: false,
 			showCSVUpload: false,
-			showAlphavantageUpload: false,
 			showInvestUpload: false,
 			search: ''
 		}
@@ -101,8 +88,7 @@ export default {
 	components: {
 		mrtCardlist,
 		mrtCsvImport,
-		mrtAvImport,
-		mrtInvestImport
+		mrtImport
 	},
 	created() {
 		this.debounceSearch = debounce(this.searchLibrary, 500)

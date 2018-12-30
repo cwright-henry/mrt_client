@@ -28,7 +28,7 @@ export default {
 			type: Object,
 			default: () => {
 				return {
-					ts:[],
+					ts:{},
 					fit:{}
 				}
 			}

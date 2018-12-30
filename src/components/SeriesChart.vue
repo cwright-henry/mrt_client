@@ -81,6 +81,9 @@ const options = (vm) => {
 				negativeColor: '#FFFFFF',
 				color: '#FFFFFF',
 				lineWidth: 0.5,
+				marker: {
+					enabled: false
+				}
 			}
 		}
 	}
@@ -97,8 +100,8 @@ export default {
 			type: Object,
 			default: () => {
 				return {
-					ts:[],
-					fit:{}
+					ts: {},
+					fit: {}
 				}
 			}
 		},
@@ -129,9 +132,9 @@ export default {
 				this.clearSeries()
 				chart.addSeries({
 					type: 'area',
-					data: this.strategy.ts,
+					data: this.strategy.ts.data,
 					name: this.strategy.name,
-					threshold: mean(this.strategy.ts),
+					threshold: mean(this.strategy.ts.data),
 					clip: false
 				});
 

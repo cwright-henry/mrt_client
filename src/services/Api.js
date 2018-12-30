@@ -24,7 +24,9 @@ export default () => {
 
       // Forbidden reasons
       // 1. DB got rolled and new _id got generated for user
+      // Nullify the user token
       if (error.response.status === 403) {
+        store.commit('user/setToken', null);
         EventBus.$emit('api-auth', 'Please login again to update your security token');
       }
 

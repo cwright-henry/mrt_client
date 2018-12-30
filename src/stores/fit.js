@@ -6,7 +6,7 @@ export default {
 
 	state: {
 		strategy: {
-			ts: [],
+			ts: {},
 			fit: {}
 		},
 		sims: {},
@@ -15,7 +15,7 @@ export default {
 		isSavingFit: false,
 		isLoadingSims: false,
 
-		// User defined temp data
+		// User defined transient data
 		startDate: null,
 		endDate: null,
 		userKappa: null,
@@ -50,8 +50,8 @@ export default {
 			state.strategy = strategy;
 
 			// Set the transient start and end dates
-			state.startDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts[0][0] : state.strategy.fit.start_date;
-			state.endDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts[state.strategy.ts.length - 1][0] : state.strategy.fit.end_date;
+			state.startDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts.data[0][0] : state.strategy.fit.start_date;
+			state.endDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts.data[state.strategy.ts.data.length - 1][0] : state.strategy.fit.end_date;
 			state.userKappa = null;
 			state.userSigma = null;
 			state.userTheta = null;
@@ -82,7 +82,7 @@ export default {
 					if(strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
-							ts: strategy.ts
+							ts: strategy.ts.data
 						});
 						strategy.fit= fit;
 						commit('setStrategy', strategy)
@@ -103,7 +103,7 @@ export default {
 
 					if(strategy.fit.proctype === 'NONE') {
 						const fit = await ApiController.fit({
-							ts: strategy.ts
+							ts: strategy.ts.data
 						});
 						strategy.fit= fit;
 						commit('setStrategy', strategy)
@@ -120,7 +120,7 @@ export default {
 			try {
 				if(state.startDate !== range.startDate || state.endDate !== range.endDate) {
 					const fit = await ApiController.fit({
-						ts: state.strategy.ts,
+						ts: state.strategy.ts.data,
 						start_date: range.startDate,
 						end_date: range.endDate,
 						kappa: state.userKappa,
@@ -141,7 +141,7 @@ export default {
 			commit('isFittingTS', true)
 			try {
 				const fit = await ApiController.fit({
-					ts: state.strategy.ts,
+					ts: state.strategy.ts.data,
 					start_date: state.startDate,
 					end_date: state.endDate,
 					kappa: params.kappa,

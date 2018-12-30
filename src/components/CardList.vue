@@ -6,8 +6,8 @@
 					<v-toolbar dense flat>
 						<v-toolbar-title class="mrt--header-color">{{strategy.name}}</v-toolbar-title>
 						<v-spacer></v-spacer>
-						<v-btn color="primary" flat icon @click.stop.passive="remove(strategy._id)">
-							<v-icon>delete</v-icon>
+						<v-btn color="primary" flat icon>
+							<v-icon @click.self.passive="remove(strategy._id)">delete</v-icon>
 						</v-btn>
 					</v-toolbar>
 					<mrt-card :strategy="strategy"></mrt-card>
@@ -18,8 +18,8 @@
 							<div class="mrt-no-wrap">{{strategy.lastUpdate | date}}</div>
 						</div>
 						<v-spacer></v-spacer>
-						<v-btn outline small color="primary" :to="`/strategy/${strategy._id}/fit`">Fit Strategy</v-btn>
-						<v-btn :disabled="strategy.fit && strategy.fit.proctype === 'NONE'" outline small color="primary" flat :to="`/strategy/${strategy._id}/sltp`">SLTP</v-btn>
+						<v-btn outline small color="primary" :to="`/library/${strategy._id}/fit`">Fit Strategy</v-btn>
+						<v-btn :disabled="strategy.fit && strategy.fit.proctype === 'NONE'" outline small color="primary" flat :to="`/library/${strategy._id}/sltp`">SLTP</v-btn>
 					</v-card-actions>
 				</v-card>
 			</li>

@@ -1,7 +1,7 @@
 <template>
 	<v-toolbar dense fixed clipped-left app>
 		<v-toolbar-side-icon @click.stop="$emit('togglemenu')"></v-toolbar-side-icon>
-		<v-toolbar-title class="hidden-xs-and-down mr-4 pl-2"><div class="mrt-toolbar"><logo/><span>Strategy Builder</span></div></v-toolbar-title>
+		<v-toolbar-title class="hidden-xs-and-down mr-4 pl-2"><div class="mrt-toolbar"><logo/><span>Mean Reversion Trader</span></div></v-toolbar-title>
 		<v-spacer></v-spacer>
 		<div class="hidden-sm-and-down">
 			<span class="mrt-toolbar--name">{{ userName }}</span>

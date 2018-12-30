@@ -18,7 +18,7 @@ export default {
 	namespaced: true,
 
 	state: {
-		strategies: [], 					/* Array of strategies */
+		strategies: [], 					/* Array of strategies on view */
 		total: 0,									/* Total number of strategies */
 		page: 1,									/* Current Page */
 		pageSize: PAGE_SIZE,			/* The number of items in each page */
@@ -48,23 +48,61 @@ export default {
 
 	mutations: {
 		/**
-		 * Set the state
+		 * Set strategy list. 
+		 * 
+		 * 1. New strategies overrite existing list
+		 * 2. Uploaded get added to top of the list
+		 * 3. More get pushed to the back of the list using the infinite scroll and one is
+		 * 		removed then add one.
 		 */
-		setPaging(state, data) {
-			if(data.isNew) {
+		updateList(state, data) {
+			// A new list
+			if(data.hasOwnProperty('isNew')) {
 				state.strategies = data.strategies
 			}
+			else if(data.hasOwnProperty('isUpload')) {
+				// Add the new one to top of list
+				state.strategies.unshift(data.strategy)
+				// If there is more to view then pop last one
+				// to preserve infinit scroll
+				if(state.hasNext) {
+					state.strategies.pop();
+				}
+			}
+			// Infinit scroll - just push on to end of list
 			else {
 				state.strategies.push(...data.strategies)
 			}
-			state.total = data.total
-			state.totalPages = data.totalPages
-			state.hasPrev = data.hasPrev
-			state.hasNext = data.hasNext
-			state.nameFilter = data.nameFilter
-			state.page = data.page
 		},
 
+		/**
+		 * Set the paging after updates, check for the
+		 * existence of the property
+		 */
+		setPaging(state, data) {
+			if(data.hasOwnProperty('total')) {
+				state.total = data.total	
+			}
+			if(data.hasOwnProperty('totalPages')) {
+				state.totalPages = data.totalPages	
+			}
+			if(data.hasOwnProperty('hasPrev')) {
+				state.hasPrev = data.hasPrev	
+			}
+			if(data.hasOwnProperty('hasNext')) {
+				state.hasNext = data.hasNext	
+			}
+			if(data.hasOwnProperty('nameFilter')) {
+				state.nameFilter = data.nameFilter	
+			}
+			if(data.hasOwnProperty('page')) {
+				state.page = data.page	
+			}
+		},
+
+		/**
+		 * Loading indicators
+		 */
 		setLoading(state, status) {
 			state.loading = status
 		},
@@ -77,6 +115,10 @@ export default {
 			state.loadingRm = status
 		},
 
+		/**
+		 * Find an existing strategy and update it. Have to use
+		 * Vue.set on the index for vue to react to updates
+		 */
 		updateStrategy(state, strategy) {
 			for(let i = 0; i < state.strategies.length; i++) {
 				if(state.strategies[i]._id === strategy._id) {
@@ -86,11 +128,10 @@ export default {
 			}
 		},
 
-		addStrategy(state, strategy) {
-			state.strategies.unshift(strategy)
-			state.total++;
-		},
-
+		/**
+		 * Remove a strategy by filering out and letting view detect
+		 * the update
+		 */
 		removeStrategy(state, id) {
 			state.strategies = state.strategies.filter(elm => elm._id !== id)
 		}
@@ -106,17 +147,18 @@ export default {
 				const pageFilter = payload.nameFilter || ''
 				const data = await ApiController.list(1, pageFilter, PAGE_SIZE);
 
-				const update = {
+				commit('updateList', {
 					strategies: data.docs,
+					isNew: true
+				})
+				commit('setPaging', {
 					total: data.totalDocs,
 					totalPages: data.totalPages,
 					hasPrev: data.hasPrevPage,
 					hasNext: data.hasNextPage,
 					nameFilter: pageFilter,
-					page: 1,
-					isNew: true
-				}
-				commit('setPaging', update)
+					page: 2, // Set the next page to load
+				})
 			}
 			finally {
 				commit('setLoading', false)
@@ -129,19 +171,18 @@ export default {
 		async loadMore({commit, state}) {
 			commit('setLoading', true)
 			try {
-				const data = await ApiController.list(state.page + 1, state.nameFilter, PAGE_SIZE);
+				let data = await ApiController.list(state.page, state.nameFilter, PAGE_SIZE);
 				
-				const update = {
-					strategies: data.docs,
+				commit('updateList', {
+					strategies: data.docs
+				})
+				commit('setPaging', {
 					total: data.totalDocs,
 					totalPages: data.totalPages,
 					hasPrev: data.hasPrevPage,
 					hasNext: data.hasNextPage,
-					nameFilter: state.nameFilter,
-					page: state.page + 1,
-					isNew: false
-				}
-				commit('setPaging', update)
+					page: state.page + 1 // Set the next page to load. Remember that state cannot mutated directly here
+				})
 			}
 			finally {
 				commit('setLoading', false)
@@ -163,13 +204,32 @@ export default {
 		},
 
 		/**
-		 * Remove a strategy
+		 * Remove a strategy. Need to take care of infinte scroll
 		 */
-		async remove({commit}, payload) {
+		async remove({commit, state}, payload) {
 			commit('setLoadingRm', true)
 			try {
 				await ApiController.remove(payload.id)
 				commit('removeStrategy', payload.id)
+				if(state.hasNext) {
+					const data = await ApiController.list(state.strategies.length + 1, state.nameFilter, 1);
+
+					commit('updateList', {
+						strategies: data.docs
+					})
+
+					commit('setPaging', {
+						total: data.totalDocs,
+						totalPages: data.totalPages,
+						hasPrev: data.hasPrevPage,
+						hasNext: data.hasNextPage
+					})
+				}
+				else {
+					commit('setPaging', {
+						total: state.total - 1
+					})
+				}
 			}
 			finally {
 				commit('setLoadingRm', false)
@@ -177,12 +237,18 @@ export default {
 		},
 
 		/**
-		 * Upload a new one
+		 * Upload a new one.
 		 */
-		async upload({commit}, payload) {
+		async upload({commit, state}, payload) {
 			try {
-				const strategy = await ApiController.upload(payload.fileName, payload.timeseries, payload.source)
-				commit('addStrategy', strategy)
+				const strategy = await ApiController.upload(payload.fileName, payload.data, payload.source)
+				commit('setPaging', {
+					total: state.total + 1
+				})
+				commit('updateList', {
+					strategy: strategy,
+					isUpload: true
+				})
 			}
 			finally {
 				// TODO

@@ -139,9 +139,9 @@ export default {
 
 				chart.addSeries({
 					type: 'area',
-					data: this.strategy.ts,
+					data: this.strategy.ts.data,
 					name: this.strategy.name,
-					threshold: mean(this.strategy.ts)
+					threshold: mean(this.strategy.ts.data)
 				});
 
 				//chart.rangeSelector.clickButton(5, true);
