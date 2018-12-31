@@ -18,15 +18,23 @@
 						label="Fit Process">
 					</v-select>
 				</div>
-			</div>
-			<v-divider></v-divider>
-			<div class="mrt-fit--actions">
-				<v-btn small outline color="#B0BEC5" :loading="isSavingFit" @click="save">Save Fitting<v-icon right color="primary">cloud_upload</v-icon></v-btn>
-				<v-btn small outline color="#B0BEC5" to="fit/sim">Monte Carlo<v-icon right color="primary">directions_run</v-icon></v-btn>
-				<v-btn small outline color="#B0BEC5" @click="toggle">Full Screen<v-icon right color="primary">fullscreen</v-icon></v-btn>
+				<div class="actions">
+					<div>
+						<v-btn small outline fab color="blue darken-2" :loading="isSavingFit" @click="save"><v-icon>cloud_upload</v-icon></v-btn>
+						<label>Save Fitting</label>
+					</div>
+					<div>
+						<v-btn small outline fab color="blue darken-2" to="fit/sim"><v-icon>directions_run</v-icon></v-btn>
+						<label>Monte Carlo</label>
+					</div>
+					<div>
+						<v-btn small outline fab color="blue darken-2" @click="toggle"><v-icon>fullscreen</v-icon></v-btn>
+						<label>Full Screen</label>
+					</div>
+				</div>
 			</div>
 			<fullscreen :fullscreen.sync="fullscreen" ref="fullscreen">
-				<div class="mrt-fit--process-ou">
+				<div class="process-ou">
 					<div class="overrides">
 						<div class="param-override">
 							<v-text-field
@@ -289,7 +297,7 @@ export default {
 			const strategy = await this.$store.dispatch('fit/save', {id: this.id});
 			this.$store.commit('strategies/updateStrategy', strategy);
 			EventBus.$emit('api-strategy-save', `${strategy.name} Strategy Saved`);
-			this.$router.push('/strategy')
+			this.$router.push('/library')
 		},
 
 		async setDateRange(dates) {
@@ -329,35 +337,39 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
+
 .mrt-fit--process {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin: 16px;
-	> div {
-		width:300px;
+	.actions {
+		display:flex;
+		> div {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 0 16px;
+			label {
+				font-size:11px;
+				font-weight: 300;
+				color: var(--light-gray);
+			}
+		}
 	}
 }
-.mrt-fit--actions {
-	margin: 8px 16px 16px 16px;
-	display:flex;
-	align-items: center;
-	justify-content: center;
-	button {
-		width:160px;
-	}
-}
-.mrt-fit--process-ou {
-	margin: 0 16px 16px 16px;
+.process-ou {
+	--bg-color: #424242;
+	--border-color: hsla(0,0%,100%,.12);;
 	.overrides {
 		display:flex;
-		justify-content: flex-end;
+		justify-content: center;
 		align-items: baseline;
-		margin-bottom: 16px;
-		h3 {
-			color:#FF9800;
-		}
+		background-color:var(--bg-color);
+		padding:16px;
+		border: solid var(--border-color);
+		border-width: 0px 0px 1px 0px;
 		.param-override {
 			margin: 0 12px;
 			width:160px;
@@ -368,15 +380,26 @@ export default {
 	}
 	.top-panel {
 		display: flex;
-		margin:0 0 16px 0;
+		margin-bottom: 0px;
+
 		.strategy-graph {
+			padding: 32px 0;
+			background-color:var(--bg-color);
 			width: calc(100% - 300px);
 		}
 		.result {
 			width: 300px;
+			padding: 16px 0;
+			background-color:var(--bg-color);
+			border: solid var(--border-color);
+			border-width: 0 0 0 1px;
+			justify-content: space-evenly;
+			display: flex;
+			flex-direction: column;
+			font-weight: 300;
 			.fittings {
 				margin: 0px 8px 12px 16px;
-				background-color: rgba(0, 0, 0, 0.1);
+				background-color:var(--bg-color);
 				padding: 4px 8px;
 				border-radius: 2px;
 				h1 {
@@ -402,10 +425,12 @@ export default {
 						text-align: right;
 					}
 					&.header {
-						margin: 0 0 2px 0;
+						border-bottom: 1px solid var(--border-color);
+						padding: 2px 8px;
+						margin: 0 -8px 4px -8px;
 						label {
-							color:#FF9800;
-							font-size: 16px;
+							color:#fff;
+							font-size: 14px;
 							font-weight: 300;
 						}
 						> div {
@@ -417,8 +442,17 @@ export default {
 			}
 		}
 	}
+	h3 {
+		background-color:var(--bg-color);
+		padding: 16px 0 0 12px;
+		font-weight: 300;
+		border: solid var(--border-color);
+		border-width: 1px 0px 0px 0px;
+	}
 	.bottom-panel {
 		display:flex;
+		background-color:var(--bg-color);
+		padding: 16px 0;
 		.residual-graph {
 			width: calc(100% - 300px);
 		}
@@ -427,24 +461,18 @@ export default {
 		}
 	}
 }
+
 .fullscreen {
 	--bg-color: #424242;
 	--border-color: #757575;
+	padding:16px;
 	.overrides {
-		justify-content: center;
-		background-color:var(--bg-color);
-		padding:16px;
 		border: solid var(--border-color);
 		border-width: 1px 1px 1px 1px;
 		border-radius: 2px 2px 0 0;
-		margin-bottom: 0px;
 	}
-	.mrt-fit--process-ou {
-		padding-top:16px;
+	.process-ou {
 		h3 {
-			background-color:var(--bg-color);
-			padding: 16px 0 0 12px;
-			font-weight: 300;
 			border: solid var(--border-color);
 			border-width: 0 1px 0 1px;
 		}
@@ -453,39 +481,10 @@ export default {
 			border: solid var(--border-color);
 			border-width: 0 1px 1px 1px;
 			border-radius: 0 0 2px 2px;
-			padding: 16px 0;
 		}
 		.top-panel {
-			margin-bottom: 0px;
 			border: solid var(--border-color);
 			border-width: 0 1px 1px 1px;
-
-			.strategy-graph {
-				padding: 32px 0;
-				background-color:var(--bg-color);
-			}
-			.result {
-				padding: 16px 0;
-				background-color:var(--bg-color);
-				border: solid var(--border-color);
-				border-width: 0 0 0 1px;
-				justify-content: space-evenly;
-				display: flex;
-				flex-direction: column;
-				font-weight: 300;
-				.fittings {
-					background-color:var(--bg-color);
-					> div.header {
-						border-bottom: 1px solid var(--border-color);
-						padding: 2px 8px;
-						margin: 0 -8px 4px -8px;
-						label {
-							color:#fff;
-							font-size: 14px;
-						}
-					}
-				}
-			}
 		}
 	}
 }
