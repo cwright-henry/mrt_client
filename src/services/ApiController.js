@@ -59,24 +59,6 @@ export default {
     }).then(response => response.data)
   },
 
-  loadAv (ticker) {
-    return Api().get('/api/alphavantage', {
-      params: {
-        ticker: ticker
-      }
-    }).then(response => response.data)
-  },
-
-  loadInvest (curr_id, startDate, endDate) {
-    return Api().get('/api/investing', {
-      params: {
-        curr_id: curr_id,
-        startDate: startDate,
-        endDate: endDate
-      }
-    }).then(response => response.data)
-  },
-
   findDict (type) {
     return Api().get('/api/find-dict', {
       params: {

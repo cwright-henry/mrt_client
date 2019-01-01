@@ -34,12 +34,7 @@
 									dark>
 									<v-icon>more_vert</v-icon>
 								</v-btn>
-								<div class="mrt-drop-menu">
-									<p>Import Options</p>
-									<v-radio-group v-model="importInputA">
-										<v-radio color="orange" :value="item.value" :label="item.title" v-for="(item, i) in importTypes" :key="i"></v-radio>
-									</v-radio-group>
-								</div>
+								<mrtImportOptions :importDefault="importInputA" @change="setImportTypeA"/>
 							</v-menu>
 						</div>
 						<div class="import-timeseries">
@@ -67,12 +62,7 @@
 									dark>
 									<v-icon>more_vert</v-icon>
 								</v-btn>
-								<div class="mrt-drop-menu">
-									<p>Import Options</p>
-									<v-radio-group v-model="importInputB">
-										<v-radio color="orange" :value="item.value" :label="item.title" v-for="(item, i) in importTypes" :key="i"></v-radio>
-									</v-radio-group>
-								</div>
+								<mrtImportOptions :importDefault="importInputB" @change="setImportTypeB"/>
 							</v-menu>
 						</div>
 						<div class="import-timeseries">
@@ -115,6 +105,7 @@ import LibrarySearch from './ImportLibrary'
 import IndexSearch from './ImportIndex'
 import CryptoSearch from './ImportCrypto'
 import mrtLinechart from '@/components/LineChart'
+import mrtImportOptions from './ImportOptions'
 import {EventBus} from '@/events'
 
 export default {
@@ -140,19 +131,10 @@ export default {
 			fileName: '',
 
 			aggregator: 'diff',
-			importInputA: 'CommoditySearch',
+			importInputA: 'LibrarySearch',
 			imporMenuA: false,
-			importInputB: 'CommoditySearch',
-			imporMenuB: false,
-			importTypes: [
-				{title: 'Commodity', value: "CommoditySearch"},
-				{title: 'Crypto', value: "CryptoSearch"},
-				{title: 'CSV File', value: "CSV"},
-				{title: 'Currency', value: "CurrencySearch"},
-				{title: 'Equity', value: "TickerSearch"},
-				{title: 'Index', value: "IndexSearch"},
-				{title: 'My Library',value: "LibrarySearch"}
-			]
+			importInputB: 'LibrarySearch',
+			imporMenuB: false
 		}
 	},
 	components: {
@@ -163,7 +145,8 @@ export default {
 		LibrarySearch,
 		IndexSearch,
 		mrtLinechart,
-		CryptoSearch
+		CryptoSearch,
+		mrtImportOptions
 	},
 	computed: {
     dialog: {
@@ -223,6 +206,14 @@ export default {
 			EventBus.$emit('api-error', msg);  
 		},
 
+		setImportTypeA(type) {
+			this.importInputA = type
+		},
+
+		setImportTypeB(type) {
+			this.importInputB = type
+		},
+
 		calculateC() {
 			if(this.timeseriesA.length > 0 && this.timeseriesB.length > 0) {
 				const bucketsA = {}
@@ -275,9 +266,9 @@ export default {
 			this.seriesNameC = ''
 			this.fileName = ''
 			this.aggregator= 'diff'
-			this.importInputA = 'CommoditySearch'
+			this.importInputA = 'LibrarySearch'
 			this.imporMenuA = false
-			this.importInputB = 'CommoditySearch'
+			this.importInputB = 'LibrarySearch'
 			this.imporMenuB = false
 		}
 	}
