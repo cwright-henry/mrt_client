@@ -10,6 +10,10 @@
 <script>
 export default {
 	props: {
+		isOpen: {
+			type: Boolean,
+			default: false
+		},
 		importDefault: {
 			type: String,
 			default: 'LibrarySearch'
@@ -48,7 +52,7 @@ export default {
 	},
 	methods: {
 		isSecretCode(e) {
-			if(e.ctrlKey) {
+			if(e.ctrlKey && this.isOpen) {
 				if(e.key === "i") {
 					this.importTypes[5].hidden = !this.importTypes[5].hidden
 					if(this.importTypes[5].hidden) {

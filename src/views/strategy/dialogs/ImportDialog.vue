@@ -34,7 +34,7 @@
 									dark>
 									<v-icon>more_vert</v-icon>
 								</v-btn>
-								<mrtImportOptions :importDefault="importInputA" @change="setImportTypeA"/>
+								<mrtImportOptions :isOpen="imporMenuA" :importDefault="importInputA" @change="setImportTypeA"/>
 							</v-menu>
 						</div>
 						<div class="import-timeseries">
@@ -62,7 +62,7 @@
 									dark>
 									<v-icon>more_vert</v-icon>
 								</v-btn>
-								<mrtImportOptions :importDefault="importInputB" @change="setImportTypeB"/>
+								<mrtImportOptions :isOpen="imporMenuB" :importDefault="importInputB" @change="setImportTypeB"/>
 							</v-menu>
 						</div>
 						<div class="import-timeseries">
