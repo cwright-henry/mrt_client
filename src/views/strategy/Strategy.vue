@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import mrtCardlist from '@/components/CardList'
+import mrtCardlist from './CardList'
 import mrtCsvImport from './dialogs/ImportCsvDialog'
 import mrtImport from './dialogs/ImportDialog'
 import debounce from 'lodash/debounce'

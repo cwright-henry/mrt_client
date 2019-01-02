@@ -2,7 +2,7 @@
 	<v-select
 		prepend-icon="home"
 		v-model="ticker"
-		:items="items"
+		:items="indexes"
 		:loading="loading"
 		:disabled="loading"
 		color="blue lighten-2"
@@ -19,6 +19,7 @@
 
 <script>
 import ApiController from '@/services/ApiController'
+import {mapState} from 'vuex'
 
 export default {
 	props: {
@@ -32,6 +33,9 @@ export default {
 		ticker: '',
 		loading: false
 	}),
+	computed: {
+		...mapState('dictionary', ['indexes'])
+	},
 	watch: {
 		clear() {
 			this.ticker = ''
@@ -39,9 +43,6 @@ export default {
 	},
 	activated() {
 		this.ticker = ''
-	},
-	async mounted() {
-		this.items = await ApiController.findDict('Index')
 	},
 	methods: {
 		async findSeries(value) {

@@ -2,7 +2,7 @@
 	<v-select
 		prepend-icon="home"
 		v-model="ticker"
-		:items="items"
+		:items="cryptos"
 		:loading="loading"
 		item-text="name"
     item-value="curr_id"
@@ -18,6 +18,7 @@
 
 <script>
 import ApiController from '@/services/ApiController'
+import {mapState} from 'vuex'
 
 export default {
 	props: {
@@ -27,10 +28,12 @@ export default {
 		}
 	},
 	data: () => ({
-		items: [],
 		ticker: '',
 		loading: false
 	}),
+	computed: {
+		...mapState('dictionary', ['cryptos'])
+	},
 	watch: {
 		clear() {
 			this.ticker = ''
@@ -38,9 +41,6 @@ export default {
 	},
 	activated() {
 		this.ticker = ''
-	},
-	async mounted() {
-		this.items = await ApiController.findDict('Crypto');
 	},
 	methods: {
 		async findSeries(value) {

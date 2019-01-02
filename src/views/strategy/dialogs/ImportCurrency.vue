@@ -3,7 +3,7 @@
 		prepend-icon="attach_money"
 		v-model="ticker"
 		:loading="loading"
-		:items="items"
+		:items="currencies"
 		item-text="name"
     item-value="curr_id"
 		color="blue lighten-2"
@@ -18,6 +18,7 @@
 
 <script>
 import ApiController from '@/services/ApiController'
+import {mapState} from 'vuex'
 
 export default {
 	props: {
@@ -27,10 +28,12 @@ export default {
 		}
 	},
 	data: () => ({
-		items: [],
 		ticker: '',
 		loading: false
 	}),
+	computed: {
+		...mapState('dictionary', ['currencies'])
+	},
 	activated() {
 		this.ticker = ''
 	},
@@ -38,9 +41,6 @@ export default {
 		clear() {
 			this.ticker = ''
 		}
-	},
-	async mounted() {
-		this.items = await ApiController.findDict('Curncy')
 	},
 	methods: {
 		async findSeries(value) {

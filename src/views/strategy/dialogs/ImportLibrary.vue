@@ -3,7 +3,7 @@
 		prepend-icon="home"
 		v-model="ticker"
 		:loading="loading"
-		:items="items"
+		:items="library"
 		item-text="name"
     item-value="_id"
 		hide-details
@@ -16,6 +16,7 @@
 
 <script>
 import ApiController from '@/services/ApiController'
+import {mapState} from 'vuex'
 
 export default {
 	props: {
@@ -25,25 +26,19 @@ export default {
 		}
 	},
 	data: () => ({
-		items: [],
 		ticker: '',
 		loading: false
 	}),
+	computed: {
+		...mapState('dictionary', ['library'])
+	},
 	watch: {
-		async clear(isOpening) {
-			if(isOpening) {
-				this.loading = true;
-				this.items = await ApiController.findDict('library')
-				this.loading = false;
-			}
+		clear() {
 			this.ticker = ''
 		}
 	},
 	activated() {
 		this.ticker = ''
-	},
-	async mounted() {
-		this.items = await ApiController.findDict('library')
 	},
 	methods: {
 		async findSeries(id) {

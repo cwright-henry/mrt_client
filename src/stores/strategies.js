@@ -249,6 +249,8 @@ export default {
 					strategy: strategy,
 					isUpload: true
 				})
+
+				return strategy;
 			}
 			finally {
 				// TODO

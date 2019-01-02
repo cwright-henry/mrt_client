@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import mrtCard from '@/components/Card'
+import mrtCard from './Card'
 import mrtInfiniteScroll from '@/components/InfiniteScroll'
 import {mapState} from 'vuex'
 
@@ -52,6 +52,7 @@ export default {
 				id: id
 			}
 			this.$store.dispatch('strategies/remove', payload)
+			this.$store.commit('dictionary/removeLibrary', payload)
 		}
 	}
 }

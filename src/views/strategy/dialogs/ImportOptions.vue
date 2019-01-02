@@ -33,12 +33,10 @@ export default {
 		}
 	},
 	activated() {
-		window.addEventListener("keypress", e => {
-      this.isSecretCode(e)
-    });
+		window.addEventListener("keypress", this.isSecretCode, {passive: true});
 	},
 	deactivated() {
-		window.removeEventListener("keypress");
+		window.removeEventListener("keypress", this.isSecretCode, {passive: true});
 	},
 	computed: {
     type: {

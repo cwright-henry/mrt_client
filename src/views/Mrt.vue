@@ -26,7 +26,10 @@ export default {
     mrtToolbar,
     mrtNavigation,
     mrtFooter
-  }
+	},
+	mounted() {
+		this.$store.dispatch('dictionary/load')
+	}
 }
 </script>
 

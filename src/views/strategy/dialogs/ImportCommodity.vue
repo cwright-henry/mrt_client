@@ -4,7 +4,7 @@
 		v-model="ticker"
 		:loading="loading"
 		:disabled="loading"
-		:items="items"
+		:items="commodities"
 		item-text="name"
     item-value="curr_id"
 		color="blue lighten-2"
@@ -20,6 +20,7 @@
 
 <script>
 import ApiController from '@/services/ApiController'
+import {mapState} from 'vuex'
 
 export default {
 	props: {
@@ -29,10 +30,12 @@ export default {
 		}
 	},
 	data: () => ({
-		items: [],
 		loading: false,
 		ticker: ''
 	}),
+	computed: {
+		...mapState('dictionary', ['commodities'])
+	},
 	watch: {
 		clear() {
 			this.ticker = ''
@@ -40,9 +43,6 @@ export default {
 	},
 	activated() {
 		this.ticker = ''
-	},
-	async mounted() {
-		this.items = await ApiController.findDict('Cmdty')
 	},
 	methods: {
 		async findSeries(value) {

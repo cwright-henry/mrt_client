@@ -240,14 +240,15 @@ export default {
 			}
 		},
 
-		upload() {
+		async upload() {
 			this.uploading = true;
 			try {
-				this.$store.dispatch('strategies/upload', {
+				const strategy = await this.$store.dispatch('strategies/upload', {
 					fileName: this.fileName,
 					data: this.timeseriesC,
 					source: 'COMBO'
 				});
+				this.$store.commit('dictionary/addLibrary', strategy)
 				this.reset();
 				this.$emit('close')
 				window.scrollTo(0,0);
