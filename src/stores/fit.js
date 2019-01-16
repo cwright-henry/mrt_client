@@ -4,13 +4,14 @@ import {closestNeighbour} from '@/utils/sorting'
 
 /**
  * All data related to OU fitting. All components
- * associated with OU fitting send there modifications here and
+ * associated with OU fitting commit thier modifications here and
  * all interested components watch for change using mapState utility
  */
 export default {
 	namespaced: true,
 
 	state: {
+		// Server data
 		strategy: {
 			ts: {
 				data: []
@@ -18,6 +19,8 @@ export default {
 			fit: {}
 		},
 		sims: [],
+
+		// Notifications
 		isLoadingTS: false,
 		isFittingTS: false,
 		isSavingFit: false,
@@ -33,7 +36,8 @@ export default {
 		simValue: null,
 		simDate: null,
 		simHorizon: 0,
-		simSeed: 123456789
+		simSeed: 123456789,
+		simSliderValue: null
 	},
 
 	mutations: {
@@ -59,6 +63,7 @@ export default {
 
 		setSigma(state, sigma) {
 			state.userSigma = sigma;
+			console.log(state.userSigma)
 		},
 
 		setTheta(state, theta) {
@@ -84,12 +89,22 @@ export default {
 		setStrategy(state, strategy) {
 			state.strategy = strategy;
 
-			// Set the transient start and end dates
+			// Reset the transient data
 			state.startDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts.data[0][0] : state.strategy.fit.start_date;
 			state.endDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts.data[state.strategy.ts.data.length - 1][0] : state.strategy.fit.end_date;
 			state.userKappa = null;
 			state.userSigma = null;
 			state.userTheta = null;
+			state.selectedSim = null;
+			state.simValue = null;
+			state.simDate = null;
+			state.simHorizon = 0;
+			state.simSeed = 123456789;
+			state.simSliderValue = state.endDate;
+		},
+
+		setStrategyName(state, name) {
+			state.strategy.name = name;
 		},
 
 		updateFit(state, fit) {
@@ -182,6 +197,9 @@ export default {
 					commit('updateFit', fit)
 				}
 			}
+			catch(error) {
+				EventBus.$emit('api-error', 'Fit.fit ' + error.response.data.msg);  
+			}
 			finally {
 				commit('isFittingTS', false)
 			}
@@ -203,7 +221,7 @@ export default {
 					commit('setKappa', params.kappa)	
 				}
 				if(params.sigma) {
-					commit('setKappa', params.sigma)	
+					commit('setSigma', params.sigma)	
 				}
 				if(params.theta) {
 					commit('setTheta', params.theta)	
@@ -233,8 +251,8 @@ export default {
 			try {
 				const payload = {
 					kappa: params.kappa || state.userKappa || state.strategy.fit.kappa,
+					sigma: params.sigma || state.userSigma || state.strategy.fit.sigma,
 					theta: params.theta || state.userTheta || state.strategy.fit.theta,
-					sigma: params.sigma || state.userTheta || state.strategy.fit.sigma,
 					x_0: params.value || state.simValue,
 					x_0_date: params.date || state.simDate,
 					nsteps: params.horizon || state.horizon,
@@ -275,8 +293,7 @@ export default {
 				}
 			}
 			catch(error) {
-				console.log(error.response.data.msg)
-				EventBus.$emit('api-error', 'ApiController.scenarios ' + error.response.data.msg);  
+				EventBus.$emit('api-error', 'Fit.loadSims ' + error.response.data.msg);  
 			}
 			finally {
 				commit('isLoadingSims', false)

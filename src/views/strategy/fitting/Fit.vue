@@ -3,7 +3,7 @@
 		<div class="mrt-fit--details">
 			<div class="selection">
 				<v-text-field
-					v-model="strategy.name"
+					v-model="name"
 					@keyup.native.enter="upload"
 					label="Name"
 					box
@@ -398,7 +398,15 @@ export default {
 	},
 	computed: {
 		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isLoadingSims','isSavingFit', 'userKappa', 'userSigma', 'userTheta', 'sims', 'selectedSim']),
-		...mapGetters('strategies', ['findStrategy'])
+		...mapGetters('strategies', ['findStrategy']),
+		name: {
+			get () {
+        return this.$store.state.fit.strategy.name
+      },
+      set (value) {
+        this.$store.commit('fit/setStrategyName', value);
+      }
+		}
 	},
 	methods: {
 		/**
@@ -506,6 +514,7 @@ export default {
 				theta: this.theta ? parseFloat(this.theta) : null
 			}
 			await this.$store.dispatch('fit/fixFit', params);
+			await this.$store.dispatch('fit/loadSims', {})
 		},
 
 		horizonChange() {
