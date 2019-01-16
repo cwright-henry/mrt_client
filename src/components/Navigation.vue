@@ -1,5 +1,5 @@
 <template>
-	<v-navigation-drawer v-model="dialog" fixed clipped app mini-variant>
+	<v-navigation-drawer v-model="dialog" fixed clipped app mini-variant class="mrt-navigation">
 		<v-list dense>
 			<router-link to="/library">
 				<div class="mrt-menu--item">
@@ -73,10 +73,17 @@ export default {
 </script>
 
 <style lang="less">
+	.v-list {
+		background: transparent !important;
+	}
+	.mrt-navigation {
+		border-radius: 2px;
+		background-color: #546E7A !important;
+	}
 	.router-link-active .mrt-menu--item {
-		color:var(--blue);
+		color:#AEEA00;
 		i {
-			color:var(--blue);
+			color:#AEEA00;
 		}
 	}
 	.router-link-active .v-badge__badge {

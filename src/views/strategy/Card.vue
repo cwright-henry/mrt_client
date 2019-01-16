@@ -80,6 +80,7 @@ export default {
 	flex-direction: row;
 	flex-wrap: wrap;
 	padding:16px;
+	background-color: #455A64;
 
 	.mrt-card--graphs {
 		width: calc(100%);

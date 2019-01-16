@@ -1,26 +1,39 @@
-
 import ApiController from '@/services/ApiController'
+import { EventBus } from '@/events.js';
+import {closestNeighbour} from '@/utils/sorting'
 
+/**
+ * All data related to OU fitting. All components
+ * associated with OU fitting send there modifications here and
+ * all interested components watch for change using mapState utility
+ */
 export default {
 	namespaced: true,
 
 	state: {
 		strategy: {
-			ts: {},
+			ts: {
+				data: []
+			},
 			fit: {}
 		},
-		sims: {},
+		sims: [],
 		isLoadingTS: false,
 		isFittingTS: false,
 		isSavingFit: false,
 		isLoadingSims: false,
 
-		// User defined transient data
+		// User data
 		startDate: null,
 		endDate: null,
 		userKappa: null,
 		userSigma: null,
-		userTheta: null
+		userTheta: null,
+		selectedSim: null,
+		simValue: null,
+		simDate: null,
+		simHorizon: 0,
+		simSeed: 123456789
 	},
 
 	mutations: {
@@ -40,10 +53,32 @@ export default {
 			state.isSavingFit = status;
 		},
 
-		setUserParameters(state, params) {
-			state.userKappa = params.kappa || null;
-			state.userSigma = params.sigma || null;
-			state.userTheta = params.theta || null;
+		setKappa(state, kappa) {
+			state.userKappa = kappa;
+		},
+
+		setSigma(state, sigma) {
+			state.userSigma = sigma;
+		},
+
+		setTheta(state, theta) {
+			state.userTheta = theta;
+		},
+
+		setSimValue(state, value) {
+			state.simValue = value;
+		},
+
+		setSimDate(state, date) {
+			state.simDate = date;
+		},
+
+		setSimHorizon(state, horizon) {
+			state.horizon = horizon;
+		},
+
+		setSimSeed(state, seed) {
+			state.simSeed = seed;
 		},
 
 		setStrategy(state, strategy) {
@@ -62,7 +97,22 @@ export default {
 		},
 
 		setSims(state, sims) {
+			state.selectedSim = sims[0].id
 			state.sims = sims
+		},
+
+		setSelectedSim(state, simId) {
+			state.selectedSim = simId
+		},
+
+		setNextSim(state) {
+			let currentindex = state.sims.findIndex(elm => elm.id === state.selectedSim)
+			if(currentindex < state.sims.length - 1) {
+				state.selectedSim = state.sims[currentindex + 1].id
+			}
+			else {
+				state.selectedSim = state.sims[0].id
+			}
 		},
 
 		setDateRange(state, dates) {
@@ -149,7 +199,15 @@ export default {
 					theta: params.theta
 				});
 
-				commit('setUserParameters', params)
+				if(params.kappa) {
+					commit('setKappa', params.kappa)	
+				}
+				if(params.sigma) {
+					commit('setKappa', params.sigma)	
+				}
+				if(params.theta) {
+					commit('setTheta', params.theta)	
+				}
 				commit('updateFit', fit)
 			}
 			finally {
@@ -174,15 +232,51 @@ export default {
 			commit('isLoadingSims', true)
 			try {
 				const payload = {
-					kappa: params.kappa || state.strategy.fit.kappa,
-					theta: params.theta || state.strategy.fit.theta,
-					sigma: params.sigma || state.strategy.fit.sigma,
-					x_0: params.value,
-					x_0_date: params.date
+					kappa: params.kappa || state.userKappa || state.strategy.fit.kappa,
+					theta: params.theta || state.userTheta || state.strategy.fit.theta,
+					sigma: params.sigma || state.userTheta || state.strategy.fit.sigma,
+					x_0: params.value || state.simValue,
+					x_0_date: params.date || state.simDate,
+					nsteps: params.horizon || state.horizon,
+					seed: params.seed || state.simSeed
 				}
+
+				/* Special case to match end of series */
+				if(payload.nsteps === '-1') {
+					const point = closestNeighbour(state.strategy.ts.data, payload.x_0_date)
+					const index = state.strategy.ts.data.findIndex(elm => elm[0] === point[0])
+					payload.nsteps = parseInt((state.strategy.ts.data.length - index) * 1.03895)
+				}
+
 				const sims = await ApiController.scenarios(payload);
 
 				commit('setSims', sims)
+
+				if(params.kappa) {
+					commit('setKappa', params.kappa)	
+				}
+				if(params.sigma) {
+					commit('setSigma', params.sigma)	
+				}
+				if(params.theta) {
+					commit('setTheta', params.theta)	
+				}
+				if(params.value) {
+					commit('setSimValue', params.value)	
+				}
+				if(params.date) {
+					commit('setSimDate', params.date)	
+				}
+				if(params.horizon) {
+					commit('setSimHorizon', params.horizon)	
+				}
+				if(params.seed) {
+					commit('setSimSeed', params.seed)	
+				}
+			}
+			catch(error) {
+				console.log(error.response.data.msg)
+				EventBus.$emit('api-error', 'ApiController.scenarios ' + error.response.data.msg);  
 			}
 			finally {
 				commit('isLoadingSims', false)

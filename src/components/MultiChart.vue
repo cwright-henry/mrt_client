@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ChartSlider from '../utils/chartslider'
+import ChartSlider from '../utils/dualslider'
 const options = (vm) => {
 	return {
 		chart: {

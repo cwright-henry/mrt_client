@@ -1,30 +1,19 @@
 <template>
-	<highcharts :options="options" :ts="ts" :name="name" ref="simschart"></highcharts>
+	<highcharts :options="options" ref="simschart"></highcharts>
 </template>
 
 <script>
 import {tsExtremes} from '@/utils/sorting'
-import { EventBus } from '@/events.js'
 import {mean} from '@/utils/stats'
+import SimSlider from '@/utils/simslider'
+import {getPlotBand, getPlotLine} from '@/utils/chart'
+import {mapState} from 'vuex'
 
-const getPlotBand = (from, to) => {
-	return  {
-		from,
-		to,
-		color: 'rgba(76, 175, 80, 0.15)',
-		id: 'plot-band'
-	}
-}
+const MIN_PLOTLINE_ID = 'SIM_MIN_PLOTLINE'
+const MAX_PLOTLINE_ID = 'SIM_MAX_PLOTLINE'
+const PLOTBAND_ID = 'SIM_PLOTBAND'
 
-const getPlotLine = (value) => {
-	return {
-		value,
-		color: '#00E676',
-		width: 2,
-		id:'plot-line',
-		zIndex:999
-	}
-}
+
 const options = (vm) => {
 	return {
 		chart: {
@@ -42,12 +31,13 @@ const options = (vm) => {
 			title: {
 				text: null
 			},
-			crosshair: true
+			crosshair: false
 		},
 		yAxis: {
 			title: {
 				text: null
-			}
+			},
+			opposite: true
 		},
 		legend: {
 			enabled: false
@@ -59,16 +49,9 @@ const options = (vm) => {
 			series: {
 				cursor: 'pointer',
 				zIndex: 1,
-				point: {
-					events: {
-						click: function () {
-							let data = {
-								date: this.category,
-								value: this.y
-							}
-							vm.selectPoint(data)
-							vm.$emit('fetchsims', data)
-						}
+				states: {
+					hover: {
+						enabled: false
 					}
 				}
 			},
@@ -76,6 +59,10 @@ const options = (vm) => {
 				fillColor: '#00B0FF',
 				color: '#FFFFFF',
 				lineWidth: 0.5
+			},
+			line: {
+				lineWidth: 0.5,
+				color:'#CDDC39'
 			}
 		}
 	}
@@ -86,122 +73,124 @@ export default {
 		return {
 			options: options(this),
 			average: 0,
-			secondaries: []
+			secondaries: [],
+			simSlider: null
 		}
 	},
 	props: {
-		ts: {
-			type: Array,
-			default: () => {
-				return []
-			}
-		},
-		name: {
-			type: String,
-			default: ''
-		},
 		height: {
 			type: Number,
-			default: 220
+			default: 280
 		},
 		backgroundColor: {
 			type: String,
 			default: 'rgba(0, 0, 0, 0.0)'
 		}
 	},
+	computed: {
+		...mapState('fit', ['strategy', 'sims', 'startDate', 'endDate', 'selectedSim', 'isLoadingSims'])
+	},
 	watch: {
-		ts() {
+		'strategy.ts'() {
 			this.update()
+		},
+		selectedSim(val) {
+			this.drawSim()
+		},
+		startDate() {
+			this.drawSelectedArea()
+		},
+		endDate() {
+			this.drawSelectedArea()
 		}
 	},
 	mounted() {
-		this.update()
-
-		EventBus.$on('toggleSpark', (data) => {
-			this.toggleSpark(data)
-    });
+		this.simSlider = new SimSlider(this, this.$refs.simschart.chart)
 	},
 	methods: {
-		update() {
+		/**
+		 * Update is called when a new ts has been loaded through watch
+		 * 
+		 * 1. Show main timeseries
+		 * 2. Set the initial position of slider
+		 * 3. Load the sims for this timeseries
+		 */
+		async update() {
 			const chart = this.$refs.simschart.chart
-			if(this.ts.length) {
+			if(this.strategy.ts.data.length) {
 				this.clearSeries()
-				this.average = mean(this.ts)
+				this.average = mean(this.strategy.ts.data)
 				chart.addSeries({
-					type: 'area',
-					data: this.ts,
-					name: this.name,
-					threshold: this.average
+					type: 'line',
+					data: this.strategy.ts.data,
+					name: this.strategy.name,
+					threshold: this.average,
+					color: '#2196F3',
+					id: 'main-chart',
+					lineWidth: 0.8,
 				});
+				let extremes = tsExtremes(this.strategy.ts.data)
+
+				// Must call setPos after series has been added to chart - hmmmm makes sense!!
+				this.simSlider.setPos(extremes.max, extremes.min, extremes.max)
+				this.drawSelectedArea()
 				chart.reflow()
 			}
 		},
 
-		/**
-		 * Keep array of sparks
-		 * add / remove as they request come in
-		 * Remove all chart is updated
-		 */
-		toggleSpark(sparkLine) {
+		drawSim() {
 			const chart = this.$refs.simschart.chart
 			const existing = chart.get('sim-sparkline')
 			if(existing) {
 				existing.remove();
 			}
-			chart.addSeries({
-				type: 'area',
-				id: 'sim-sparkline',
-				data: sparkLine.ts,
-				threshold: this.average,
-				fillColor: '#0277BD',
-				zIndex: 0,
-				states: {
-					hover: {
-						enabled: false
-					}
-				}
-			});
-		},
-
-		selectPoint(data) {
-			const chart = this.$refs.simschart.chart
-			const primary = []
-			const secondary = []
-
-			this.clearSeries()
-			for(let i = 0; i < this.ts.length; i++) {
-				if(this.ts[i][0] <= data.date) {
-					primary.push(this.ts[i])
-				}
-				else {
-					secondary.push(this.ts[i])
+			for(let i = 0; i < this.sims.length; i++) {
+				if(this.selectedSim == this.sims[i].id) {
+					chart.addSeries({
+						type: 'line',
+						id: 'sim-sparkline',
+						data: this.sims[i].data
+					});
+					break;
 				}
 			}
-			chart.xAxis[0].addPlotLine(getPlotLine(data.date))
-			const extremes = tsExtremes(secondary)
-			chart.xAxis[0].addPlotBand(getPlotBand(extremes.min, extremes.max))
-			chart.addSeries({
-				type: 'area',
-				data: primary,
-				threshold:this.average
-			});
-			chart.addSeries({
-				type: 'area',
-				data: secondary,
-				fillColor:'rgba(0, 0, 0, 0.0)',
-				color: '#BDBDBD',
-				threshold: this.average
-			});
+		},
+
+		drawSelectedArea() {
+			const chart = this.$refs.simschart.chart
+			chart.xAxis[0].removePlotLine(MIN_PLOTLINE_ID)
+			chart.xAxis[0].removePlotLine(MAX_PLOTLINE_ID)
+			chart.xAxis[0].removePlotBand(PLOTBAND_ID)
+			chart.xAxis[0].addPlotLine(getPlotLine(this.startDate, MIN_PLOTLINE_ID, 'sim-chart'))
+			chart.xAxis[0].addPlotLine(getPlotLine(this.endDate, MAX_PLOTLINE_ID, 'sim-chart'))
+			chart.xAxis[0].addPlotBand(getPlotBand(this.startDate, this.endDate, PLOTBAND_ID))
 		},
 
 		clearSeries() {
-      const chart = this.$refs.simschart.chart
+			const chart = this.$refs.simschart.chart
+			chart.xAxis[0].removePlotLine(MIN_PLOTLINE_ID)
+			chart.xAxis[0].removePlotLine(MAX_PLOTLINE_ID)
+			chart.xAxis[0].removePlotBand(PLOTBAND_ID)
+
       while(chart.series.length > 0) {
         chart.series[0].remove(false);
 			}
-			chart.xAxis[0].removePlotBand('plot-band');
-			chart.xAxis[0].removePlotLine('plot-line');
 		}
 	}
 }
 </script>
+
+<style>
+.axis-label {
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	display: inline-block;
+	overflow: hidden;
+	cursor: ew-resize;
+	background-color:#E91E63;
+	position: relative;
+	top:6px;
+	left:108px;
+}
+</style>

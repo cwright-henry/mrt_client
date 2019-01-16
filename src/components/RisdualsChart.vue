@@ -17,12 +17,12 @@ const getPlotBand = (from, to) => {
 const getPlotLine = (value, type) => {
 	return {
 		value,
-		color: '#FF9800',
+		color: '#AEEA00',
 		width: 0.5,
 		label: {
 			align:'center',
 			useHTML: true,
-			text: `<span class="axis-label ${type}"></span>`
+			text: `<span class="residual-axis-label ${type}"></span>`
 		},
 		id:`${type}-plotline`,
 		zIndex:999
@@ -153,14 +153,14 @@ export default {
 </script>
 
 <style>
-.axis-label {
+.residuals-axis-label {
 	width: 0px;
 	height: 0px;
 	border-radius: 50%;
 	display: inline-block;
 	overflow: hidden;
 	cursor: ew-resize;
-	background-color: #FF9800;
+	background-color: #AEEA00;
 	position: relative;
 	top:6px;
 	left:158px;

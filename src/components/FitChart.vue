@@ -47,10 +47,10 @@ const options = (vm) => {
 		},
 		navigator: {
 			maskFill: 'rgba(255, 152, 0, 0.05)',
-			outlineColor: '#FF9800',
+			outlineColor: '#AEEA00',
 			outlineWidth: 0.5,
 			handles: {
-				borderColor: '#FF9800',
+				borderColor: '#AEEA00',
 				lineWidth: 0.5
 			},
 			series: {
@@ -84,7 +84,7 @@ const options = (vm) => {
 				}
 			},
 			area: {
-				fillColor: '#00B0FF',
+				fillColor: '#1976D2',
 				color: '#FFFFFF',
 				lineWidth: 0.5,
 			},

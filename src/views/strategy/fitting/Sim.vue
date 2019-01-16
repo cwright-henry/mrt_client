@@ -79,10 +79,11 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 import mrtSimChart from '@/components/SimsChart'
 import mrtSimsSparklineChart from '@/components/SimsSparklineChart'
 import mrtFitProcess from '@/components/fit/Fit'
+import {tsExtremes} from '@/utils/sorting'
 
 export default {
 	data() {
@@ -103,9 +104,35 @@ export default {
 		mrtFitProcess
 	},
 	computed: {
-		...mapState('fit', ['strategy', 'sims'])
+		...mapState('fit', ['strategy', 'sims']),
+		...mapGetters('strategies', ['findStrategy'])
+	},
+	activated() {
+		this.load()
 	},
 	methods: {
+		/**
+		 * Look in cache, if not there then load strategy and
+		 * Async load all stratgies
+		 */
+		async load() {
+			if(this.id) {
+				const strategy = this.findStrategy(this.id)
+				if(strategy) {
+					await this.$store.dispatch('fit/setStrategy', strategy)
+				}
+				else {
+					await this.$store.dispatch('fit/loadStrategy', {id: this.id})
+					this.$store.dispatch('strategies/load', {})
+				}
+			}
+			const extremes = tsExtremes(this.strategy.ts.data)
+			await this.$store.dispatch('fit/loadSims', {
+				value: extremes.maxValue,
+				date: extremes.max
+			})
+		},
+
 		async loadSims(params) {
 			this.loading = true
 			await this.$store.dispatch('fit/loadSims', params)

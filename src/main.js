@@ -9,14 +9,14 @@ import './registerServiceWorker'
 import Highcharts from 'highcharts'
 import HighchartsVue from 'highcharts-vue'
 import stockInit from 'highcharts/modules/stock'
-import histogramBellcurve from 'highcharts/modules/histogram-bellcurve'
+import boost from 'highcharts/modules/boost'
 import theme from './components/charts/theme'
 
 import fullscreen from 'vue-fullscreen'
 Vue.use(fullscreen)
 
 stockInit(Highcharts)
-histogramBellcurve(Highcharts)
+boost(Highcharts)
 
 Highcharts.createElement('link', {
 	href: 'https://fonts.googleapis.com/css?family=Unica+One',

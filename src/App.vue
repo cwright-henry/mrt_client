@@ -99,8 +99,21 @@ export default {
     --orange: #FFA726;
     --green: #00E676;
     --error: #EF5350;
-    --light-gray: rgba(255, 255, 255, 0.7);
-  }
+		--light-gray: rgba(255, 255, 255, 0.7);
+		
+		/* Application theme colors */
+		--color-primary: #37474F;
+		--color-secondary: #607D8B;
+		--color-teriatry: #263238;
+	}
+	.theme--dark.application {
+		background-color:#78909C;
+	}
+
+	.theme--dark.v-toolbar {
+		background-color:var(--color-primary);
+	}
+
   [v-cloak] {
      display: none;
   }

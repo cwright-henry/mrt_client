@@ -2,7 +2,7 @@
 	<div>
 		<transition-group name="list" tag="ul">
 			<li v-for="strategy in strategies" :key="`${strategy._id}`" class="mb-4 mt-3">
-				<v-card>
+				<v-card style="background-color: #455A64;">
 					<v-toolbar dense flat>
 						<v-toolbar-title class="mrt--header-color">{{strategy.name}}</v-toolbar-title>
 						<v-spacer></v-spacer>

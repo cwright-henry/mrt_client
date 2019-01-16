@@ -1,27 +1,49 @@
 <template>
-	<div class="mrt-simulation elevation-2"  @click="toggleSparkLine">
-		<div class="mrt-simulation--sparkline">
-			<highcharts :options="options" :ts="ts" :id="id" ref="sparkchart"></highcharts>
+	<div class="mrt-simulation" @click="toggleSparkLine" :class="isSelected ? 'selected' : ''">
+		<div class="stats">
+			<div class="stat">
+				<label>Min.</label>
+				<span>{{min | number}}</span>
+			</div>
+			<div class="stat">
+				<label>Max.</label>
+				<span>{{max | number}}</span>
+			</div>
+			<div class="stat">
+				<label>Mean</label>
+				<span>{{mean | number}}</span>
+			</div>
+			<div class="stat">
+				<label>Std.</label>
+				<span>{{std | number}}</span>
+			</div>
+		</div>
+		<div class="graph">
+			<highcharts :options="options" ref="sparkchart"></highcharts>
 		</div>
 	</div>
 </template>
 
 <script>
 import { EventBus } from '@/events.js';
-import {mean} from '@/utils/stats'
+import {stats} from '@/utils/stats'
 
 const options = (vm) => {
 	return {
 		chart: {
 			height: vm._props.height,
 			width: vm._props.width,
-			backgroundColor: vm._props.backgroundColor
+			backgroundColor: vm._props.backgroundColor,
+			margin:0
 		},
 		title: {
 			text: null
 		},
 		credits: {
 			enabled: false
+		},
+		boost: {
+			useGPUTranslations: true
 		},
 		xAxis: {
 			labels: {
@@ -47,6 +69,8 @@ const options = (vm) => {
 			title: {
 				text: null
 			},
+			gridLineColor: '#B0BEC5',
+			gridLineWidth: '0.5px',
 			tickPositions: [0]
 		},
 		legend: {
@@ -69,6 +93,11 @@ const options = (vm) => {
 				negativeColor: '#FFFFFF',
 				color: '#FFFFFF',
 				lineWidth: 0.5,
+			},
+			spline: {
+				boostThreshold: 1,
+				lineWidth: 0.5,
+				color: '#CDDC39'
 			}
 		}
 	}
@@ -78,14 +107,20 @@ export default {
 	data() {
 		return {
 			options: options(this),
-			clicked: false
+			clicked: false,
+			min:0,
+			max:0,
+			mean:0,
+			std:0
 		}
 	},
 	props: {
-		ts: {
-			type: Array,
+		sim: {
+			type: Object,
 			default: () => {
-				return []
+				return {
+					data:[]
+				}
 			}
 		},
 		id: {
@@ -94,19 +129,23 @@ export default {
 		},
 		height: {
 			type: Number,
-			default: 60
+			default: 50
 		},
 		width: {
 			type: Number,
-			default: 150
+			default: 180
 		},
 		backgroundColor: {
 			type: String,
-			default: 'rgba(0,0,0, 0.1)'
+			default: 'transparent'
+		},
+		isSelected: {
+			type: Boolean,
+			default: false
 		}
 	},
 	watch: {
-		ts() {
+		sim() {
 			this.update()
 		}
 	},
@@ -121,13 +160,18 @@ export default {
 		},
 
 		draw() {
-			if(this.ts.length) {
+			if(this.sim.data.length) {
 				const chart = this.$refs.sparkchart.chart
 				this.clearSeries();
+				const statistics = stats(this.sim.data)
+				this.min = statistics.min
+				this.max = statistics.max
+				this.mean = statistics.mean
+				this.std = statistics.std
 				chart.addSeries({
-					type: 'area',
-					data: this.ts,
-					threshold: mean(this.ts),
+					type: 'spline',
+					data: this.sim.data,
+					threshold: this.mean,
 				});
 				chart.reflow();
 				this.clicked = false
@@ -143,13 +187,7 @@ export default {
 		},
 
 		toggleSparkLine() {
-			this.clicked = !this.clicked;
-			const payLoad = {
-				id: this.id,
-				ts: this.ts,
-				show: this.clicked
-			}
-			EventBus.$emit('toggleSpark', payLoad);
+			this.$store.commit('fit/setSelectedSim', this.sim.id);
 		}
 	}
 }
@@ -158,6 +196,36 @@ export default {
 <style scoped lang="less">
 .mrt-simulation {
 	border-radius: 2px;
+	border:1px solid #37474F;
 	cursor: pointer;
+	margin: 12px 24px;
+	.stats {
+		display: flex;
+		justify-content: space-between;
+		background-color: #37474F;
+		padding:4px 8px;
+		.stat {
+			display: flex;
+			flex-direction: column;
+			label {
+				color: var(--light-gray);
+				font-size: 11px;
+			}
+			span {
+				font-size: 11px;
+				min-height: 18px;
+			}
+		}
+	}
+	.graph {
+		padding:8px;
+		background-color: #546E7A;
+		min-height: 60px
+	}
+	&.selected {
+		.stats {
+			background-color: #827717;
+		}
+	}
 }
 </style>

@@ -52,7 +52,7 @@ const options = (vm) => {
 			areaspline: {
 				lineWidth: 0.5,
 				fillColor: 'rgba(255, 152, 0, 0.5)',
-				color: '#00B0FF',
+				color: '#827717',
 				marker: {
 					enabled: false
 				}

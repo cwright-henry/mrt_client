@@ -1,5 +1,5 @@
 <template>
-	<v-toolbar dense fixed clipped-left app>
+	<v-toolbar dense fixed clipped-left app class="mrt-toolbar-class">
 		<v-toolbar-side-icon @click.stop="$emit('togglemenu')"></v-toolbar-side-icon>
 		<v-toolbar-title class="hidden-xs-and-down mr-4 pl-2"><div class="mrt-toolbar"><logo/><span>Mean Reversion Trader</span></div></v-toolbar-title>
 		<v-spacer></v-spacer>
@@ -34,6 +34,9 @@ export default {
 </script>
 
 <style lang="less">
+.mrt-toolbar-class {
+	background-color: var(--color-primary) !important;
+}
 .mrt-toolbar--name {
 	margin: 0 12px 0 0;
 	display: inline-block;
