@@ -34,7 +34,7 @@ const options = (vm) => {
 							})
 							break;
 						case 'navigator' :
-							if(e.DOMEvent.type === 'mouseup') {
+							if(e.DOMEvent && e.DOMEvent.type === 'mouseup') {
 								vm.$emit('dateRangeChange', {
 									startDate: e.min,
 									endDate: e.max

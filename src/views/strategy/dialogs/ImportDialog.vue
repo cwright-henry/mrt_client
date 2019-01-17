@@ -71,10 +71,37 @@
 					</div>
 				</div>
 				<div class="middle-panel">
-					<v-radio-group v-model="aggregator" :column="false" :height="20">
-						<v-radio color="blue darken-1" value="diff" label="Difference"></v-radio>
-						<v-radio color="blue darken-1" value="ratio" label="Ratio"></v-radio>
-					</v-radio-group>
+					<div class="controls">
+						<v-radio-group v-model="aggregator" :column="false" :height="20">
+							<v-radio color="blue darken-1" value="diff" label="Difference"></v-radio>
+							<v-radio color="blue darken-1" value="ratio" label="Ratio"></v-radio>
+							<v-radio color="blue darken-1" value="LSPairfit" label="Least Squares"></v-radio>
+						</v-radio-group>
+						<div v-if="aggregator == 'LSPairfit'">
+							<div class="params">
+								<div class="param">
+									<label>R2</label>
+									<span v-if="isLoadingLSE">...</span>
+									<span v-else>{{R2 | number}}</span>
+								</div>
+								<div class="param">
+									<label>Constant</label>
+									<span v-if="isLoadingLSE">...</span>
+									<span v-else>{{constant}}</span>
+								</div>
+								<div class="param">
+									<label>Hedge Ratio</label>
+									<span v-if="isLoadingLSE">...</span>
+									<span v-else>{{hedgeRatio}}</span>
+								</div>
+								<div class="param">
+									<label>T Statistic</label>
+									<span v-if="isLoadingLSE">...</span>
+									<span v-else>{{tStat | number}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
 					<div class="aggregated-timeseries">
 						<mrt-linechart :ts="timeseriesC" :height="150" :name="seriesNameC" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
 					</div>
@@ -97,6 +124,7 @@
 </template>
 
 <script>
+import ApiController from '@/services/ApiController'
 import CSV from './ImportCSV'
 import TickerSearch from './ImportTicker'
 import CurrencySearch from './ImportCurrency'
@@ -134,7 +162,14 @@ export default {
 			importInputA: 'LibrarySearch',
 			imporMenuA: false,
 			importInputB: 'LibrarySearch',
-			imporMenuB: false
+			imporMenuB: false,
+
+			// LSE
+			isLoadingLSE: false,
+			R2: 0,
+			constant: 0,
+			hedgeRatio: 0,
+			tStat: 0
 		}
 	},
 	components: {
@@ -214,28 +249,52 @@ export default {
 			this.importInputB = type
 		},
 
-		calculateC() {
+		async calculateC() {
 			if(this.timeseriesA.length > 0 && this.timeseriesB.length > 0) {
 				const bucketsA = {}
 				const bucketsB = {}
 				const series = []
 				const op = this.aggregator;
 
-				for(let i = 0; i < this.timeseriesA.length; i++) {
-					bucketsA[this.timeseriesA[i][0]] = this.timeseriesA[i][1]
-				}
+				if(op === 'diff' || op === 'ratio') {
+					for(let i = 0; i < this.timeseriesA.length; i++) {
+						bucketsA[this.timeseriesA[i][0]] = this.timeseriesA[i][1]
+					}
 
-				for(let i = 0; i < this.timeseriesB.length; i++) {
-					bucketsB[this.timeseriesB[i][0]] = this.timeseriesB[i][1]
-				}
-
-				for(let p in bucketsA) {
-					if(bucketsB[p]) {
-						let y = (op === 'ratio' ? (bucketsA[p] / bucketsB[p]) : (bucketsA[p] - bucketsB[p]))
-						series.push([parseInt(p), y])	
+					for(let i = 0; i < this.timeseriesB.length; i++) {
+						bucketsB[this.timeseriesB[i][0]] = this.timeseriesB[i][1]
 					}
 				}
-				this.timeseriesC = series;
+
+				switch(op) {
+					case 'diff':
+						for(let p in bucketsA) {
+							if(bucketsB[p]) {
+								series.push([parseInt(p), (bucketsA[p] - bucketsB[p])])	
+							}
+						}
+						this.timeseriesC = series;
+						break;
+					case 'ratio':
+						for(let p in bucketsA) {
+							if(bucketsB[p]) {
+								series.push([parseInt(p), (bucketsA[p] / bucketsB[p])])	
+							}
+						}
+						this.timeseriesC = series;
+						break;
+					case 'LSPairfit':
+						this.isLoadingLSE = true;
+						const fit = await ApiController.fitLse({ts1: this.timeseriesA, ts2: this.timeseriesB});
+						this.isLoadingLSE = false;
+						this.timeseriesC = fit.pair_resid;
+						this.R2 = `${this.$options.filters.number(fit.R2)}`;
+						this.constant = `${this.$options.filters.number(fit.constant)} \u00B1 ${this.$options.filters.number(fit.std_err_constant)}`;
+						this.hedgeRatio = `${this.$options.filters.number(fit.hedgeratio)} \u00B1 ${this.$options.filters.number(fit.std_err_hedgeratio)}`;
+						this.tStat = fit['t-stat'];
+						break;
+				}
+
 				this.seriesNameC = this.fileName = `${this.seriesNameA} vs ${this.seriesNameB}`
 			}
 		},
@@ -309,6 +368,29 @@ export default {
 		}
 	}
 	.middle-panel {
+		.controls {
+			display:flex;
+			align-items: center;
+			min-height: 72px;
+			.params {
+				display: flex;
+				margin: 16px 0 16px 16px;
+				.param {
+					display: flex;
+					flex-direction: column;
+					margin:0 24px 0 0;
+					min-width: 50px;
+					label {
+						color: var(--light-gray);
+						font-size: 12px;
+					}
+					span {
+						min-height: 22px;
+						display:block;
+					}
+				}
+			}
+		}
 		width:100%;
 		margin-top: -4px;
 		padding:0 16px 16px 16px;

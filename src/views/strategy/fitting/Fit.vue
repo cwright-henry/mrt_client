@@ -18,6 +18,7 @@
 					dense
 					box
 					hide-details
+					return-object
 					flat
 					label="Fit Process">
 				</v-select>
@@ -265,6 +266,7 @@
 								dense
 								box
 								hide-details
+								return-object
 								flat
 								label="Horizon">
 							</v-select>
@@ -360,7 +362,6 @@ export default {
 				{value: 'HUFT', text: 'Hyperbolic Ornstein-Uhlenbeck', disabled: false},
 				{value: 'CEV', text: 'Constant Elasticity of Variance', disabled: true},
 			],
-			horizon: { value: '780', text: '3 Years' },
 			horizonTypes: [
 				{value: '130', text: '6 months'},
 				{value: '260', text: '1 year'},
@@ -406,6 +407,14 @@ export default {
       set (value) {
         this.$store.commit('fit/setStrategyName', value);
       }
+		},
+		horizon: {
+			get () {
+        return this.$store.state.fit.simHorizon
+      },
+      set (value) {
+        this.$store.commit('fit/setSimHorizon', value);
+      }
 		}
 	},
 	methods: {
@@ -427,8 +436,7 @@ export default {
 			const extremes = tsExtremes(this.strategy.ts.data)
 			await this.$store.dispatch('fit/loadSims', {
 				value: extremes.maxValue,
-				date: extremes.max,
-				horizon: this.horizon.value
+				date: extremes.max
 			})
 		},
 
@@ -467,7 +475,6 @@ export default {
 			this.horizon = {value: '780', text: '3 Years'}
 			this.slider = 5;
 			await this.$store.dispatch('fit/loadSims', {
-				horizon: this.horizon.value,
 				seed: seedGen()
 			})
 		},
@@ -518,9 +525,7 @@ export default {
 		},
 
 		horizonChange() {
-			this.$store.dispatch('fit/loadSims', {
-				horizon: this.horizon
-			})
+			this.$store.dispatch('fit/loadSims', {})
 		},
 
 		toggle () {

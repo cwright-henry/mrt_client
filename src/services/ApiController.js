@@ -18,6 +18,11 @@ export default {
       .then(response => response.data)
   },
 
+  fitLse (params) {
+    return Api().post('api/fit-lse', params)
+      .then(response => response.data)
+  },
+
   saveOUFit (params) {
     return Api().post('api/save-ou-Fit', params)
       .then(response => response.data)

@@ -35,7 +35,7 @@ export default {
 		selectedSim: null,
 		simValue: null,
 		simDate: null,
-		simHorizon: 0,
+		simHorizon: { value: '780', text: '3 Years' },
 		simSeed: 123456789,
 		simSliderValue: null
 	},
@@ -63,7 +63,6 @@ export default {
 
 		setSigma(state, sigma) {
 			state.userSigma = sigma;
-			console.log(state.userSigma)
 		},
 
 		setTheta(state, theta) {
@@ -98,7 +97,7 @@ export default {
 			state.selectedSim = null;
 			state.simValue = null;
 			state.simDate = null;
-			state.simHorizon = 0;
+			state.simHorizon = { value: '780', text: '3 Years' };
 			state.simSeed = 123456789;
 			state.simSliderValue = state.endDate;
 		},
@@ -147,10 +146,12 @@ export default {
 					if(strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
-							ts: strategy.ts.data
+							ts: strategy.ts.data,
+							start_date: state.startDate,
+							end_date: state.endDate
 						});
-						strategy.fit= fit;
-						commit('setStrategy', strategy)
+						
+						commit('updateFit', fit)
 					}
 				}
 			}
@@ -168,10 +169,11 @@ export default {
 
 					if(strategy.fit.proctype === 'NONE') {
 						const fit = await ApiController.fit({
-							ts: strategy.ts.data
+							ts: strategy.ts.data,
+							start_date: state.startDate,
+							end_date: state.endDate
 						});
-						strategy.fit= fit;
-						commit('setStrategy', strategy)
+						commit('updateFit', fit)
 					}
 				}
 			}
@@ -237,6 +239,7 @@ export default {
 			commit('isSavingFit', true)
 			try {
 				return await ApiController.saveOUFit({
+					name: state.strategy.name,
 					id: state.strategy._id,
 					fit: state.strategy.fit
 				});
@@ -255,7 +258,7 @@ export default {
 					theta: params.theta || state.userTheta || state.strategy.fit.theta,
 					x_0: params.value || state.simValue,
 					x_0_date: params.date || state.simDate,
-					nsteps: params.horizon || state.horizon,
+					nsteps: state.simHorizon.value,
 					seed: params.seed || state.simSeed
 				}
 
@@ -284,9 +287,6 @@ export default {
 				}
 				if(params.date) {
 					commit('setSimDate', params.date)	
-				}
-				if(params.horizon) {
-					commit('setSimHorizon', params.horizon)	
 				}
 				if(params.seed) {
 					commit('setSimSeed', params.seed)	

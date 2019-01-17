@@ -188,7 +188,7 @@ export default {
 	display: inline-block;
 	overflow: hidden;
 	cursor: ew-resize;
-	background-color:#E91E63;
+	background-color:#FFEB3B;
 	position: relative;
 	top:6px;
 	left:108px;
