@@ -2,7 +2,7 @@
 	<div class="mrt-drop-menu">
 		<p>Import Options</p>
 		<v-radio-group v-model="type">
-			<v-radio color="orange" v-if="!item.hidden" :value="item.value" :label="item.title" v-for="(item, i) in importTypes" :key="i"></v-radio>
+			<v-radio color="yellow" :value="item.value" :label="item.title" v-for="item in filteredImports" :key="item.value"></v-radio>
 		</v-radio-group>
 	</div>
 </template>
@@ -46,6 +46,9 @@ export default {
       set (value) {
         this.$emit('change', value)
       }
+		},
+		filteredImports() {
+			return this.importTypes.filter((elm) => !elm.hidden)
 		}
 	},
 	methods: {

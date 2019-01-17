@@ -1,7 +1,7 @@
 <template>
 	<v-dialog v-model="dialog" width="1100" :fullscreen="$vuetify.breakpoint.mdAndDown">
 		<v-card>
-			<v-toolbar dense color="blue darken-2">
+			<v-toolbar dense color="#827717">
 				<v-btn icon>
 					<v-icon>cloud_upload</v-icon>
 				</v-btn>
@@ -17,7 +17,7 @@
 						<div class="import-component">
 							<transition mode="out-in">
 								<keep-alive>
-									<component :is="importInputA" :clear="show" @loaded="showSeriesA" @error="loadErrorA"></component>
+									<component :is="importInputA" :clear="show" @loaded="showSeriesA" @error="loadErrorA" @clear="clearA"></component>
 								</keep-alive>
 							</transition>
 							<v-menu
@@ -29,7 +29,7 @@
 								<v-btn
 									slot="activator"
 									small
-									color="blue darken-2"
+									color="#0091EA"
 									fab
 									dark>
 									<v-icon>more_vert</v-icon>
@@ -45,7 +45,7 @@
 						<div class="import-component">
 							<transition mode="out-in">
 								<keep-alive>
-									<component :is="importInputB" :clear="show" @loaded="showSeriesB" @error="loadErrorB"></component>
+									<component :is="importInputB" :clear="show" @loaded="showSeriesB" @error="loadErrorB" @clear="clearB"></component>
 								</keep-alive>
 							</transition>
 							<v-menu
@@ -57,7 +57,7 @@
 								<v-btn
 									slot="activator"
 									small
-									color="blue darken-2"
+									color="#0091EA"
 									fab
 									dark>
 									<v-icon>more_vert</v-icon>
@@ -72,39 +72,42 @@
 				</div>
 				<div class="middle-panel">
 					<div class="controls">
-						<v-radio-group v-model="aggregator" :column="false" :height="20">
-							<v-radio color="blue darken-1" value="diff" label="Difference"></v-radio>
-							<v-radio color="blue darken-1" value="ratio" label="Ratio"></v-radio>
-							<v-radio color="blue darken-1" value="LSPairfit" label="Least Squares"></v-radio>
-						</v-radio-group>
-						<div v-if="aggregator == 'LSPairfit'">
-							<div class="params">
-								<div class="param">
-									<label>R2</label>
-									<span v-if="isLoadingLSE">...</span>
-									<span v-else>{{R2 | number}}</span>
-								</div>
-								<div class="param">
-									<label>Constant</label>
-									<span v-if="isLoadingLSE">...</span>
-									<span v-else>{{constant}}</span>
-								</div>
-								<div class="param">
-									<label>Hedge Ratio</label>
-									<span v-if="isLoadingLSE">...</span>
-									<span v-else>{{hedgeRatio}}</span>
-								</div>
-								<div class="param">
-									<label>T Statistic</label>
-									<span v-if="isLoadingLSE">...</span>
-									<span v-else>{{tStat | number}}</span>
-								</div>
+						<div class="radios">
+							<v-radio-group v-model="aggregator" :column="false" :height="20" :disabled="!hasTwo">
+								<v-radio color="#0091EA" value="diff" label="Difference"></v-radio>
+								<v-radio color="#0091EA" value="ratio" label="Ratio"></v-radio>
+								<v-radio color="#0091EA" value="LSPairfit" label="Least Squares"></v-radio>
+							</v-radio-group>
+						</div>
+						<v-switch label="Flip" class="flip" :loading="isLoadingLSE" :disabled="!hasTwo" v-model="flip"></v-switch>
+						<div class="params" v-if="aggregator == 'LSPairfit'">
+							<div class="param">
+								<label>R2</label>
+								<span v-if="isLoadingLSE">...</span>
+								<span v-else>{{R2 | number(2)}}</span>
+							</div>
+							<div class="param">
+								<label>Constant</label>
+								<span v-if="isLoadingLSE">...</span>
+								<span v-else>{{constant}}</span>
+							</div>
+							<div class="param">
+								<label>Hedge Ratio</label>
+								<span v-if="isLoadingLSE">...</span>
+								<span v-else>{{hedgeRatio}}</span>
+							</div>
+							<div class="param">
+								<label>T Statistic</label>
+								<span v-if="isLoadingLSE">...</span>
+								<span v-else>{{tStat | number(2)}}</span>
 							</div>
 						</div>
 					</div>
 					<div class="aggregated-timeseries">
 						<mrt-linechart :ts="timeseriesC" :height="150" :name="seriesNameC" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
 					</div>
+				</div>
+				<div class="bottom-panel">
 					<v-text-field
 						v-model="fileName"
 						@keyup.native.enter="upload"
@@ -114,9 +117,9 @@
 						ref="namefield"
 						required>
 						</v-text-field>
-				</div>
-				<div class="bottom-panel">
-					<v-btn color="primary" :loading="uploading" :disabled="importDisabled" @click="upload">Import</v-btn>
+					<div>
+						<v-btn color="primary" :loading="uploading" :disabled="importDisabled" @click="upload">Import</v-btn>
+					</div>
 				</div>
 			</div>
 		</v-card>
@@ -149,14 +152,14 @@ export default {
 	},
 	data() {
 		return {
-			seriesNameA: '',
-			seriesNameB: '',
-			seriesNameC: '',
+			seriesNameA: null,
+			seriesNameB: null,
+			seriesNameC: null,
 			timeseriesA: [],
 			timeseriesB: [],
 			timeseriesC: [],
 			uploading: false,
-			fileName: '',
+			flip: false,
 
 			aggregator: 'diff',
 			importInputA: 'LibrarySearch',
@@ -167,8 +170,8 @@ export default {
 			// LSE
 			isLoadingLSE: false,
 			R2: 0,
-			constant: 0,
-			hedgeRatio: 0,
+			constant: '',
+			hedgeRatio: '',
 			tStat: 0
 		}
 	},
@@ -196,17 +199,38 @@ export default {
       }
 		},
 		importDisabled() {
-			return this.fileName == '' || this.timeseriesC.length === 0
+			return this.fileName === null;
+		},
+		hasTwo() {
+			return this.timeseriesA.length > 0 && this.timeseriesB.length > 0;
+		},
+		fileName() {
+			if(this.seriesNameA && this.seriesNameB) {
+				return this.flip ? `${this.seriesNameB} vs ${this.seriesNameA}` : `${this.seriesNameA} vs ${this.seriesNameB}`;
+			}
+			if(this.seriesNameA) {
+				return this.seriesNameA;
+			}
+			if(this.seriesNameB) {
+				return this.seriesNameB
+			}
+			return null;
 		}
 	},
 	watch: {
 		importInputA() {
 			this.timeseriesA = [];
-			this.seriesNameA = '';
+			this.seriesNameA = null;
+			this.timeseriesC = []
+			this.seriesNameC = null
+			this.aggregator = 'diff'
 		},
 		importInputB() {
 			this.timeseriesB = [];
-			this.seriesNameB = '';
+			this.seriesNameB = null;
+			this.timeseriesC = []
+			this.seriesNameC = null
+			this.aggregator = 'diff'
 		},
 		timeseriesA() {
 			this.calculateC();
@@ -215,6 +239,9 @@ export default {
 			this.calculateC();
 		},
 		aggregator() {
+			this.calculateC();
+		},
+		flip() {
 			this.calculateC();
 		}
 	},
@@ -229,15 +256,31 @@ export default {
 			this.seriesNameB = name;
 		},
 
+		clearA() {
+			this.timeseriesA = []
+			this.timeseriesC = []
+			this.seriesNameA = null
+			this.seriesNameC = null
+			this.aggregator = 'diff'
+		},
+
+		clearB() {
+			this.timeseriesB = []
+			this.timeseriesC = []
+			this.seriesNameB = null
+			this.seriesNameC = null
+			this.aggregator = 'diff'
+		},
+
 		loadErrorA({msg}) {
 			this.timeseriesA = [];
-			this.seriesNameA = '';
+			this.seriesNameA = null;
 			EventBus.$emit('api-error', msg);  
 		},
 
 		loadErrorB({msg}) {
 			this.timeseriesB = [];
-			this.seriesNameB = '';
+			this.seriesNameB = null;
 			EventBus.$emit('api-error', msg);  
 		},
 
@@ -255,14 +298,20 @@ export default {
 				const bucketsB = {}
 				const series = []
 				const op = this.aggregator;
+				let tsA = this.timeseriesA;
+				let tsB = this.timeseriesB;
+				if(this.flip) {
+					tsA = this.timeseriesB;
+					tsB = this.timeseriesA;
+				}
 
 				if(op === 'diff' || op === 'ratio') {
-					for(let i = 0; i < this.timeseriesA.length; i++) {
-						bucketsA[this.timeseriesA[i][0]] = this.timeseriesA[i][1]
+					for(let i = 0; i < tsA.length; i++) {
+						bucketsA[tsA[i][0]] = tsA[i][1]
 					}
 
-					for(let i = 0; i < this.timeseriesB.length; i++) {
-						bucketsB[this.timeseriesB[i][0]] = this.timeseriesB[i][1]
+					for(let i = 0; i < tsB.length; i++) {
+						bucketsB[tsB[i][0]] = tsB[i][1]
 					}
 				}
 
@@ -285,35 +334,47 @@ export default {
 						break;
 					case 'LSPairfit':
 						this.isLoadingLSE = true;
-						const fit = await ApiController.fitLse({ts1: this.timeseriesA, ts2: this.timeseriesB});
+						const fit = await ApiController.fitLse({ts1: tsA, ts2: tsB});
 						this.isLoadingLSE = false;
 						this.timeseriesC = fit.pair_resid;
-						this.R2 = `${this.$options.filters.number(fit.R2)}`;
-						this.constant = `${this.$options.filters.number(fit.constant)} \u00B1 ${this.$options.filters.number(fit.std_err_constant)}`;
-						this.hedgeRatio = `${this.$options.filters.number(fit.hedgeratio)} \u00B1 ${this.$options.filters.number(fit.std_err_hedgeratio)}`;
+						this.R2 = `${this.$options.filters.number(fit.R2, 2)}`;
+						this.constant = `${this.$options.filters.number(fit.constant, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_constant, 2)}`;
+						this.hedgeRatio = `${this.$options.filters.number(fit.hedgeratio, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_hedgeratio, 2)}`;
 						this.tStat = fit['t-stat'];
 						break;
 				}
 
-				this.seriesNameC = this.fileName = `${this.seriesNameA} vs ${this.seriesNameB}`
+				this.seriesNameC = this.flip ? `${this.seriesNameB} vs ${this.seriesNameA}` : `${this.seriesNameA} vs ${this.seriesNameB}`;
 			}
 		},
 
 		async upload() {
-			this.uploading = true;
-			try {
-				const strategy = await this.$store.dispatch('strategies/upload', {
-					fileName: this.fileName,
-					data: this.timeseriesC,
-					source: 'COMBO'
-				});
-				this.$store.commit('dictionary/addLibrary', strategy)
-				this.reset();
-				this.$emit('close')
-				window.scrollTo(0,0);
+			let series = null;
+			if(this.timeseriesC.length > 0) {
+				series = this.timeseriesC;
 			}
-			finally {
-				this.uploading = false;
+			else if(this.timeseriesA.length > 0) {
+				series = this.timeseriesA;
+			}
+			else if (this.timeseriesB.length > 0) {
+				series = this.timeseriesB;
+			}
+			if(series) {
+				this.uploading = true;
+				try {
+					const strategy = await this.$store.dispatch('strategies/upload', {
+						fileName: this.fileName,
+						data: series,
+						source: 'COMBO'
+					});
+					this.$store.commit('dictionary/addLibrary', strategy)
+					this.reset();
+					this.$emit('close')
+					window.scrollTo(0,0);
+				}
+				finally {
+					this.uploading = false;
+				}
 			}
 		},
 
@@ -343,24 +404,25 @@ export default {
 .mrt-import {
 	display: flex;
 	flex-wrap: wrap;
-	background-color:#424242;
+	background-color:#78909C;
 	.top-panel {
 		width:100%;
 		display:flex;
 		.left-panel, .right-panel {
 			width:50%;
-			padding:16px;
-			border: solid #757575;
-			border-width: 0 0 1px 0;
+			padding:12px;
+			border: solid #546E7A;
+			border-width: 1px 1px 0px 1px;
+			border-radius: 2px;
+			background-color: #455A64;
 		}
 		.right-panel {
 			border: solid #757575;
-			border-width: 0 0 1px 1px;
+			border-width: 0 0 0px 1px;
 		}
 		.import-timeseries {
 			margin: 16px 0 0 0;
 			height:150px;
-			background-color: rgba(0,0,0,0.1);
 			border-radius: 2px;
 		}
 		.import-component {
@@ -368,10 +430,22 @@ export default {
 		}
 	}
 	.middle-panel {
+		width: 100%;
+		padding:12px;
+		margin: 0 0 12px;
+		border: solid #757575;
+		border-width: 1px 0px 1px 0px;
+		border-radius: 2px;
+		background-color: #455A64;
 		.controls {
 			display:flex;
+			justify-content: space-between;
 			align-items: center;
 			min-height: 72px;
+			margin: -18px 0 0 0;
+			.flip {
+				flex: initial;
+			}
 			.params {
 				display: flex;
 				margin: 16px 0 16px 16px;
@@ -379,33 +453,48 @@ export default {
 					display: flex;
 					flex-direction: column;
 					margin:0 24px 0 0;
-					min-width: 50px;
+					min-width: 20px;
+					&:nth-child(1) {
+						width:40px;
+					}
+					&:nth-child(2) {
+						width:100px;
+					}
+					&:nth-child(3) {
+						width:100px;
+					}
+					&:nth-child(4) {
+						width:60px;
+						margin:0 8px 0 0;
+					}
 					label {
 						color: var(--light-gray);
 						font-size: 12px;
 					}
-					span {
+					> span {
 						min-height: 22px;
 						display:block;
+						> span {
+							font-size: 10px;
+						}
 					}
 				}
 			}
 		}
-		width:100%;
-		margin-top: -4px;
-		padding:0 16px 16px 16px;
-		border: solid #757575;
-		border-width: 0 0 1px 0;
 		.aggregated-timeseries {
 			height:150px;
-			background-color: rgba(0,0,0,0.1);
 			margin:-8px 0 12px 0;
 		}
 	}
 	.bottom-panel {
 		width:100%;
-		padding:8px 8px 8px;
-		text-align: right;
+		margin: -12px 0 0 0;
+		text-align: center;
+		padding: 0px 16px 8px 16px;
+		background-color: #455A64;
+		> div {
+			padding: 8px 0 0 0;
+		}
 	}
 	
 	.v-leave { opacity: 1; }

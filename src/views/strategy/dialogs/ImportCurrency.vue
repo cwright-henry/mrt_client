@@ -10,6 +10,7 @@
 		hide-details
 		box
 		dense
+		clearable
 		@change="findSeries"
 		return-object
 		label="Choose a Currency">
@@ -46,12 +47,17 @@ export default {
 		async findSeries(value) {
 			this.loading = true
 			try {
-				let series = await ApiController.findSeries(value.curr_id, value.source)
-				this.$emit('loaded', {
-					series: series.data,
-					name: value.name,
-					source: value.source
-				})
+				if(value) {
+					let series = await ApiController.findSeries(value.curr_id, value.source)
+					this.$emit('loaded', {
+						series: series.data,
+						name: value.name,
+						source: value.source
+					})
+				}
+				else {
+					this.$emit('clear')
+				}
 			}
 			finally {
 				this.loading = false	

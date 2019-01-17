@@ -9,6 +9,8 @@
 		v-model="ticker"
 		hide-details
 		box
+		clearable
+		@input="checkTicker"
 		background-color="rgba(0,0,0,0.1)"
 		return-object
 		ref="tickerTextField">
@@ -41,6 +43,12 @@ export default {
 		this.ticker = ''
 	},
 	methods: {
+		checkTicker() {
+			if(this.ticker === null) {
+				this.$emit('clear')
+			}
+		},
+
 		async findSeries(value) {
 			this.loading = true
 			try {

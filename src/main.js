@@ -40,9 +40,9 @@ const optionsCompact = {
   year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC'
 };
 
-Vue.filter('number', function (value) {
+Vue.filter('number', function (value, precision) {
 	if(value && !isNaN(value)) {
-		return new Intl.NumberFormat(navigator.language, {minimumFractionDigits:3}).format(value);
+		return new Intl.NumberFormat(navigator.language, {maximumFractionDigits:(precision ? precision: 3), minimumFractionDigits:(precision ? precision: 3)}).format(value);
 	}
 	return ''
 });

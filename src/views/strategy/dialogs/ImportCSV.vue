@@ -9,7 +9,10 @@
 			v-model="fileName"
 			hide-details
 			box
+			clearable
+			readonly
 			:append-outer-icon="errors.length !== 0 ? 'warning' : ''"
+			@input="checkFile"
 			@click:append-outer="showErrors=true"
 			@click.native="onFocus"
 			ref="fileTextField">
@@ -77,6 +80,11 @@ export default {
 		onFocus() {
 			if(!this.disabled) {
 				this.$refs.fileInput.click();
+			}
+		},
+		checkFile() {
+			if(this.fileName === null) {
+				this.$emit('clear')
 			}
 		},
 		onFileChange($event) {
