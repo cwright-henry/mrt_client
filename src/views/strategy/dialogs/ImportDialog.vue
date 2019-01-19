@@ -42,7 +42,7 @@
 				</div>
 				<div v-show="plusOne" class="plusOne">
 					<div class="top-panel">
-						<div class="left-panel">
+						<div class="left-panel" :class="flip ? 'flip' : ''">
 							<div class="import-component">
 								<transition mode="out-in">
 									<keep-alive>
@@ -374,7 +374,7 @@ export default {
 			this.importInputB = type
 		},
 
-		async calculateC() {
+		calculateC() {
 			if(this.timeseriesA.length > 0 && this.timeseriesB.length > 0) {
 				const bucketsA = {}
 				const bucketsB = {}
@@ -416,13 +416,17 @@ export default {
 						break;
 					case 'LSPairfit':
 						this.isLoadingLSE = true;
-						const fit = await ApiController.fitLse({ts1: tsA, ts2: tsB});
-						this.isLoadingLSE = false;
-						this.timeseriesC = fit.pair_resid;
-						this.R2 = `${this.$options.filters.number(fit.R2, 2)}`;
-						this.constant = `${this.$options.filters.number(fit.constant, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_constant, 2)}`;
-						this.hedgeRatio = `${this.$options.filters.number(fit.hedgeratio, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_hedgeratio, 2)}`;
-						this.tStat = fit['t-stat'];
+						ApiController.fitLse({ts1: tsA, ts2: tsB})
+						.then((fit) => {
+							this.R2 = `${this.$options.filters.number(fit.R2, 2)}`;
+							this.constant = `${this.$options.filters.number(fit.constant, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_constant, 2)}`;
+							this.hedgeRatio = `${this.$options.filters.number(fit.hedgeratio, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_hedgeratio, 2)}`;
+							this.tStat = fit['t-stat'];
+							setTimeout(() => {
+								this.isLoadingLSE = false;
+								this.timeseriesC = fit.pair_resid;
+							}, 500)
+						})
 						break;
 				}
 
@@ -520,25 +524,28 @@ export default {
 	.top-panel {
 		width:100%;
 		display:flex;
+		margin: 3px 0 0 0;
 		.left-panel, .right-panel {
 			width:50%;
 			padding:12px;
 			border: solid #546E7A;
-			border-width: 1px 1px 0px 1px;
-			border-radius: 2px;
 			background-color: #455A64;
+			transition: all 0.375s cubic-bezier(0.4, 0.0, 0.2, 1);
 		}
 		.left-panel {
-			order: 1;
+			border-width: 0px 1px 0px 0px;
 		}
 		.right-panel {
-			order: 2;
 			border: solid #757575;
 			border-width: 0 0 0px 1px;
 		}
 		.right-panel.flip {
-			order: 0;
-			opacity: 1;
+			border-width: 0px 1px 0px 0px;
+			transform: translateX(-100%);
+		}
+		.left-panel.flip {
+			transform: translateX(100%);
+			border-width: 0 0 0px 1px;
 		}
 	}
 	.middle-panel {
@@ -547,7 +554,6 @@ export default {
 		margin: 0 0 12px;
 		border: solid #757575;
 		border-width: 1px 0px 1px 0px;
-		border-radius: 2px;
 		background-color: #455A64;
 		.controls {
 			display:flex;
