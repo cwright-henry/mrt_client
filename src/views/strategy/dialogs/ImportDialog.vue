@@ -12,144 +12,146 @@
 				</v-btn>
 			</v-toolbar>
 			<div class="mrt-import">
-				<div v-show="!plusOne" class="one">
-					<div class="import-component">
-						<transition mode="out-in">
-							<keep-alive>
-								<component :is="importInput" :clear="show" @loaded="showSeries" @error="loadError" @clear="clear"></component>
-							</keep-alive>
-						</transition>
-						<v-menu
-							v-model="imporMenu"
-							bottom
-							origin="center center"
-							offset-x
-							transition="slide-y-transition">
-							<v-btn
-								slot="activator"
-								small
-								color="#0091EA"
-								fab
-								dark>
-								<v-icon>more_vert</v-icon>
-							</v-btn>
-							<mrtImportOptions :isOpen="imporMenu" :importDefault="importInput" @change="setImportType"/>
-						</v-menu>
-					</div>
-					<div class="import-timeseries">
-						<mrt-linechart :ts="timeseries" :height="380" :name="seriesName" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
-					</div>
-				</div>
-				<div v-show="plusOne" class="plusOne">
-					<div class="top-panel">
-						<div class="left-panel" :class="flip ? 'flip' : ''">
-							<div class="import-component">
-								<transition mode="out-in">
-									<keep-alive>
-										<component :is="importInputA" :clear="show" @loaded="showSeriesA" @error="loadErrorA" @clear="clearA"></component>
-									</keep-alive>
-								</transition>
-								<v-menu
-									v-model="imporMenuA"
-									bottom
-									origin="center center"
-									offset-x
-									transition="slide-y-transition">
-									<v-btn
-										slot="activator"
-										small
-										color="#0091EA"
-										fab
-										dark>
-										<v-icon>more_vert</v-icon>
-									</v-btn>
-									<mrtImportOptions :isOpen="imporMenuA" :importDefault="importInputA" @change="setImportTypeA"/>
-								</v-menu>
-							</div>
-							<div class="import-timeseries">
-								<mrt-linechart :ts="timeseriesA" :height="150" :name="seriesNameA" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
-							</div>
+				<div class="mrt-import-dynammic">
+					<div class="one" :class="!plusOne ? 'slide-in' : 'slide-out'">
+						<div class="import-component">
+							<transition mode="out-in">
+								<keep-alive>
+									<component :is="importInput" :clear="show" @loaded="showSeries" @error="loadError" @clear="clear"></component>
+								</keep-alive>
+							</transition>
+							<v-menu
+								v-model="imporMenu"
+								bottom
+								origin="center center"
+								offset-x
+								transition="slide-y-transition">
+								<v-btn
+									slot="activator"
+									small
+									color="#0091EA"
+									fab
+									dark>
+									<v-icon>more_vert</v-icon>
+								</v-btn>
+								<mrtImportOptions :isOpen="imporMenu" :importDefault="importInput" @change="setImportType"/>
+							</v-menu>
 						</div>
-						<div class="right-panel" :class="flip ? 'flip' : ''">
-							<div class="import-component">
-								<transition mode="out-in">
-									<keep-alive>
-										<component :is="importInputB" :clear="show" @loaded="showSeriesB" @error="loadErrorB" @clear="clearB"></component>
-									</keep-alive>
-								</transition>
-								<v-menu
-									v-model="imporMenuB"
-									bottom
-									origin="center center"
-									offset-x
-									transition="slide-y-transition">
-									<v-btn
-										slot="activator"
-										small
-										color="#0091EA"
-										fab
-										dark>
-										<v-icon>more_vert</v-icon>
-									</v-btn>
-									<mrtImportOptions :isOpen="imporMenuB" :importDefault="importInputB" @change="setImportTypeB"/>
-								</v-menu>
-							</div>
-							<div class="import-timeseries">
-								<mrt-linechart :ts="timeseriesB" :height="150" :name="seriesNameB" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
-							</div>
+						<div class="import-timeseries">
+							<mrt-linechart :ts="timeseries" :height="380" :name="seriesName" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
 						</div>
 					</div>
-					<div class="middle-panel">
-						<div class="controls">
-							<div class="radios">
-								<v-radio-group v-model="aggregator" :column="false" :height="20" :disabled="!hasTwo">
-									<v-radio color="#0091EA" value="diff" label="Difference"></v-radio>
-									<v-radio color="#0091EA" value="ratio" label="Ratio"></v-radio>
-									<v-radio color="#0091EA" value="LSPairfit" label="Least Squares"></v-radio>
-								</v-radio-group>
+					<div class="plusOne" :class="plusOne ? 'slide-in' : 'slide-out'">
+						<div class="top-panel">
+							<div class="left-panel" :class="flip ? 'flip' : ''">
+								<div class="import-component">
+									<transition mode="out-in">
+										<keep-alive>
+											<component :is="importInputA" :clear="show" @loaded="showSeriesA" @error="loadErrorA" @clear="clearA"></component>
+										</keep-alive>
+									</transition>
+									<v-menu
+										v-model="imporMenuA"
+										bottom
+										origin="center center"
+										offset-x
+										transition="slide-y-transition">
+										<v-btn
+											slot="activator"
+											small
+											color="#0091EA"
+											fab
+											dark>
+											<v-icon>more_vert</v-icon>
+										</v-btn>
+										<mrtImportOptions :isOpen="imporMenuA" :importDefault="importInputA" @change="setImportTypeA"/>
+									</v-menu>
+								</div>
+								<div class="import-timeseries">
+									<mrt-linechart :ts="timeseriesA" :height="150" :name="seriesNameA" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
+								</div>
 							</div>
-							<v-switch color="#0091EA" label="Flip" class="flip" :loading="isLoadingLSE" :disabled="!hasTwo" v-model="flip"></v-switch>
-							<div class="params" v-if="aggregator == 'LSPairfit'">
-								<div class="param">
-									<label>R2</label>
-									<span v-if="isLoadingLSE">...</span>
-									<span v-else>{{R2 | number(2)}}</span>
+							<div class="right-panel" :class="flip ? 'flip' : ''">
+								<div class="import-component">
+									<transition mode="out-in">
+										<keep-alive>
+											<component :is="importInputB" :clear="show" @loaded="showSeriesB" @error="loadErrorB" @clear="clearB"></component>
+										</keep-alive>
+									</transition>
+									<v-menu
+										v-model="imporMenuB"
+										bottom
+										origin="center center"
+										offset-x
+										transition="slide-y-transition">
+										<v-btn
+											slot="activator"
+											small
+											color="#0091EA"
+											fab
+											dark>
+											<v-icon>more_vert</v-icon>
+										</v-btn>
+										<mrtImportOptions :isOpen="imporMenuB" :importDefault="importInputB" @change="setImportTypeB"/>
+									</v-menu>
 								</div>
-								<div class="param">
-									<label>Constant</label>
-									<span v-if="isLoadingLSE">...</span>
-									<span v-else>{{constant}}</span>
-								</div>
-								<div class="param">
-									<label>Hedge Ratio</label>
-									<span v-if="isLoadingLSE">...</span>
-									<span v-else>{{hedgeRatio}}</span>
-								</div>
-								<div class="param">
-									<label>T Statistic</label>
-									<span v-if="isLoadingLSE">...</span>
-									<span v-else>{{tStat | number(2)}}</span>
+								<div class="import-timeseries">
+									<mrt-linechart :ts="timeseriesB" :height="150" :name="seriesNameB" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
 								</div>
 							</div>
 						</div>
-						<div class="aggregated-timeseries">
-							<mrt-linechart :ts="timeseriesC" :height="150" :name="seriesNameC" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
+						<div class="middle-panel">
+							<div class="controls">
+								<div class="radios">
+									<v-radio-group v-model="aggregator" :column="false" :height="20" :disabled="!hasTwo">
+										<v-radio color="#0091EA" value="diff" label="Difference"></v-radio>
+										<v-radio color="#0091EA" value="ratio" label="Ratio"></v-radio>
+										<v-radio color="#0091EA" value="LSPairfit" label="Least Squares"></v-radio>
+									</v-radio-group>
+								</div>
+								<v-switch color="#0091EA" label="Flip" class="flip" :loading="isLoadingLSE" :disabled="!hasTwo" v-model="flip"></v-switch>
+								<div class="params" v-if="aggregator == 'LSPairfit'">
+									<div class="param">
+										<label>R2</label>
+										<span v-if="isLoadingLSE">...</span>
+										<span v-else>{{R2 | number(2)}}</span>
+									</div>
+									<div class="param">
+										<label>Constant</label>
+										<span v-if="isLoadingLSE">...</span>
+										<span v-else>{{constant}}</span>
+									</div>
+									<div class="param">
+										<label>Hedge Ratio</label>
+										<span v-if="isLoadingLSE">...</span>
+										<span v-else>{{hedgeRatio}}</span>
+									</div>
+									<div class="param">
+										<label>T Statistic</label>
+										<span v-if="isLoadingLSE">...</span>
+										<span v-else>{{tStat | number(2)}}</span>
+									</div>
+								</div>
+							</div>
+							<div class="aggregated-timeseries">
+								<mrt-linechart :ts="timeseriesC" :height="150" :name="seriesNameC" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="bottom-panel">
-					<v-text-field
-						v-model="fileName"
-						@keyup.native.enter="upload"
-						label="Save As..."
-						box
-						hide-details
-						ref="namefield"
-						required>
-						</v-text-field>
-					<div>
-						<v-switch color="#0091EA" hide-details label="Plus One" v-model="plusOne"></v-switch>
-						<v-btn color="primary" :loading="uploading" :disabled="importDisabled" @click="upload">Import</v-btn>
+					<div class="bottom-panel">
+						<v-text-field
+							v-model="fileName"
+							@keyup.native.enter="upload"
+							label="Save As..."
+							box
+							hide-details
+							ref="namefield"
+							required>
+							</v-text-field>
+						<div>
+							<v-switch color="#0091EA" hide-details label="Plus One" v-model="plusOne"></v-switch>
+							<v-btn color="primary" :loading="uploading" :disabled="importDisabled" @click="upload">Import</v-btn>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -422,10 +424,13 @@ export default {
 							this.constant = `${this.$options.filters.number(fit.constant, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_constant, 2)}`;
 							this.hedgeRatio = `${this.$options.filters.number(fit.hedgeratio, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_hedgeratio, 2)}`;
 							this.tStat = fit['t-stat'];
+
+							// Delay update util flip transition is finished
+							// highcharts updates kill all animations
 							setTimeout(() => {
 								this.isLoadingLSE = false;
 								this.timeseriesC = fit.pair_resid;
-							}, 500)
+							}, 300)
 						})
 						break;
 				}
@@ -498,20 +503,48 @@ export default {
 	padding:16px 32px 0 16px;
 }
 .mrt-import {
-	display: flex;
-	flex-wrap: wrap;
 	background-color:#455A64;
+	.mrt-import-dynammic {
+		position: relative;
+		overflow: hidden;
+		width:100%;
+	}
 	.plusOne {
 		width:100%;
+		position: absolute;
+		top:0px;
+		display:block;
+		will-change: transform;
+		transform: translateX(100%);
+		transition: transform .3s cubic-bezier(0.4, 0.0, 1, 1);
 	}
 	.one {
 		width:100%;
 		padding:12px;
+		margin: 3px 0 0 0;
+		display:block;
+		will-change: transform;
+		transform: translateX(100%);
+		transition: transform .3s cubic-bezier(0.4, 0.0, 1, 1);
 		.import-timeseries {
 			margin: 24px 0 0 0;
 			height:388px;
 			border-radius: 2px;
 		}
+	}
+	.one.slide-in {
+		display:block;
+		transform: translateX(0%);
+	}
+	.one.slide-out {
+		transform: translateX(100%);
+	}
+	.plusOne.slide-in {
+		display:block;
+		transform: translateX(0%);
+	}
+	.plusOne.slide-out {
+		transform: translateX(-100%);
 	}
 	.import-timeseries {
 		margin: 16px 0 0 0;
@@ -530,7 +563,8 @@ export default {
 			padding:12px;
 			border: solid #546E7A;
 			background-color: #455A64;
-			transition: all 0.375s cubic-bezier(0.4, 0.0, 0.2, 1);
+			will-change: transform;
+			transition: all 0.3s cubic-bezier(0.4, 0.0, 1, 1);
 		}
 		.left-panel {
 			border-width: 0px 1px 0px 0px;
