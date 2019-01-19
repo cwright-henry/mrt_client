@@ -96,6 +96,7 @@ export default {
 			chart.addSeries({
 				type: 'area',
 				data: data,
+				name: this.name,
 				threshold: mean(data)
 			})
 			chart.reflow()

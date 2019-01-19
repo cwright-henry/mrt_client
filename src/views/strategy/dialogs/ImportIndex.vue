@@ -12,7 +12,6 @@
 		box
 		dense
 		return-object
-		clearable
 		@change="findSeries"
 		label="Choose an Index">
 	</v-select>
@@ -49,17 +48,12 @@ export default {
 		async findSeries(value) {
 			this.loading = true
 			try {
-				if(value) {
-					let series = await ApiController.findSeries(value.curr_id, value.source)
-					this.$emit('loaded', {
-						series: series.data,
-						name: value.name,
-						source: value.source
-					})
-				}
-				else {
-					this.$emit('clear')
-				}
+				let series = await ApiController.findSeries(value.curr_id, value.source)
+				this.$emit('loaded', {
+					series: series.data,
+					name: value.name,
+					source: value.source
+				})
 			}
 			finally {
 				this.loading = false	

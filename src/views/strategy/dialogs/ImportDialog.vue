@@ -12,99 +12,129 @@
 				</v-btn>
 			</v-toolbar>
 			<div class="mrt-import">
-				<div class="top-panel">
-					<div class="left-panel">
-						<div class="import-component">
-							<transition mode="out-in">
-								<keep-alive>
-									<component :is="importInputA" :clear="show" @loaded="showSeriesA" @error="loadErrorA" @clear="clearA"></component>
-								</keep-alive>
-							</transition>
-							<v-menu
-								v-model="imporMenuA"
-								bottom
-								origin="center center"
-								offset-x
-								transition="slide-y-transition">
-								<v-btn
-									slot="activator"
-									small
-									color="#0091EA"
-									fab
-									dark>
-									<v-icon>more_vert</v-icon>
-								</v-btn>
-								<mrtImportOptions :isOpen="imporMenuA" :importDefault="importInputA" @change="setImportTypeA"/>
-							</v-menu>
-						</div>
-						<div class="import-timeseries">
-							<mrt-linechart :ts="timeseriesA" :height="150" :name="seriesNameA" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
-						</div>
+				<div v-show="!plusOne" class="one">
+					<div class="import-component">
+						<transition mode="out-in">
+							<keep-alive>
+								<component :is="importInput" :clear="show" @loaded="showSeries" @error="loadError" @clear="clear"></component>
+							</keep-alive>
+						</transition>
+						<v-menu
+							v-model="imporMenu"
+							bottom
+							origin="center center"
+							offset-x
+							transition="slide-y-transition">
+							<v-btn
+								slot="activator"
+								small
+								color="#0091EA"
+								fab
+								dark>
+								<v-icon>more_vert</v-icon>
+							</v-btn>
+							<mrtImportOptions :isOpen="imporMenu" :importDefault="importInput" @change="setImportType"/>
+						</v-menu>
 					</div>
-					<div class="right-panel">
-						<div class="import-component">
-							<transition mode="out-in">
-								<keep-alive>
-									<component :is="importInputB" :clear="show" @loaded="showSeriesB" @error="loadErrorB" @clear="clearB"></component>
-								</keep-alive>
-							</transition>
-							<v-menu
-								v-model="imporMenuB"
-								bottom
-								origin="center center"
-								offset-x
-								transition="slide-y-transition">
-								<v-btn
-									slot="activator"
-									small
-									color="#0091EA"
-									fab
-									dark>
-									<v-icon>more_vert</v-icon>
-								</v-btn>
-								<mrtImportOptions :isOpen="imporMenuB" :importDefault="importInputB" @change="setImportTypeB"/>
-							</v-menu>
-						</div>
-						<div class="import-timeseries">
-							<mrt-linechart :ts="timeseriesB" :height="150" :name="seriesNameB" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
-						</div>
+					<div class="import-timeseries">
+						<mrt-linechart :ts="timeseries" :height="380" :name="seriesName" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
 					</div>
 				</div>
-				<div class="middle-panel">
-					<div class="controls">
-						<div class="radios">
-							<v-radio-group v-model="aggregator" :column="false" :height="20" :disabled="!hasTwo">
-								<v-radio color="#0091EA" value="diff" label="Difference"></v-radio>
-								<v-radio color="#0091EA" value="ratio" label="Ratio"></v-radio>
-								<v-radio color="#0091EA" value="LSPairfit" label="Least Squares"></v-radio>
-							</v-radio-group>
+				<div v-show="plusOne" class="plusOne">
+					<div class="top-panel">
+						<div class="left-panel">
+							<div class="import-component">
+								<transition mode="out-in">
+									<keep-alive>
+										<component :is="importInputA" :clear="show" @loaded="showSeriesA" @error="loadErrorA" @clear="clearA"></component>
+									</keep-alive>
+								</transition>
+								<v-menu
+									v-model="imporMenuA"
+									bottom
+									origin="center center"
+									offset-x
+									transition="slide-y-transition">
+									<v-btn
+										slot="activator"
+										small
+										color="#0091EA"
+										fab
+										dark>
+										<v-icon>more_vert</v-icon>
+									</v-btn>
+									<mrtImportOptions :isOpen="imporMenuA" :importDefault="importInputA" @change="setImportTypeA"/>
+								</v-menu>
+							</div>
+							<div class="import-timeseries">
+								<mrt-linechart :ts="timeseriesA" :height="150" :name="seriesNameA" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
+							</div>
 						</div>
-						<v-switch label="Flip" class="flip" :loading="isLoadingLSE" :disabled="!hasTwo" v-model="flip"></v-switch>
-						<div class="params" v-if="aggregator == 'LSPairfit'">
-							<div class="param">
-								<label>R2</label>
-								<span v-if="isLoadingLSE">...</span>
-								<span v-else>{{R2 | number(2)}}</span>
+						<div class="right-panel" :class="flip ? 'flip' : ''">
+							<div class="import-component">
+								<transition mode="out-in">
+									<keep-alive>
+										<component :is="importInputB" :clear="show" @loaded="showSeriesB" @error="loadErrorB" @clear="clearB"></component>
+									</keep-alive>
+								</transition>
+								<v-menu
+									v-model="imporMenuB"
+									bottom
+									origin="center center"
+									offset-x
+									transition="slide-y-transition">
+									<v-btn
+										slot="activator"
+										small
+										color="#0091EA"
+										fab
+										dark>
+										<v-icon>more_vert</v-icon>
+									</v-btn>
+									<mrtImportOptions :isOpen="imporMenuB" :importDefault="importInputB" @change="setImportTypeB"/>
+								</v-menu>
 							</div>
-							<div class="param">
-								<label>Constant</label>
-								<span v-if="isLoadingLSE">...</span>
-								<span v-else>{{constant}}</span>
-							</div>
-							<div class="param">
-								<label>Hedge Ratio</label>
-								<span v-if="isLoadingLSE">...</span>
-								<span v-else>{{hedgeRatio}}</span>
-							</div>
-							<div class="param">
-								<label>T Statistic</label>
-								<span v-if="isLoadingLSE">...</span>
-								<span v-else>{{tStat | number(2)}}</span>
+							<div class="import-timeseries">
+								<mrt-linechart :ts="timeseriesB" :height="150" :name="seriesNameB" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
 							</div>
 						</div>
 					</div>
-					<div class="aggregated-timeseries">
-						<mrt-linechart :ts="timeseriesC" :height="150" :name="seriesNameC" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
+					<div class="middle-panel">
+						<div class="controls">
+							<div class="radios">
+								<v-radio-group v-model="aggregator" :column="false" :height="20" :disabled="!hasTwo">
+									<v-radio color="#0091EA" value="diff" label="Difference"></v-radio>
+									<v-radio color="#0091EA" value="ratio" label="Ratio"></v-radio>
+									<v-radio color="#0091EA" value="LSPairfit" label="Least Squares"></v-radio>
+								</v-radio-group>
+							</div>
+							<v-switch color="#0091EA" label="Flip" class="flip" :loading="isLoadingLSE" :disabled="!hasTwo" v-model="flip"></v-switch>
+							<div class="params" v-if="aggregator == 'LSPairfit'">
+								<div class="param">
+									<label>R2</label>
+									<span v-if="isLoadingLSE">...</span>
+									<span v-else>{{R2 | number(2)}}</span>
+								</div>
+								<div class="param">
+									<label>Constant</label>
+									<span v-if="isLoadingLSE">...</span>
+									<span v-else>{{constant}}</span>
+								</div>
+								<div class="param">
+									<label>Hedge Ratio</label>
+									<span v-if="isLoadingLSE">...</span>
+									<span v-else>{{hedgeRatio}}</span>
+								</div>
+								<div class="param">
+									<label>T Statistic</label>
+									<span v-if="isLoadingLSE">...</span>
+									<span v-else>{{tStat | number(2)}}</span>
+								</div>
+							</div>
+						</div>
+						<div class="aggregated-timeseries">
+							<mrt-linechart :ts="timeseriesC" :height="150" :name="seriesNameC" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
+						</div>
 					</div>
 				</div>
 				<div class="bottom-panel">
@@ -118,6 +148,7 @@
 						required>
 						</v-text-field>
 					<div>
+						<v-switch color="#0091EA" hide-details label="Plus One" v-model="plusOne"></v-switch>
 						<v-btn color="primary" :loading="uploading" :disabled="importDisabled" @click="upload">Import</v-btn>
 					</div>
 				</div>
@@ -152,6 +183,11 @@ export default {
 	},
 	data() {
 		return {
+			// One series
+			seriesName: null,
+			timeseries: [],
+
+			// Two Series
 			seriesNameA: null,
 			seriesNameB: null,
 			seriesNameC: null,
@@ -159,20 +195,33 @@ export default {
 			timeseriesB: [],
 			timeseriesC: [],
 			uploading: false,
-			flip: false,
 
+			// Switches
+			flip: false,
+			plusOne: false,
+
+			// Two series aggregation type - difference, ratio or Least Squares
 			aggregator: 'diff',
+			
+			// Menu One Series
+			importInput: 'LibrarySearch',
+			imporMenu: false,
+
+			// Menu Two Series
 			importInputA: 'LibrarySearch',
 			imporMenuA: false,
 			importInputB: 'LibrarySearch',
 			imporMenuB: false,
 
-			// LSE
+			// LSE data
 			isLoadingLSE: false,
 			R2: 0,
 			constant: '',
 			hedgeRatio: '',
-			tStat: 0
+			tStat: 0,
+
+			// Name to save as
+			saveAs: ''
 		}
 	},
 	components: {
@@ -204,20 +253,33 @@ export default {
 		hasTwo() {
 			return this.timeseriesA.length > 0 && this.timeseriesB.length > 0;
 		},
-		fileName() {
-			if(this.seriesNameA && this.seriesNameB) {
-				return this.flip ? `${this.seriesNameB} vs ${this.seriesNameA}` : `${this.seriesNameA} vs ${this.seriesNameB}`;
+		fileName: {
+			get () {
+				if(this.plusOne) {
+					if(this.seriesNameA && this.seriesNameB) {
+						return this.flip ? `${this.seriesNameB} vs ${this.seriesNameA}` : `${this.seriesNameA} vs ${this.seriesNameB}`;
+					}
+				}
+				else if(this.seriesName) {
+					return this.seriesName;
+				}
+				return null;
+			},
+			set (value) {
+				if(this.plusOne) {
+					this.seriesNameC = value;
+				}
+				else {
+					this.seriesName = value;
+				}
 			}
-			if(this.seriesNameA) {
-				return this.seriesNameA;
-			}
-			if(this.seriesNameB) {
-				return this.seriesNameB
-			}
-			return null;
 		}
 	},
 	watch: {
+		importInput() {
+			this.timeseries = [];
+			this.seriesName = null;
+		},
 		importInputA() {
 			this.timeseriesA = [];
 			this.seriesNameA = null;
@@ -246,6 +308,11 @@ export default {
 		}
 	},
 	methods: {
+		showSeries({series, name}) {
+			this.timeseries = series;
+			this.seriesName = name;
+		},
+
 		showSeriesA({series, name}) {
 			this.timeseriesA = series;
 			this.seriesNameA = name;
@@ -254,6 +321,11 @@ export default {
 		showSeriesB({series, name}) {
 			this.timeseriesB = series;
 			this.seriesNameB = name;
+		},
+
+		clear() {
+			this.timeseries = []
+			this.seriesName = null
 		},
 
 		clearA() {
@@ -272,6 +344,12 @@ export default {
 			this.aggregator = 'diff'
 		},
 
+		loadError({msg}) {
+			this.timeseries = [];
+			this.seriesName = null;
+			EventBus.$emit('api-error', msg);  
+		},
+
 		loadErrorA({msg}) {
 			this.timeseriesA = [];
 			this.seriesNameA = null;
@@ -282,6 +360,10 @@ export default {
 			this.timeseriesB = [];
 			this.seriesNameB = null;
 			EventBus.$emit('api-error', msg);  
+		},
+
+		setImportType(type) {
+			this.importInput = type
 		},
 
 		setImportTypeA(type) {
@@ -349,48 +431,58 @@ export default {
 		},
 
 		async upload() {
-			let series = null;
-			if(this.timeseriesC.length > 0) {
-				series = this.timeseriesC;
+			this.uploading = true;
+			try {
+				const strategy = await this.$store.dispatch('strategies/upload', {
+					fileName: this.fileName,
+					data: this.plusOne ?  this.timeseriesC : this.timeseries,
+					source: 'COMBO'
+				});
+				this.$store.commit('dictionary/addLibrary', strategy)
+				this.reset();
+				this.$emit('close')
+				window.scrollTo(0,0);
 			}
-			else if(this.timeseriesA.length > 0) {
-				series = this.timeseriesA;
-			}
-			else if (this.timeseriesB.length > 0) {
-				series = this.timeseriesB;
-			}
-			if(series) {
-				this.uploading = true;
-				try {
-					const strategy = await this.$store.dispatch('strategies/upload', {
-						fileName: this.fileName,
-						data: series,
-						source: 'COMBO'
-					});
-					this.$store.commit('dictionary/addLibrary', strategy)
-					this.reset();
-					this.$emit('close')
-					window.scrollTo(0,0);
-				}
-				finally {
-					this.uploading = false;
-				}
+			finally {
+				this.uploading = false;
 			}
 		},
 
 		reset() {
-			this.timeseriesA = []
-			this.seriesNameA = ''
-			this.timeseriesB = []
-			this.seriesNameB = ''
-			this.timeseriesC = []
-			this.seriesNameC = ''
-			this.fileName = ''
-			this.aggregator= 'diff'
-			this.importInputA = 'LibrarySearch'
-			this.imporMenuA = false
-			this.importInputB = 'LibrarySearch'
-			this.imporMenuB = false
+			this.seriesName = null;
+			this.timeseries = [];
+
+			// Two Series
+			this.seriesNameA = null;
+			this.seriesNameB = null;
+			this.seriesNameC = null;
+			this.timeseriesA = [];
+			this.timeseriesB = [];
+			this.timeseriesC = [];
+			this.uploading = false;
+
+			// Switches
+			this.flip = false;
+
+			// Two series aggregation type - difference, ratio or Least Squares
+			this.aggregator = 'diff';
+			
+			// Menu One Series
+			this.importInput = 'LibrarySearch';
+			this.imporMenu = false;
+
+			// Menu Two Series
+			this.importInputA = 'LibrarySearch';
+			this.imporMenuA = false;
+			this.importInputB = 'LibrarySearch';
+			this.imporMenuB = false;
+
+			// LSE data
+			this.isLoadingLSE = false;
+			this.R2 = 0;
+			this.constant = '';
+			this.hedgeRatio = '';
+			this.tStat = 0;
 		}
 	}
 }
@@ -404,7 +496,27 @@ export default {
 .mrt-import {
 	display: flex;
 	flex-wrap: wrap;
-	background-color:#78909C;
+	background-color:#455A64;
+	.plusOne {
+		width:100%;
+	}
+	.one {
+		width:100%;
+		padding:12px;
+		.import-timeseries {
+			margin: 24px 0 0 0;
+			height:388px;
+			border-radius: 2px;
+		}
+	}
+	.import-timeseries {
+		margin: 16px 0 0 0;
+		height:150px;
+		border-radius: 2px;
+	}
+	.import-component {
+		display:flex;
+	}
 	.top-panel {
 		width:100%;
 		display:flex;
@@ -416,17 +528,17 @@ export default {
 			border-radius: 2px;
 			background-color: #455A64;
 		}
+		.left-panel {
+			order: 1;
+		}
 		.right-panel {
+			order: 2;
 			border: solid #757575;
 			border-width: 0 0 0px 1px;
 		}
-		.import-timeseries {
-			margin: 16px 0 0 0;
-			height:150px;
-			border-radius: 2px;
-		}
-		.import-component {
-			display:flex;
+		.right-panel.flip {
+			order: 0;
+			opacity: 1;
 		}
 	}
 	.middle-panel {
@@ -473,6 +585,9 @@ export default {
 					}
 					> span {
 						min-height: 22px;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
 						display:block;
 						> span {
 							font-size: 10px;
@@ -490,10 +605,15 @@ export default {
 		width:100%;
 		margin: -12px 0 0 0;
 		text-align: center;
-		padding: 0px 16px 8px 16px;
+		padding: 12px 16px 8px 16px;
 		background-color: #455A64;
 		> div {
-			padding: 8px 0 0 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			button {
+				margin: 8px 0 0 0;
+			}
 		}
 	}
 	
@@ -503,6 +623,9 @@ export default {
 	.v-enter { opacity: 0; }
 	.v-enter-active  { transition: opacity .25s }
 	.v-enter-to { opacity: 1; }
+	.fade-enter-active {
+		transition: opacity .5s
+	}
 }
 
 </style>

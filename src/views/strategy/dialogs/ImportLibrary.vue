@@ -7,7 +7,6 @@
 		item-text="name"
     item-value="_id"
 		hide-details
-		clearable
 		box
 		dense
 		@change="findSeries"
@@ -43,18 +42,13 @@ export default {
 	},
 	methods: {
 		async findSeries(id) {
-			if(id) {
-				let series = await ApiController.findSeries(id, 'Library')
-				this.$emit('loaded', {
-					series: series.ts.data,
-					errors: [],
-					name: series.name,
-					source: "Library"
-				})
-			}
-			else {
-				this.$emit('clear')
-			}
+			let series = await ApiController.findSeries(id, 'Library')
+			this.$emit('loaded', {
+				series: series.ts.data,
+				errors: [],
+				name: series.name,
+				source: "Library"
+			})
 		}
 	}
 }
