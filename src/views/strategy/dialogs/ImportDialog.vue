@@ -492,6 +492,8 @@ export default {
 			this.constant = '';
 			this.hedgeRatio = '';
 			this.tStat = 0;
+
+			this.saveAs = ''
 		}
 	}
 }

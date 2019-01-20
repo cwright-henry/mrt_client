@@ -19,7 +19,7 @@ export default {
   name: 'Mrt',
   data() {
     return {
-      showMenu: this.$vuetify.breakpoint.mdAndUp
+      showMenu: this.$vuetify.breakpoint.lg
     }
 	},
   components: {
