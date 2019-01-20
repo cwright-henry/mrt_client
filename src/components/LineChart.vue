@@ -12,6 +12,11 @@ const options = (vm) => {
 			zoomType: 'x',
 			backgroundColor: vm._props.backgroundColor
 		},
+		boost: {
+			useGPUTranslations: true,
+			useAlpha: false,
+			debug:{}
+		},
 		title: {
 			text: null
 		},
@@ -38,6 +43,7 @@ const options = (vm) => {
 		},
 		plotOptions: {
 			series: {
+				boostThreshold: 50000,
 				states: {
 					hover: {
 						enabled: false
@@ -50,6 +56,10 @@ const options = (vm) => {
 				negativeColor: '#FFFFFF',
 				color: '#FFFFFF',
 				lineWidth: 0.5,
+			},
+			line: {
+				color: '#00B0FF',
+				lineWidth: 0.5
 			}
 		}
 	}

@@ -257,6 +257,7 @@ export default {
 		},
 		fileName: {
 			get () {
+				console.log(`${this.seriesNameB} vs ${this.seriesNameA} vs ${this.seriesName}`)
 				if(this.plusOne) {
 					if(this.seriesNameA && this.seriesNameB) {
 						return this.flip ? `${this.seriesNameB} vs ${this.seriesNameA}` : `${this.seriesNameA} vs ${this.seriesNameB}`;

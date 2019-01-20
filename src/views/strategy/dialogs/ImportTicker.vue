@@ -41,13 +41,13 @@ export default {
 		this.ticker = ''
 	},
 	methods: {
-		async findSeries(value) {
+		async findSeries() {
 			this.loading = true
 			try {
 				let series = await ApiController.findSeries(this.ticker, 'Alphavantage')
 				this.$emit('loaded', {
 					series: series.data,
-					name: value.name,
+					name: this.ticker,
 					source: 'Alphavantage'
 				})
 			}
