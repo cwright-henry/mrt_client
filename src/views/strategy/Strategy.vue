@@ -28,26 +28,11 @@
 				slot="activator"
 				v-model="fab"
 				color="fab"
+				@click.stop="showInvestUpload=true"
 				dark
 				fab>
 				<v-icon>add</v-icon>
 				<v-icon>close</v-icon>
-			</v-btn>
-			<v-btn
-				fab
-				dark
-				small
-				@click.stop="showCSVUpload=true"
-				color="green">
-				CSV
-			</v-btn>
-			<v-btn
-				fab
-				dark
-				small
-				@click.stop="showInvestUpload=true"
-				color="orange">
-				<v-icon>exposure_plus_1</v-icon>
 			</v-btn>
 		</v-speed-dial>
 	</div>

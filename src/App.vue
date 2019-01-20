@@ -120,5 +120,6 @@ export default {
 	.container.fluid {
     max-width: 1785px;
 	}
+	.menuable__content__active { /*Fix for Safari dialog display. Reference Vuetify issue #2111 */ z-index:250!important; }
 </style>
 

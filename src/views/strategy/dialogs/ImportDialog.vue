@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" width="1100" :fullscreen="$vuetify.breakpoint.mdAndDown">
+	<v-dialog v-model="dialog" width="1100" :fullscreen="$vuetify.breakpoint.mdAndDown" style="z-index:-1">
 		<v-card>
 			<v-toolbar dense color="#827717">
 				<v-btn icon>
