@@ -32,6 +32,9 @@ export default {
 		userKappa: null,
 		userSigma: null,
 		userTheta: null,
+		isKappaLocked: false,
+		isSigmaLocked: false,
+		isThetaLocked: false,
 		selectedSim: null,
 		simValue: null,
 		simDate: null,
@@ -58,15 +61,36 @@ export default {
 		},
 
 		setKappa(state, kappa) {
-			state.userKappa = kappa;
+			if(kappa === null) {
+				state.userKappa = state.strategy.kappa;
+				state.isKappaLocked = false;
+			}
+			else {
+				state.userKappa = kappa;
+				state.isKappaLocked = true;
+			}
 		},
 
 		setSigma(state, sigma) {
-			state.userSigma = sigma;
+			if(sigma === null) {
+				state.userSigma = state.strategy.sigma;
+				state.isSigmaLocked = false;
+			}
+			else {
+				state.userSigma = sigma;
+				state.isSigmaLocked = true;
+			}
 		},
 
 		setTheta(state, theta) {
-			state.userTheta = theta;
+			if(theta === null) {
+				state.userTheta = state.strategy.theta;
+				state.isThetaLocked = false;
+			}
+			else {
+				state.userTheta = theta;
+				state.isThetaLocked = true;
+			}
 		},
 
 		setSimValue(state, value) {
@@ -85,6 +109,14 @@ export default {
 			state.simSeed = seed;
 		},
 
+		setStartDate(state, date) {
+			state.startDate = date;
+		},
+
+		setEndDate(state, date) {
+			state.endDate = date;
+		},
+
 		setStrategy(state, strategy) {
 			state.strategy = strategy;
 
@@ -100,6 +132,9 @@ export default {
 			state.simHorizon = { value: '780', text: '3 Years' };
 			state.simSeed = 123456789;
 			state.simSliderValue = state.endDate;
+			state.isKappaLocked = false;
+			state.isSigmaLocked = false;
+			state.isThetaLocked = false;
 		},
 
 		setStrategyName(state, name) {
@@ -127,11 +162,6 @@ export default {
 			else {
 				state.selectedSim = state.sims[0].id
 			}
-		},
-
-		setDateRange(state, dates) {
-			state.endDate = dates.endDate;
-			state.startDate = dates.startDate;
 		}
 	},
 	
@@ -146,7 +176,7 @@ export default {
 					if(strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
-							ts: strategy.ts.data,
+							strategyId: state.strategy._id,
 							start_date: state.startDate,
 							end_date: state.endDate
 						});
@@ -169,7 +199,7 @@ export default {
 
 					if(strategy.fit.proctype === 'NONE') {
 						const fit = await ApiController.fit({
-							ts: strategy.ts.data,
+							strategyId: state.strategy._id,
 							start_date: state.startDate,
 							end_date: state.endDate
 						});
@@ -182,53 +212,30 @@ export default {
 			}
 		},
 
-		async fit({commit, state}, range) {
+		async fit({commit, state}) {
 			commit('isFittingTS', true)
 			try {
-				if(state.startDate !== range.startDate || state.endDate !== range.endDate) {
-					const fit = await ApiController.fit({
-						ts: state.strategy.ts.data,
-						start_date: range.startDate,
-						end_date: range.endDate,
-						kappa: state.userKappa,
-						sigma: state.userSigma,
-						theta: state.userTheta
-					});
-
-					commit('setDateRange', range)
-					commit('updateFit', fit)
+				const payload = {
+					strategyId: state.strategy._id,
+					start_date: state.startDate,
+					end_date: state.endDate
 				}
+
+				if(state.userKappa !== null) {
+					payload.kappa = state.userKappa;
+				}
+				if(state.userSigma !== null) {
+					payload.sigma = state.userSigma;
+				}
+				if(state.userTheta !== null) {
+					payload.theta = state.userTheta;
+				}
+
+				const fit = await ApiController.fit(payload);
+				commit('updateFit', fit)
 			}
 			catch(error) {
 				EventBus.$emit('api-error', 'Fit.fit ' + error.response.data.msg);  
-			}
-			finally {
-				commit('isFittingTS', false)
-			}
-		},
-
-		async fixFit({commit, state}, params) {
-			commit('isFittingTS', true)
-			try {
-				const fit = await ApiController.fit({
-					ts: state.strategy.ts.data,
-					start_date: state.startDate,
-					end_date: state.endDate,
-					kappa: params.kappa,
-					sigma: params.sigma,
-					theta: params.theta
-				});
-
-				if(params.kappa) {
-					commit('setKappa', params.kappa)	
-				}
-				if(params.sigma) {
-					commit('setSigma', params.sigma)	
-				}
-				if(params.theta) {
-					commit('setTheta', params.theta)	
-				}
-				commit('updateFit', fit)
 			}
 			finally {
 				commit('isFittingTS', false)

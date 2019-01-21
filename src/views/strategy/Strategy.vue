@@ -27,12 +27,11 @@
 			<v-btn
 				slot="activator"
 				v-model="fab"
-				color="fab"
+				color="#AEEA00"
 				@click.stop="showInvestUpload=true"
 				dark
 				fab>
-				<v-icon>add</v-icon>
-				<v-icon>close</v-icon>
+				<v-icon>playlist_add</v-icon>
 			</v-btn>
 		</v-speed-dial>
 	</div>

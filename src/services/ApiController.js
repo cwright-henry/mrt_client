@@ -14,8 +14,9 @@ export default {
   },
 
   fit (params) {
-    return Api().post('api/fit', params)
-      .then(response => response.data)
+    return Api().get('api/fit', {
+      params: params
+    }).then(response => response.data)
   },
 
   fitLse (params) {

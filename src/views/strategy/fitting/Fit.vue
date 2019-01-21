@@ -61,7 +61,7 @@
 										:close-on-content-click="false"
 										origin="center center"
 										transition="scale-transition">
-										<v-icon slot="activator" class="elevation-3" :class="userKappa ? 'on' : 'off'" size=16>{{userKappa ? 'lock' : 'lock_open'}}</v-icon>
+										<v-icon slot="activator" class="elevation-3" :class="isKappaLocked ? 'on' : 'off'" size=16>{{isKappaLocked ? 'lock' : 'lock_open'}}</v-icon>
 										<div style="background-color:#37474F">
 											<v-text-field
 												v-model="kappa"
@@ -74,9 +74,9 @@
 												clearable
 												maxlength="10"
 												placeholder="Fix Kappa"
-												@keyup.enter="fixParamaters"
-												@click:clear="clearKappa"
-												@click:append="fixParamaters">
+												@keyup.enter="fixKappa"
+												@click:clear="resetKappa"
+												@click:append="fixKappa">
 											</v-text-field>
 										</div>
 									</v-menu>
@@ -96,7 +96,7 @@
 										:close-on-content-click="false"
 										origin="center center"
 										transition="scale-transition">
-										<v-icon slot="activator" class="elevation-3" :class="userSigma ? 'on' : 'off'" size=16>{{userSigma ? 'lock' : 'lock_open'}}</v-icon>
+										<v-icon slot="activator" class="elevation-3" :class="isSigmaLocked ? 'on' : 'off'" size=16>{{isSigmaLocked ? 'lock' : 'lock_open'}}</v-icon>
 										<div style="background-color:#37474F">
 											<v-text-field
 												v-model="sigma"
@@ -109,9 +109,9 @@
 												clearable
 												maxlength="10"
 												placeholder="Fix Sigma"
-												@keyup.enter="fixParamaters"
-												@click:clear="clearSigma"
-												@click:append="fixParamaters">
+												@keyup.enter="fixSigma"
+												@click:clear="resetSigma"
+												@click:append="fixSigma">
 											</v-text-field>
 										</div>
 									</v-menu>
@@ -131,7 +131,7 @@
 										:close-on-content-click="false"
 										origin="center center"
 										transition="scale-transition">
-										<v-icon slot="activator" class="elevation-3" :class="userTheta ? 'on' : 'off'" size=16>{{userTheta ? 'lock' : 'lock_open'}}</v-icon>
+										<v-icon slot="activator" class="elevation-3" :class="isThetaLocked ? 'on' : 'off'" size=16>{{isThetaLocked ? 'lock' : 'lock_open'}}</v-icon>
 										<div style="background-color:#37474F">
 											<v-text-field
 												v-model="theta"
@@ -144,9 +144,9 @@
 												clearable
 												maxlength="10"
 												placeholder="Fix Theta"
-												@keyup.enter="fixParamaters"
-												@click:clear="clearTheta"
-												@click:append="fixParamaters">
+												@keyup.enter="fixTheta"
+												@click:clear="resetTheta"
+												@click:append="fixTheta">
 											</v-text-field>
 										</div>
 									</v-menu>
@@ -192,7 +192,7 @@
 								<div>Full</div>
 							</div>
 							<div>
-								<label>R2</label>
+								<label>R<sup>2</sup></label>
 								<div v-if="isFittingTS">...</div>
 								<div v-else>{{strategy.fit.R2 | number }}</div>
 								<div v-if="isLoadingTS">...</div>
@@ -220,7 +220,7 @@
 								<div v-else>{{strategy.fit.resid_skew_full | number }}</div>
 							</div>
 							<div>
-								<label>Kurtosis</label>
+								<label>Kurt</label>
 								<div v-if="isFittingTS">...</div>
 								<div v-else>{{strategy.fit.resid_kurt | number }}</div>
 								<div v-if="isLoadingTS">...</div>
@@ -398,7 +398,7 @@ export default {
 		mrtSimsSparklineChart
 	},
 	computed: {
-		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isLoadingSims','isSavingFit', 'userKappa', 'userSigma', 'userTheta', 'sims', 'selectedSim']),
+		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isLoadingSims','isSavingFit', 'isKappaLocked', 'isSigmaLocked', 'isThetaLocked', 'sims', 'selectedSim']),
 		...mapGetters('strategies', ['findStrategy']),
 		name: {
 			get () {
@@ -449,7 +449,9 @@ export default {
 
 		async setDateRange(dates) {
 			if(!isNaN(dates.startDate) && !isNaN(dates.endDate)) {
-				await this.$store.dispatch('fit/fit', dates)	
+				this.$store.commit('fit/setStartDate', dates.startDate);
+				this.$store.commit('fit/setEndDate', dates.endDate);
+				await this.$store.dispatch('fit/fit')	
 				await this.$store.dispatch('fit/loadSims', {})
 			}
 		},
@@ -496,33 +498,74 @@ export default {
 			}, this.slider * 1000)
 		},
 
-		clearKappa() {
-			this.kappa = null;
-			this.fixParamaters();
+		resetKappa() {
+			this.kappaMenu = false;
+			this.$store.commit('fit/setKappa', null);
+			this.fit();
 		},
 
-		clearSigma() {
-			this.sigma = null;
-			this.fixParamaters();
+		resetSigma() {
+			this.sigmaMenu = false;
+			this.$store.commit('fit/setSigma', null);
+			this.fit();
 		},
 
-		clearTheta() {
-			this.theta = null;
-			this.fixParamaters();
+		resetTheta() {
+			this.thetaMenu = false;
+			this.$store.commit('fit/setTheta', null);
+			this.fit();
 		},
 
-		async fixParamaters() {
-			this.kappaMenu = false
-			this.sigmaMenu = false
-			this.thetaMenu = false
-			const params = {
-				kappa: this.kappa ? parseFloat(this.kappa) : null,
-				sigma: this.sigma ? parseFloat(this.sigma) : null,
-				theta: this.theta ? parseFloat(this.theta) : null
+		fixKappa() {
+			let value = parseFloat(this.kappa);
+			if(!isNaN(value)) {
+				this.kappaMenu = false;
+				this.$store.commit('fit/setKappa', value);
+				this.fit();
 			}
-			await this.$store.dispatch('fit/fixFit', params);
+			else {
+				this.$store.commit('fit/setKappa', null);
+				this.kappaMenu = false;
+				this.kappa = null;
+				this.fit();
+			}
+		},
+
+		fixSigma() {
+			let value = parseFloat(this.sigma);
+			if(!isNaN(value)) {
+				this.sigmaMenu = false;
+				this.$store.commit('fit/setSigma', value);
+				this.fit();
+			}
+			else {
+				this.sigmaMenu = false;
+				this.$store.commit('fit/setSigma', null);
+				this.sigma = null;
+				this.fit();
+			}
+		},
+
+		fixTheta() {
+			let value = parseFloat(this.theta);
+			if(!isNaN(value)) {
+				this.thetaMenu = false;
+				this.$store.commit('fit/setTheta', value);
+				this.fit();
+			}
+			else {
+				this.$store.commit('fit/setTheta', null);
+				this.theta = null;
+				this.thetaMenu = false;
+				this.fit();
+			}
+		},
+
+		async fit() {
+			await this.$store.dispatch('fit/fit', {});
 			await this.$store.dispatch('fit/loadSims', {})
 		},
+
 
 		horizonChange() {
 			this.$store.dispatch('fit/loadSims', {})

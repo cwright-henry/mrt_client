@@ -112,7 +112,7 @@
 								<v-switch color="#0091EA" label="Flip" class="flip" :loading="isLoadingLSE" :disabled="!hasTwo" v-model="flip"></v-switch>
 								<div class="params" v-if="aggregator == 'LSPairfit'">
 									<div class="param">
-										<label>R2</label>
+										<label>R<sup>2</sup></label>
 										<span v-if="isLoadingLSE">...</span>
 										<span v-else>{{R2 | number(2)}}</span>
 									</div>
@@ -126,21 +126,18 @@
 										<span v-if="isLoadingLSE">...</span>
 										<span v-else>{{hedgeRatio}}</span>
 									</div>
-									<div class="param">
-										<label>T Statistic</label>
-										<span v-if="isLoadingLSE">...</span>
-										<span v-else>{{tStat | number(2)}}</span>
-									</div>
 								</div>
 							</div>
 							<div class="aggregated-timeseries">
-								<mrt-linechart :ts="timeseriesC" :height="150" :name="seriesNameC" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
+								<mrt-linechart :ts="timeseriesC" :height="150" :name="`${seriesNameA} vs ${seriesNameB}`" backgroundColor="rgba(0, 0, 0, 0)"></mrt-linechart>
 							</div>
 						</div>
 					</div>
 					<div class="bottom-panel">
 						<v-text-field
 							v-model="fileName"
+							:disabled="uploading"
+							:loading="uploading"
 							@keyup.native.enter="upload"
 							label="Save As..."
 							box
@@ -220,7 +217,6 @@ export default {
 			R2: 0,
 			constant: '',
 			hedgeRatio: '',
-			tStat: 0,
 
 			// Name to save as
 			saveAs: ''
@@ -257,7 +253,6 @@ export default {
 		},
 		fileName: {
 			get () {
-				console.log(`${this.seriesNameB} vs ${this.seriesNameA} vs ${this.seriesName}`)
 				if(this.plusOne) {
 					if(this.seriesNameA && this.seriesNameB) {
 						return this.flip ? `${this.seriesNameB} vs ${this.seriesNameA}` : `${this.seriesNameA} vs ${this.seriesNameB}`;
@@ -422,9 +417,8 @@ export default {
 						ApiController.fitLse({ts1: tsA, ts2: tsB})
 						.then((fit) => {
 							this.R2 = `${this.$options.filters.number(fit.R2, 2)}`;
-							this.constant = `${this.$options.filters.number(fit.constant, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_constant, 2)}`;
-							this.hedgeRatio = `${this.$options.filters.number(fit.hedgeratio, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_hedgeratio, 2)}`;
-							this.tStat = fit['t-stat'];
+							this.constant = `${this.$options.filters.number(fit.constant, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_constant * fit['t-stat'], 2)}`;
+							this.hedgeRatio = `${this.$options.filters.number(fit.hedgeratio, 2)} \u00B1 ${this.$options.filters.number(fit.std_err_hedgeratio * fit['t-stat'], 2)}`;
 
 							// Delay update util flip transition is finished
 							// highcharts updates kill all animations
@@ -435,8 +429,6 @@ export default {
 						})
 						break;
 				}
-
-				this.seriesNameC = this.flip ? `${this.seriesNameB} vs ${this.seriesNameA}` : `${this.seriesNameA} vs ${this.seriesNameB}`;
 			}
 		},
 
@@ -444,7 +436,7 @@ export default {
 			this.uploading = true;
 			try {
 				const strategy = await this.$store.dispatch('strategies/upload', {
-					fileName: this.fileName,
+					fileName: this.plusOne ? this.seriesNameC : this.seriesName,
 					data: this.plusOne ?  this.timeseriesC : this.timeseries,
 					source: 'COMBO'
 				});
@@ -492,7 +484,6 @@ export default {
 			this.R2 = 0;
 			this.constant = '';
 			this.hedgeRatio = '';
-			this.tStat = 0;
 
 			this.saveAs = ''
 		}
@@ -617,9 +608,6 @@ export default {
 					}
 					&:nth-child(3) {
 						width:100px;
-					}
-					&:nth-child(4) {
-						width:60px;
 						margin:0 8px 0 0;
 					}
 					label {

@@ -45,9 +45,12 @@ const trimData = (arr, startDate, endDate) => {
 	return arr;
 }
 
-
 const seedGen = () => {
 	return parseInt(Math.random().toString().slice(2,11))
+}
+
+const isEmpty = (value) => {
+	return value === null || value === undefined;
 }
 
 export {
@@ -56,5 +59,6 @@ export {
 	tsExtremes,
 	trimData,
 	closestNeighbour,
-	seedGen
+	seedGen,
+	isEmpty
 }

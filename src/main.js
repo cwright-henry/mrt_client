@@ -42,7 +42,7 @@ const optionsCompact = {
 };
 
 Vue.filter('number', function (value, precision) {
-	if(value && !isNaN(value)) {
+	if(value !== null && !isNaN(value)) {
 		return new Intl.NumberFormat(navigator.language, {maximumFractionDigits:(precision ? precision: 3), minimumFractionDigits:(precision ? precision: 3)}).format(value);
 	}
 	return ''
