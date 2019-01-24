@@ -24,7 +24,7 @@ const removeListeners = (container, types, fn) => {
 const getPlotLine = (value, type) => {
 	return {
 		value,
-		color: '#FFEB3B',
+		color: '#AEEA00',
 		width: 1,
 		label: {
 			align:'center',

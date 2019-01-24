@@ -1,12 +1,17 @@
 import ApiController from '@/services/ApiController'
+import moment from 'moment'
 import { EventBus } from '@/events.js';
-import {closestNeighbour} from '@/utils/sorting'
+import {closestNeighbour, tsExtremes, seedGen} from '@/utils/sorting'
+import {getMinMax, mean} from '@/utils/stats'
 
 /**
  * All data related to OU fitting. All components
  * associated with OU fitting commit thier modifications here and
  * all interested components watch for change using mapState utility
  */
+const DEFAULT_SIM_HORIZON = { value: '780', text: '3 Years' };
+const DEFAULT_ANIMATION_TIME = 2;
+
 export default {
 	namespaced: true,
 
@@ -26,21 +31,30 @@ export default {
 		isSavingFit: false,
 		isLoadingSims: false,
 
-		// User data
+		// User selected dates
 		startDate: null,
 		endDate: null,
+
+		// User Parameters
 		userKappa: null,
 		userSigma: null,
 		userTheta: null,
-		isKappaLocked: false,
-		isSigmaLocked: false,
-		isThetaLocked: false,
+
+		// User sims
 		selectedSim: null,
-		simValue: null,
-		simDate: null,
-		simHorizon: { value: '780', text: '3 Years' },
+		simStart: {
+			value: null,
+			date: null
+		},
+		simHorizon: DEFAULT_SIM_HORIZON,
 		simSeed: 123456789,
-		simSliderValue: null
+		simSliderValue: null,
+		simAnimationTime: DEFAULT_ANIMATION_TIME,
+
+		// Min, max of series used for validation -
+		// not sure these derived values should here!!
+		range: 0,
+		avg: 0
 	},
 
 	mutations: {
@@ -61,52 +75,46 @@ export default {
 		},
 
 		setKappa(state, kappa) {
-			if(kappa === null) {
-				state.userKappa = state.strategy.kappa;
-				state.isKappaLocked = false;
-			}
-			else {
-				state.userKappa = kappa;
-				state.isKappaLocked = true;
-			}
+			state.userKappa = kappa;
 		},
 
 		setSigma(state, sigma) {
-			if(sigma === null) {
-				state.userSigma = state.strategy.sigma;
-				state.isSigmaLocked = false;
-			}
-			else {
-				state.userSigma = sigma;
-				state.isSigmaLocked = true;
-			}
+			state.userSigma = sigma;
 		},
 
 		setTheta(state, theta) {
-			if(theta === null) {
-				state.userTheta = state.strategy.theta;
-				state.isThetaLocked = false;
-			}
-			else {
-				state.userTheta = theta;
-				state.isThetaLocked = true;
-			}
+			state.userTheta = theta;
 		},
 
-		setSimValue(state, value) {
-			state.simValue = value;
+		setSimStart(state, start) {
+			state.simStart.value = start.value;
+			state.simStart.date = start.date;
 		},
 
-		setSimDate(state, date) {
-			state.simDate = date;
+		resetSimStart(state) {
+			const extremes = tsExtremes(state.strategy.ts.data)
+			state.simStart.value = extremes.maxValue;
+			state.simStart.date = extremes.max;
 		},
 
 		setSimHorizon(state, horizon) {
-			state.horizon = horizon;
+			state.simHorizon = horizon;
 		},
 
-		setSimSeed(state, seed) {
-			state.simSeed = seed;
+		resetSimHorizon(state) {
+			state.simHorizon = DEFAULT_SIM_HORIZON;
+		},
+
+		setAnimationTime(state, animationTime) {
+			state.simAnimationTime = animationTime;
+		},
+
+		resetAnimationTime(state) {
+			state.simAnimationTime = DEFAULT_ANIMATION_TIME;
+		},
+
+		genSimSeed(state) {
+			state.simSeed = seedGen();
 		},
 
 		setStartDate(state, date) {
@@ -120,21 +128,33 @@ export default {
 		setStrategy(state, strategy) {
 			state.strategy = strategy;
 
+			// min/max and avg for validation of Sigma and Theta
+			const minMax = getMinMax(state.strategy.ts.data)
+			const avg = mean(state.strategy.ts.data)
+			const extremes = tsExtremes(state.strategy.ts.data)
+
+
 			// Reset the transient data
-			state.startDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts.data[0][0] : state.strategy.fit.start_date;
-			state.endDate = state.strategy.fit.proctype === 'NONE' ? state.strategy.ts.data[state.strategy.ts.data.length - 1][0] : state.strategy.fit.end_date;
+
+			// Dates on graph
+			state.startDate = state.strategy.fit.proctype === 'NONE' ? extremes.min : state.strategy.fit.start_date;
+			state.endDate = state.strategy.fit.proctype === 'NONE' ? extremes.max : state.strategy.fit.end_date;
+
+			// Parameters
 			state.userKappa = null;
 			state.userSigma = null;
 			state.userTheta = null;
+			state.range = minMax[1] - minMax[0];
+			state.avg = avg;
+
+			// Sims
 			state.selectedSim = null;
-			state.simValue = null;
-			state.simDate = null;
-			state.simHorizon = { value: '780', text: '3 Years' };
-			state.simSeed = 123456789;
+			state.simStart.value = extremes.maxValue;
+			state.simStart.date = extremes.max;
+			state.simHorizon = DEFAULT_SIM_HORIZON;
+			state.simSeed = seedGen();
 			state.simSliderValue = state.endDate;
-			state.isKappaLocked = false;
-			state.isSigmaLocked = false;
-			state.isThetaLocked = false;
+			state.simAnimationTime = DEFAULT_ANIMATION_TIME;
 		},
 
 		setStrategyName(state, name) {
@@ -221,7 +241,7 @@ export default {
 					end_date: state.endDate
 				}
 
-				if(state.userKappa !== null) {
+				if(state.userKappa !== '') {
 					payload.kappa = state.userKappa;
 				}
 				if(state.userSigma !== null) {
@@ -256,48 +276,37 @@ export default {
 			}
 		},
 
-		async loadSims({commit, state}, params) {
+		async loadSims({commit, state}) {
 			commit('isLoadingSims', true)
 			try {
+
 				const payload = {
-					kappa: params.kappa || state.userKappa || state.strategy.fit.kappa,
-					sigma: params.sigma || state.userSigma || state.strategy.fit.sigma,
-					theta: params.theta || state.userTheta || state.strategy.fit.theta,
-					x_0: params.value || state.simValue,
-					x_0_date: params.date || state.simDate,
+					kappa: state.userKappa !== null ? state.userKappa : state.strategy.fit.kappa,
+					sigma: state.userSigma !== null ? state.userSigma : state.strategy.fit.sigma,
+					theta: state.userTheta !== null ? state.userTheta : state.strategy.fit.theta,
+					x_0: state.simStart.value,
+					x_0_date: state.simStart.date,
 					nsteps: state.simHorizon.value,
-					seed: params.seed || state.simSeed
+					seed: state.simSeed
 				}
 
 				/* Special case to match end of series */
 				if(payload.nsteps === '-1') {
 					const point = closestNeighbour(state.strategy.ts.data, payload.x_0_date)
 					const index = state.strategy.ts.data.findIndex(elm => elm[0] === point[0])
-					payload.nsteps = parseInt((state.strategy.ts.data.length - index) * 1.03895)
+					let diff = state.strategy.ts.data.length - index ;											// Mark is giving one more than asked for
+					for(let i = index, len = state.strategy.ts.data.length; i < len; i++) {	// If weekends exists skip these when asking for sims
+						if(moment.utc(state.strategy.ts.data[i][0]).day() === 6 ||						// Ignore Saturday
+								moment.utc(state.strategy.ts.data[i][0]).day() === 0) {						// Ignore Sunday
+							diff--;
+						}
+					}
+					payload.nsteps = parseInt(diff)
 				}
 
 				const sims = await ApiController.scenarios(payload);
-
+				
 				commit('setSims', sims)
-
-				if(params.kappa) {
-					commit('setKappa', params.kappa)	
-				}
-				if(params.sigma) {
-					commit('setSigma', params.sigma)	
-				}
-				if(params.theta) {
-					commit('setTheta', params.theta)	
-				}
-				if(params.value) {
-					commit('setSimValue', params.value)	
-				}
-				if(params.date) {
-					commit('setSimDate', params.date)	
-				}
-				if(params.seed) {
-					commit('setSimSeed', params.seed)	
-				}
 			}
 			catch(error) {
 				EventBus.$emit('api-error', 'Fit.loadSims ' + error.response.data.msg);  

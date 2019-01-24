@@ -25,15 +25,15 @@
 </template>
 
 <script>
-import { EventBus } from '@/events.js';
 import {stats} from '@/utils/stats'
+import {mapState} from 'vuex'
 
-const options = (vm) => {
+const options = () => {
 	return {
 		chart: {
-			height: vm._props.height,
-			width: vm._props.width,
-			backgroundColor: vm._props.backgroundColor,
+			height: 50,
+			width: 180,
+			backgroundColor: 'transparent',
 			margin:0
 		},
 		title: {
@@ -97,7 +97,8 @@ const options = (vm) => {
 			spline: {
 				boostThreshold: 1,
 				lineWidth: 0.5,
-				color: '#CDDC39'
+				color: '#CDDC39',
+				color: '#AEEA00'
 			}
 		}
 	}
@@ -119,46 +120,24 @@ export default {
 			type: Object,
 			default: () => {
 				return {
-					data:[]
+					id: null,
+					data: []
 				}
 			}
-		},
-		id: {
-			type: String,
-			default: ''
-		},
-		height: {
-			type: Number,
-			default: 50
-		},
-		width: {
-			type: Number,
-			default: 180
-		},
-		backgroundColor: {
-			type: String,
-			default: 'transparent'
-		},
-		isSelected: {
-			type: Boolean,
-			default: false
+		}
+	},
+	computed: {
+		...mapState('fit', ['selectedSim']),
+		isSelected() {
+			return this.selectedSim === this.sim.id;
 		}
 	},
 	watch: {
-		sim() {
-			this.update()
+		'sim.id'() {
+			this.draw()
 		}
 	},
-	mounted() {
-		this.update()
-	},
 	methods: {
-		update() {
-			setTimeout(() => {
-				this.draw()
-			}, 0)
-		},
-
 		draw() {
 			if(this.sim.data.length) {
 				const chart = this.$refs.sparkchart.chart

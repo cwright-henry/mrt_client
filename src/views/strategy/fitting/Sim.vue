@@ -1,173 +1,192 @@
 <template>
-	<v-card>
-		<v-toolbar dense flat>
-			<v-toolbar-title class="mrt--header-color">{{strategy.name}}</v-toolbar-title>
-			<v-spacer></v-spacer>
-		</v-toolbar>
-		<div class="mrt-simulations">
-			<mrt-fit-process :fit="strategy.fit"/>
-			<mrt-sim-chart 
-				:ts="strategy.ts" 
-				@fetchsims="loadSims"
-				:name="strategy.name">
-			</mrt-sim-chart>
-			<h1 class="header">Simulations</h1>
-			<ul class="graphs">
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['0']" id="sim_0" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['1']" id="sim_1" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['2']" id="sim_2" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['3']" id="sim_3" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['4']" id="sim_4" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['5']" id="sim_5" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['6']" id="sim_6" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['7']" id="sim_7" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['8']" id="sim_8" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['9']" id="sim_9" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['10']" id="sim_10" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['11']" id="sim_11" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['12']" id="sim_12" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['13']" id="sim_13" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['14']" id="sim_14" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['15']" id="sim_15" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['16']" id="sim_16" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['17']" id="sim_17" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['18']" id="sim_18" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :ts="sims['19']" id="sim_19" @loaded="loaded"></mrt-sims-sparkline-chart>
-				</li>
-			</ul>
+	<div>
+		<div class="header">
+			<h3>Simulations</h3>
 		</div>
-	</v-card>
+		<div class="simulation-graph">
+			<mrt-simchart
+				@startdate="loadSimsForDate">
+			</mrt-simchart>
+		</div>
+		<div class="controls">
+			<div class="horizon">
+				<v-select
+					v-model="horizon"
+					:items="horizonTypes"
+					:loading="isLoadingSims"
+					dense
+					box
+					hide-details
+					return-object
+					flat
+					label="Horizon">
+				</v-select>
+			</div>
+			<div class="play">
+				<div class="thumb-slider">
+					<v-slider
+						v-model="animationTime"
+						:thumb-size="28"
+						label="Interval"
+						:min=0.5
+						:max=8
+						step=0.5
+						ticks="always"
+						tick-size="1"
+						thumb-label="always">
+						<template slot="thumb-label" slot-scope="props">
+							<span>
+								{{ `${props.value}s` }}
+							</span>
+						</template>
+					</v-slider>
+				</div>
+				<div class="mrt-fit--actions">
+					<div>
+						<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="autoPlaySims"><v-icon>{{isPlaying ? 'pause' : 'play_arrow'}}</v-icon></v-btn>
+						<label>{{isPlaying ? 'Stop' : 'Animate'}}</label>
+					</div>
+				</div>
+			</div>
+			<div class="updates">
+				<div class="mrt-fit--actions">
+					<div>
+						<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="reset"><v-icon>settings_backup_restore</v-icon></v-btn>
+						<label>Reset</label>
+					</div>
+				</div>
+				<div class="mrt-fit--actions">
+					<div>
+						<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="getMoreSims"><v-icon>autorenew</v-icon></v-btn>
+						<label>New Sims</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<ul class="sparklines-graph">
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[0]"></mrt-sims-sparkline-chart>	
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[1]"></mrt-sims-sparkline-chart>	
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[2]"></mrt-sims-sparkline-chart>	
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[3]"></mrt-sims-sparkline-chart>	
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[4]"></mrt-sims-sparkline-chart>	
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[5]"></mrt-sims-sparkline-chart>	
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[6]"></mrt-sims-sparkline-chart>	
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[7]"></mrt-sims-sparkline-chart>	
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[8]"></mrt-sims-sparkline-chart>	
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[9]"></mrt-sims-sparkline-chart>	
+			</li>
+		</ul>
+	</div>
 </template>
 
 <script>
-import {mapState, mapGetters} from 'vuex'
-import mrtSimChart from '@/components/SimsChart'
-import mrtSimsSparklineChart from '@/components/SimsSparklineChart'
-import mrtFitProcess from '@/components/fit/Fit'
-import {tsExtremes} from '@/utils/sorting'
+import mrtSimsSparklineChart from './SimsSparklineChart'
+import mrtSimchart from './SimsChart'
+import {mapState} from 'vuex'
+import {closestNeighbour} from '@/utils/sorting'
 
 export default {
 	data() {
 		return {
-			loading: false,
-			loadeCount: 0
-		}
-	},
-	props: {
-		id: {
-			type: String,
-			default: ''
+			isPlaying: false,
+			isPlayingTimeout: null,
+			horizonTypes: [
+				{value: '130', text: '6 months'},
+				{value: '260', text: '1 year'},
+				{value: '520', text: '2 years'},
+				{value: '780', text: '3 years'},
+				{value: '1300', text: '5 years'},
+				{value: '-1', text: 'Align'} /* Special Case to match slider and end of timeseries */
+			]
 		}
 	},
 	components: {
-		mrtSimChart,
-		mrtSimsSparklineChart,
-		mrtFitProcess
+		mrtSimchart,
+		mrtSimsSparklineChart
 	},
 	computed: {
-		...mapState('fit', ['strategy', 'sims']),
-		...mapGetters('strategies', ['findStrategy'])
-	},
-	activated() {
-		this.load()
+		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isLoadingSims','isSavingFit', 'sims', 'selectedSim', 'simHorizon', 'simAnimationTime']),
+		horizon: {
+			get () {
+        return this.simHorizon
+      },
+      set (value) {
+				this.$store.commit('fit/setSimHorizon', value);
+				this.$store.dispatch('fit/loadSims')
+      }
+		},
+		animationTime: {
+			get () {
+        return this.simAnimationTime
+      },
+      set (value) {
+        this.$store.commit('fit/setAnimationTime', value);
+      }
+		}
 	},
 	methods: {
-		/**
-		 * Look in cache, if not there then load strategy and
-		 * Async load all stratgies
-		 */
-		async load() {
-			if(this.id) {
-				const strategy = this.findStrategy(this.id)
-				if(strategy) {
-					await this.$store.dispatch('fit/setStrategy', strategy)
-				}
-				else {
-					await this.$store.dispatch('fit/loadStrategy', {id: this.id})
-					this.$store.dispatch('strategies/load', {})
-				}
-			}
-			const extremes = tsExtremes(this.strategy.ts.data)
-			await this.$store.dispatch('fit/loadSims', {
-				value: extremes.maxValue,
-				date: extremes.max
-			})
+		async getMoreSims() {
+			this.$store.commit('fit/genSimSeed')
+			await this.$store.dispatch('fit/loadSims')
+
 		},
 
-		async loadSims(params) {
-			this.loading = true
-			await this.$store.dispatch('fit/loadSims', params)
+		async loadSimsForDate(date) {
+			const closest = closestNeighbour(this.strategy.ts.data, date)
+			this.$store.commit('fit/setSimStart', {
+				value: closest[1],
+				date: closest[0]
+			});
+			await this.$store.dispatch('fit/loadSims')
 		},
 
-		loaded(data) {
-			this.loadeCount++;
-			if(this.loadeCount === 20) {
-				this.loading = false
-				this.loadeCount = 0;
+		async reset() {
+			this.isPlaying = false;
+			clearTimeout(this.isPlayingTimeout)
+			this.$store.commit('fit/resetAnimationTime')
+			this.$store.commit('fit/resetSimHorizon')
+			this.$store.commit('fit/resetSimStart')
+			await this.$store.dispatch('fit/loadSims')
+		},
+
+		autoPlaySims() {
+			this.isPlaying = !this.isPlaying
+			if(this.isPlaying) {
+				this.autoPlay();
 			}
+			else {
+				clearTimeout(this.isPlayingTimeout)
+			}
+		},
+
+		autoPlay() {
+			this.$store.commit('fit/setNextSim');
+			this.isPlayingTimeout = setTimeout(() => {
+				this.autoPlay()
+			}, this.animationTime * 1000)
 		}
 	}
 }
 </script>
 
-<style lang="less">
-.mrt-simulations {
-	padding: 16px;
-	.graphs {
-		list-style: none;
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		justify-content: flex-start;
-		margin:0 -12px;
-		li {
-			margin: 12px;
-		}
-	}
-	.header {
-		font-size: 18px;
-		font-weight:400;
-		color: var(--light-gray); 
-		margin: 0 0 12px 0;
-	}
-}
+<style>
 </style>

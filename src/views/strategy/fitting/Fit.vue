@@ -37,7 +37,10 @@
 		<fullscreen :fullscreen.sync="fullscreen" ref="fullscreen">
 			<div class="mrt-fit">
 				<div class="panel-2">
-					<div class="panel strategy elevation-1">	
+					<div class="panel strategy elevation-1">
+						<div class="auto-fit">
+							<v-switch v-model="autoFit" color="#0091EA" hide-details label="Auto Fit"></v-switch>
+						</div>
 						<div class="graph">
 							<mrt-fitchart 
 								@dateRangeChange="setDateRange">
@@ -45,188 +48,7 @@
 						</div>
 					</div>
 					<div class="panel strategy-result elevation-1">	
-						<div class="fittings">
-							<div class="header">
-								<label>Parameters</label>
-								<div>Selection</div>
-								<div>Full</div>
-							</div>
-							<div>
-								<label class="input-param">
-									<span>kappa</span>
-									<v-menu 
-										bottom 
-										v-model="kappaMenu"
-										offset-y
-										:close-on-content-click="false"
-										origin="center center"
-										transition="scale-transition">
-										<v-icon slot="activator" class="elevation-3" :class="isKappaLocked ? 'on' : 'off'" size=16>{{isKappaLocked ? 'lock' : 'lock_open'}}</v-icon>
-										<div style="background-color:#37474F">
-											<v-text-field
-												v-model="kappa"
-												:rules="[rules.isNumber]"
-												:append-icon="'refresh'"
-												:loading="isFittingTS"
-												label="kappa"
-												box
-												hide-details
-												clearable
-												maxlength="10"
-												placeholder="Fix Kappa"
-												@keyup.enter="fixKappa"
-												@click:clear="resetKappa"
-												@click:append="fixKappa">
-											</v-text-field>
-										</div>
-									</v-menu>
-								</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.kappa | number}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.kappa_full | number}}</div>
-							</div>
-							<div>
-								<label class="input-param">
-									<span>Sigma</span>
-									<v-menu 
-										bottom 
-										v-model="sigmaMenu"
-										offset-y
-										:close-on-content-click="false"
-										origin="center center"
-										transition="scale-transition">
-										<v-icon slot="activator" class="elevation-3" :class="isSigmaLocked ? 'on' : 'off'" size=16>{{isSigmaLocked ? 'lock' : 'lock_open'}}</v-icon>
-										<div style="background-color:#37474F">
-											<v-text-field
-												v-model="sigma"
-												:rules="[rules.isNumber]"
-												:append-icon="'refresh'"
-												:loading="isFittingTS"
-												label="sigma"
-												box
-												hide-details
-												clearable
-												maxlength="10"
-												placeholder="Fix Sigma"
-												@keyup.enter="fixSigma"
-												@click:clear="resetSigma"
-												@click:append="fixSigma">
-											</v-text-field>
-										</div>
-									</v-menu>
-								</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.sigma | number}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.sigma_full | number}}</div>
-							</div>
-							<div>
-								<label class="input-param">
-									<span>Theta</span>
-									<v-menu 
-										bottom 
-										v-model="thetaMenu"
-										offset-y
-										:close-on-content-click="false"
-										origin="center center"
-										transition="scale-transition">
-										<v-icon slot="activator" class="elevation-3" :class="isThetaLocked ? 'on' : 'off'" size=16>{{isThetaLocked ? 'lock' : 'lock_open'}}</v-icon>
-										<div style="background-color:#37474F">
-											<v-text-field
-												v-model="theta"
-												:rules="[rules.isNumber]"
-												:append-icon="'refresh'"
-												:loading="isFittingTS"
-												label="theta"
-												box
-												hide-details
-												clearable
-												maxlength="10"
-												placeholder="Fix Theta"
-												@keyup.enter="fixTheta"
-												@click:clear="resetTheta"
-												@click:append="fixTheta">
-											</v-text-field>
-										</div>
-									</v-menu>
-								</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.theta | number}}</div>	
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.theta_full | number}}</div>
-							</div>
-						</div>
-						<div class="fittings">
-							<div class="header">
-								<label>Goodness of Fit</label>
-								<div>Selection</div>
-								<div>Full</div>
-							</div>
-							<div>
-								<label>ADF Stat</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.adf_stat | number}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.adf_stat_full | number}}</div>
-							</div>
-							<div>
-								<label>ADF Sig Level</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.sig_lev}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.sig_lev_full}}</div>
-							</div>
-							<div>
-								<label>P value</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.p_val | number}}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.p_val_full | number}}</div>
-							</div>
-						</div>
-						<div class="fittings">
-							<div class="header">
-								<label>Residuals</label>
-								<div>Selection</div>
-								<div>Full</div>
-							</div>
-							<div>
-								<label>R<sup>2</sup></label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.R2 | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.R2_full | number }}</div>
-							</div>
-							<div>
-								<label>Mean</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.resid_mean | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.resid_mean_full | number }}</div>
-							</div>
-							<div>
-								<label>Std</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.resid_std | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.resid_std_full | number }}</div>
-							</div>
-							<div>
-								<label>Skew</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.resid_skew | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.resid_skew_full | number }}</div>
-							</div>
-							<div>
-								<label>Kurt</label>
-								<div v-if="isFittingTS">...</div>
-								<div v-else>{{strategy.fit.resid_kurt | number }}</div>
-								<div v-if="isLoadingTS">...</div>
-								<div v-else>{{strategy.fit.resid_kurt_full | number }}</div>
-							</div>
-						</div>
+						<mrt-parameters/>
 					</div>
 				</div>
 				<div class="panel residuals elevation-1">
@@ -248,73 +70,7 @@
 					</div>
 				</div>
 				<div class="panel simulations elevation-1">
-					<div class="header">
-						<h3>Simulations</h3>
-					</div>
-					<div class="simulation-graph">
-						<mrt-simchart
-							@startdate="loadSimsForDate">
-						</mrt-simchart>
-					</div>
-					<div class="controls">
-						<div class="horizon">
-							<v-select
-								v-model="horizon"
-								:items="horizonTypes"
-								:loading="isLoadingSims"
-								@change="horizonChange"
-								dense
-								box
-								hide-details
-								return-object
-								flat
-								label="Horizon">
-							</v-select>
-						</div>
-						<div class="play">
-							<div class="thumb-slider">
-								<v-slider
-									v-model="slider"
-									:thumb-size="28"
-									label="Interval"
-									:min=0.5
-									:max=8
-									step=0.5
-									ticks="always"
-									tick-size="1"
-									thumb-label="always">
-									<template slot="thumb-label" slot-scope="props">
-										<span>
-											{{ `${props.value}s` }}
-										</span>
-									</template>
-								</v-slider>
-							</div>
-							<div class="mrt-fit--actions">
-								<div>
-									<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="autoPlaySims"><v-icon>{{isPlaying ? 'pause' : 'play_arrow'}}</v-icon></v-btn>
-									<label>{{isPlaying ? 'Stop' : 'Animate'}}</label>
-								</div>
-							</div>
-						</div>
-						<div class="updates">
-							<div class="mrt-fit--actions">
-								<div>
-									<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="reset"><v-icon>settings_backup_restore</v-icon></v-btn>
-									<label>Reset</label>
-								</div>
-							</div>
-							<div class="mrt-fit--actions">
-								<div>
-									<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="getMoreSims"><v-icon>autorenew</v-icon></v-btn>
-									<label>New Sims</label>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="sparklines-graph">
-						<mrt-sims-sparkline-chart v-for="sim in sims" :key="sim.id" :sim="sim" :isSelected="sim.id === selectedSim"></mrt-sims-sparkline-chart>
-					</div>
+					<mrt-sims/>
 				</div>
 			</div>
 		</fullscreen>
@@ -322,38 +78,20 @@
 </template>
 
 <script>
-import mrtSimsSparklineChart from '@/components/SimsSparklineChart'
-import mrtFitchart from '@/components/FitChart'
-import mrtRisdualschart from '@/components/RisdualsChart'
-import mrtHistogramchart from '@/components/HistogramChart'
-import mrtSimchart from '@/components/SimsChart'
+import mrtParameters from './Parameters'
+import mrtSims from './Sim'
+import mrtFitchart from './FitChart'
+import mrtRisdualschart from './RisdualsChart'
+import mrtHistogramchart from './HistogramChart'
 import mrtBreadcrumb from '@/components/Breadcrumb'
 import {EventBus} from '@/events'
 import {mapState, mapGetters} from 'vuex'
-import {tsExtremes, closestNeighbour, seedGen} from '@/utils/sorting'
 
 export default {
 	data() {
 		return {
-			kappaMenu: false,
-			sigmaMenu: false,
-			thetaMenu: false,
+			autoFit: true,
 			fullscreen: false,
-			isPlaying: false,
-			isPlayingTimeout: '',
-			slider: 5,
-			kappa: this.$store.state.fit.userKappa,
-			sigma: this.$store.state.fit.userSigma,
-			theta: this.$store.state.fit.userTheta,
-			rules: {
-				isNumber: value => {
-					if(value) {
-						const pattern = /^((-)?(0|([1-9][0-9]*))(\.[0-9]+)?)$/
-						return pattern.test(value) || 'Not a number!';
-					}
-					return true;
-				}
-			},
 			proctype: { value: 'OU', text: 'Ornstein-Uhlenbeck' },
 			proctypes: [
 				{value: 'OU', text: 'Ornstein-Uhlenbeck'},
@@ -361,14 +99,6 @@ export default {
 				{value: 'GBMD', text: 'Geometric Brownian Motion with Drift', disabled: true},
 				{value: 'HUFT', text: 'Hyperbolic Ornstein-Uhlenbeck', disabled: false},
 				{value: 'CEV', text: 'Constant Elasticity of Variance', disabled: true},
-			],
-			horizonTypes: [
-				{value: '130', text: '6 months'},
-				{value: '260', text: '1 year'},
-				{value: '520', text: '2 years'},
-				{value: '780', text: '3 years'},
-				{value: '1300', text: '5 years'},
-				{value: '-1', text: 'Match Base'}, /* Special Case to match slider and end of timeseries */
 			]
 		}
 	},
@@ -384,21 +114,27 @@ export default {
 			if(to.name == 'fit') {
 				this.load()
 			}
+		},
+		async autoFit(fit) {
+			if(fit) {
+				await this.$store.dispatch('fit/fit')	
+				await this.$store.dispatch('fit/loadSims')
+			}
 		}
 	},
 	activated() {
 		this.load()
 	},
 	components: {
+		mrtParameters,
 		mrtFitchart,
 		mrtRisdualschart,
 		mrtHistogramchart,
 		mrtBreadcrumb,
-		mrtSimchart,
-		mrtSimsSparklineChart
+		mrtSims
 	},
 	computed: {
-		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isLoadingSims','isSavingFit', 'isKappaLocked', 'isSigmaLocked', 'isThetaLocked', 'sims', 'selectedSim']),
+		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isSavingFit']),
 		...mapGetters('strategies', ['findStrategy']),
 		name: {
 			get () {
@@ -406,14 +142,6 @@ export default {
       },
       set (value) {
         this.$store.commit('fit/setStrategyName', value);
-      }
-		},
-		horizon: {
-			get () {
-        return this.$store.state.fit.simHorizon
-      },
-      set (value) {
-        this.$store.commit('fit/setSimHorizon', value);
       }
 		}
 	},
@@ -424,6 +152,7 @@ export default {
 		 */
 		async load() {
 			if(this.id) {
+				this.autoFit = true;
 				const strategy = this.findStrategy(this.id)
 				if(strategy) {
 					await this.$store.dispatch('fit/setStrategy', strategy)
@@ -432,12 +161,9 @@ export default {
 					await this.$store.dispatch('fit/loadStrategy', {id: this.id})
 					this.$store.dispatch('strategies/load', {})
 				}
+
+				await this.$store.dispatch('fit/loadSims')
 			}
-			const extremes = tsExtremes(this.strategy.ts.data)
-			await this.$store.dispatch('fit/loadSims', {
-				value: extremes.maxValue,
-				date: extremes.max
-			})
 		},
 
 		async save() {
@@ -448,127 +174,12 @@ export default {
 		},
 
 		async setDateRange(dates) {
-			if(!isNaN(dates.startDate) && !isNaN(dates.endDate)) {
+			if(!isNaN(dates.startDate) && !isNaN(dates.endDate) && this.autoFit) {
 				this.$store.commit('fit/setStartDate', dates.startDate);
 				this.$store.commit('fit/setEndDate', dates.endDate);
 				await this.$store.dispatch('fit/fit')	
-				await this.$store.dispatch('fit/loadSims', {})
+				await this.$store.dispatch('fit/loadSims')
 			}
-		},
-
-		async getMoreSims() {
-			const extremes = tsExtremes(this.strategy.ts.data)
-			await this.$store.dispatch('fit/loadSims', {
-				seed: seedGen()
-			})
-		},
-
-		async loadSimsForDate(date) {
-			const closest = closestNeighbour(this.strategy.ts.data, date)
-			await this.$store.dispatch('fit/loadSims', {
-				value: closest[1],
-				date: closest[0]
-			})
-		},
-
-		async reset() {
-			this.isPlaying = false;
-			clearTimeout(this.isPlayingTimeout)
-			this.horizon = {value: '780', text: '3 Years'}
-			this.slider = 5;
-			await this.$store.dispatch('fit/loadSims', {
-				seed: seedGen()
-			})
-		},
-
-		autoPlaySims() {
-			this.isPlaying = !this.isPlaying
-			if(this.isPlaying) {
-				this.autoPlay();
-			}
-			else {
-				clearTimeout(this.isPlayingTimeout)
-			}
-		},
-
-		autoPlay() {
-			this.$store.commit('fit/setNextSim');
-			this.isPlayingTimeout = setTimeout(() => {
-				this.autoPlay()
-			}, this.slider * 1000)
-		},
-
-		resetKappa() {
-			this.kappaMenu = false;
-			this.$store.commit('fit/setKappa', null);
-			this.fit();
-		},
-
-		resetSigma() {
-			this.sigmaMenu = false;
-			this.$store.commit('fit/setSigma', null);
-			this.fit();
-		},
-
-		resetTheta() {
-			this.thetaMenu = false;
-			this.$store.commit('fit/setTheta', null);
-			this.fit();
-		},
-
-		fixKappa() {
-			let value = parseFloat(this.kappa);
-			if(!isNaN(value)) {
-				this.kappaMenu = false;
-				this.$store.commit('fit/setKappa', value);
-				this.fit();
-			}
-			else {
-				this.$store.commit('fit/setKappa', null);
-				this.kappaMenu = false;
-				this.kappa = null;
-				this.fit();
-			}
-		},
-
-		fixSigma() {
-			let value = parseFloat(this.sigma);
-			if(!isNaN(value)) {
-				this.sigmaMenu = false;
-				this.$store.commit('fit/setSigma', value);
-				this.fit();
-			}
-			else {
-				this.sigmaMenu = false;
-				this.$store.commit('fit/setSigma', null);
-				this.sigma = null;
-				this.fit();
-			}
-		},
-
-		fixTheta() {
-			let value = parseFloat(this.theta);
-			if(!isNaN(value)) {
-				this.thetaMenu = false;
-				this.$store.commit('fit/setTheta', value);
-				this.fit();
-			}
-			else {
-				this.$store.commit('fit/setTheta', null);
-				this.theta = null;
-				this.thetaMenu = false;
-				this.fit();
-			}
-		},
-
-		async fit() {
-			await this.$store.dispatch('fit/fit', {});
-			await this.$store.dispatch('fit/loadSims', {})
-		},
-
-
-		horizonChange() {
-			this.$store.dispatch('fit/loadSims', {})
 		},
 
 		toggle () {
@@ -580,12 +191,32 @@ export default {
 
 <style lang="less">
 
+.mrt-text-field {
+	background-color: #37474F;
+	.v-input__slot {
+		margin-bottom: 0px !important;
+	}
+	.v-text-field__details {
+		display:none;
+		margin-bottom: 0px !important;
+	}
+	.error--text {
+		.v-text-field__details {
+			display:block;
+			margin-bottom: 8px !important;
+		}
+		.v-input__slot {
+			margin-bottom: 8px !important;
+		}
+	}
+}
+
 .fullscreen {
 	padding: 0 12px;
 }
 
 .mrt-fit--details {
- 	display: flex;
+	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin: 16px 0;
@@ -615,6 +246,14 @@ export default {
 }
 
 .mrt-fit {
+	.auto-fit {
+		display:flex;
+		justify-content: flex-end;
+		> div {
+			flex: inherit;
+			margin-top: -4px;
+		}
+	}
 	.panel-2 {
 		display:flex;
 		margin: 12px 0;
@@ -647,8 +286,15 @@ export default {
 	}
 	.strategy-result {
 		width:300px;
+		> div {
+			height: 100%;
+			display:flex;
+			flex-direction: column;
+			justify-content: stretch;
+		}
 		.fittings {
 			background-color:var(--bg-color);
+			height:100%;
 			padding: 8px 0px;
 			border-radius: 2px;
 			h1 {

@@ -41,9 +41,28 @@ const optionsCompact = {
   year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC'
 };
 
-Vue.filter('number', function (value, precision) {
+Vue.filter('number', function (value) {
 	if(value !== null && !isNaN(value)) {
-		return new Intl.NumberFormat(navigator.language, {maximumFractionDigits:(precision ? precision: 3), minimumFractionDigits:(precision ? precision: 3)}).format(value);
+		let precision = 0;
+
+		let t = Math.abs(value);
+		if(t < 10) {
+			precision = 3;
+		}
+		else if(t < 100) {
+			precision = 2;
+		}
+		else if (t < 1000) {
+			precision = 1;
+		}
+		else if (t < 10000) {
+			precision = 0;
+		}
+		else {
+			return new Intl.NumberFormat(navigator.language, {maximumFractionDigits: 2, minimumFractionDigits: 2}).format((value / 1000).toFixed(2)) + 'k';
+		}
+
+		return new Intl.NumberFormat(navigator.language, {maximumFractionDigits: precision, minimumFractionDigits: precision}).format(value);
 	}
 	return ''
 });

@@ -57,7 +57,7 @@ export default {
 			}
 			div {
 				font-size: 16px;
-				color: var(--orange);
+				color: #AEEA00;
 			}
 			&:last-child {
 				margin: 0;

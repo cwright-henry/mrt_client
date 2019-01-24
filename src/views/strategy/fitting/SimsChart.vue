@@ -62,7 +62,7 @@ const options = (vm) => {
 			},
 			line: {
 				lineWidth: 0.5,
-				color:'#CDDC39'
+				color:'#AEEA00'
 			}
 		}
 	}
@@ -96,12 +96,6 @@ export default {
 		},
 		selectedSim(val) {
 			this.drawSim()
-		},
-		startDate() {
-			this.drawSelectedArea()
-		},
-		endDate() {
-			this.drawSelectedArea()
 		}
 	},
 	mounted() {
@@ -133,7 +127,6 @@ export default {
 
 				// Must call setPos after series has been added to chart - hmmmm makes sense!!
 				this.simSlider.setPos(extremes.max, extremes.min, extremes.max)
-				this.drawSelectedArea()
 				chart.reflow()
 			}
 		},
@@ -156,12 +149,18 @@ export default {
 			}
 		},
 
-		drawSelectedArea() {
+		drawMinArea() {
 			const chart = this.$refs.simschart.chart
 			chart.xAxis[0].removePlotLine(MIN_PLOTLINE_ID)
-			chart.xAxis[0].removePlotLine(MAX_PLOTLINE_ID)
 			chart.xAxis[0].removePlotBand(PLOTBAND_ID)
 			chart.xAxis[0].addPlotLine(getPlotLine(this.startDate, MIN_PLOTLINE_ID, 'sim-chart'))
+			chart.xAxis[0].addPlotBand(getPlotBand(this.startDate, this.endDate, PLOTBAND_ID))
+		},
+
+		drawMaxArea() {
+			const chart = this.$refs.simschart.chart
+			chart.xAxis[0].removePlotLine(MAX_PLOTLINE_ID)
+			chart.xAxis[0].removePlotBand(PLOTBAND_ID)
 			chart.xAxis[0].addPlotLine(getPlotLine(this.endDate, MAX_PLOTLINE_ID, 'sim-chart'))
 			chart.xAxis[0].addPlotBand(getPlotBand(this.startDate, this.endDate, PLOTBAND_ID))
 		},
@@ -175,6 +174,7 @@ export default {
       while(chart.series.length > 0) {
         chart.series[0].remove(false);
 			}
+			chart.reflow()
 		}
 	}
 }
@@ -188,7 +188,7 @@ export default {
 	display: inline-block;
 	overflow: hidden;
 	cursor: ew-resize;
-	background-color:#FFEB3B;
+	background-color:#AEEA00;
 	position: relative;
 	top:6px;
 	left:108px;

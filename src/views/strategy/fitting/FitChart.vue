@@ -12,6 +12,34 @@ const options = (vm) => {
 			height: vm._props.height,
 			backgroundColor: vm._props.backgroundColor
 		},
+		rangeSelector: {
+			selected: 6,
+			buttons: [{
+				type: 'year',
+				count: 1,
+				text: '1y'
+			},{
+				type: 'year',
+				count: 2,
+				text: '2y'
+			},{
+				type: 'year',
+				count: 3,
+				text: '3y'
+			},{
+				type: 'year',
+				count: 4,
+				text: '4y'
+			},
+			{
+				type: 'year',
+				count: 5,
+				text: '5y'
+			},{
+				type: 'all',
+				text: 'All'
+			}]
+		},
 		title: {
 			text: null
 		},

@@ -10,7 +10,6 @@ import Strategy from '@/views/strategy/Strategy'
 
 // Fitting
 import Fit from '@/views/strategy/fitting/Fit'
-import Sim from '@/views/strategy/fitting/Sim'
 
 // SLTP
 import Sltp from '@/views/strategy/sltp/Sltp'
@@ -80,12 +79,6 @@ export default new Router({
               name: 'fit',
               component: Fit,
               props: true,
-            },
-            {
-              path: ':id/fit/sim',
-              name: 'sim',
-              component: Sim,
-              props: true 
             }
           ]
         },
