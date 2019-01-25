@@ -109,12 +109,6 @@ export default {
 		}
 	},
 	watch: {
-		// Only triggered by route change - not refresh
-    '$route' (to) {
-			if(to.name == 'fit') {
-				this.load()
-			}
-		},
 		async autoFit(fit) {
 			if(fit) {
 				await this.$store.dispatch('fit/fit')	

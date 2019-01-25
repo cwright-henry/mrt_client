@@ -113,6 +113,11 @@ export default {
 	.theme--dark.v-toolbar {
 		background-color:var(--color-primary);
 	}
+	.theme--dark.v-card {
+		background-color:var(--color-primary);
+		border-color: #424242;
+		color: #fff;
+	}
 
   [v-cloak] {
      display: none;

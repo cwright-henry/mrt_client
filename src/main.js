@@ -6,6 +6,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './registerServiceWorker'
+import 'vue2-animate/dist/vue2-animate.min.css'
 
 import Highcharts from 'highcharts'
 import HighchartsVue from 'highcharts-vue'

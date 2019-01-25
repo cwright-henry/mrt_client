@@ -1,10 +1,10 @@
 <template>
 	<v-container fluid>
-    <transition name="fade" mode="out-in" appear>
-		  <keep-alive>
+		<transition appear>
+			<keep-alive>
 				<router-view></router-view>
-		  </keep-alive>
-    </transition>
+				</keep-alive>
+		</transition>
 	</v-container>
 </template>
 

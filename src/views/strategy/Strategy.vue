@@ -1,6 +1,7 @@
 <template>
 	<div class="mrt-strategy">
-		<v-text-field
+		<mrt-search/>
+		<!-- <v-text-field
 			flat
 			solo-inverted
 			hide-details
@@ -8,7 +9,7 @@
 			v-model="search"
 			prepend-inner-icon="search"
 			label="Search Library">
-		</v-text-field>
+		</v-text-field> -->
 		<mrt-cardlist/>
 		<mrt-csv-import
 			:show="showCSVUpload"
@@ -39,6 +40,7 @@
 </template>
 
 <script>
+import mrtSearch from './Search'
 import mrtCardlist from './CardList'
 import mrtCsvImport from './dialogs/ImportCsvDialog'
 import mrtImport from './dialogs/ImportDialog'
@@ -59,11 +61,6 @@ export default {
 			return this.$store.state.library.loading;
 		}
 	},
-	watch: {
-		search: function() {
-			this.debounceSearch()	
-		}
-	},
 	beforeRouteLeave(to, from, next) {
 		if(from.name === 'strategy') {
 			from.meta.yPos = document.documentElement.scrollTop
@@ -71,29 +68,17 @@ export default {
     next()
 	},
 	components: {
+		mrtSearch,
 		mrtCardlist,
 		mrtCsvImport,
 		mrtImport
-	},
-	created() {
-		this.debounceSearch = debounce(this.searchLibrary, 500)
 	},
   mounted() {
 		this.load()
   },
 	methods : {
 		load() {
-			const payload = {
-				nameFilter: ''
-			}
-			this.$store.dispatch('strategies/load', payload)
-		},
-
-		searchLibrary() {
-			let payload = {
-				nameFilter: this.search
-			}
-			this.$store.dispatch('strategies/load', payload)
+			this.$store.dispatch('strategies/load')
 		}
 	}
 }

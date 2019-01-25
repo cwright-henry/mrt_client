@@ -435,6 +435,7 @@ export default {
 		async upload() {
 			this.uploading = true;
 			try {
+				this.$emit('close')
 				const strategy = await this.$store.dispatch('strategies/upload', {
 					fileName: this.plusOne ? this.seriesNameC : this.seriesName,
 					data: this.plusOne ?  this.timeseriesC : this.timeseries,
@@ -442,7 +443,6 @@ export default {
 				});
 				this.$store.commit('dictionary/addLibrary', strategy)
 				this.reset();
-				this.$emit('close')
 				window.scrollTo(0,0);
 			}
 			finally {

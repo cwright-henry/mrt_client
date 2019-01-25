@@ -47,12 +47,20 @@ export default {
     }).then(response => response.data)
   },
 
-  list (page, nameFilter, pageSize) {
+  list (page, pageSize, overrides) {
     return Api().get('api/list-strategies', {
       params: {
         page,
-        nameFilter,
-        pageSize
+        pageSize,
+        overrides: JSON.stringify(overrides)
+      }
+    }).then(response => response.data)
+  },
+
+  search (nameFilter) {
+    return Api().get('/api/search-strategy', {
+      params: {
+        nameFilter
       }
     }).then(response => response.data)
   },

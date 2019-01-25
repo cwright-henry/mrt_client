@@ -35,8 +35,17 @@ export default {
 		}
 	},
 	watch: {
+		/**
+		 * Watch for deep changes to strategy which happens
+		 * when the search tool is used and Vue reuses the slot, The slot
+		 * has already been mounted so the interaction observer wont kick in so strategy
+		 * will not be fully loaded
+		 */
 		strategy: {
-			handler: function(val, oldVal) {
+			handler: async function(val, oldVal) {
+				if(!val.fit) {
+					this.load();
+				}
 			},
 			deep: true
 		}
@@ -49,7 +58,7 @@ export default {
 			}
 		}, {});
 
-		this.observer.observe(this.$el);
+		this.observer.observe(this.$el); // Only used once so watch for strategy reuse
 	},
 	components: {
 		mrtSerieschart,
@@ -81,6 +90,7 @@ export default {
 	flex-wrap: wrap;
 	padding:16px;
 	background-color: #455A64;
+	min-height: 300px;
 
 	.mrt-card--graphs {
 		width: calc(100%);

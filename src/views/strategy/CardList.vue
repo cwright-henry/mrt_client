@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<transition-group name="list" tag="ul">
+		<transition-group tag="ul" name="bounceRight">
 			<li v-for="strategy in strategies" :key="`${strategy._id}`" class="mb-4 mt-3">
 				<v-card style="background-color: #455A64;">
 					<v-toolbar dense flat>
@@ -80,21 +80,5 @@ export default {
 		.v-btn + .v-btn {
 			margin: 0 0 0 24px;
 		}
-	}
-	.list {
-		transition: all 0.5s;
-	}
-	.list-enter, .list-leave-to {
-		opacity: 0;
-		transform: scale(0);
-	}
-	.list-enter-to {
-		opacity: 1;
-		transform: scale(1);
-	}
-
-	.list-move {
-		opacity: 1;
-		transition: all 0.5s;
 	}
 </style>

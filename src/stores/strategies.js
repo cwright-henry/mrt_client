@@ -28,7 +28,7 @@ export default {
 		loading: false,						/* Called for initial search but not infinite search or load more */
 		loadingStrategy: false,		/* Flag for loading a ts */
 		loadingRm: false,					/* Flag used when removing a stratedgy */
-		nameFilter: ''						/* User supplied  strategy name filter */
+		overrides: []							/* A list of strategy _ids used to filter searching */
 	},
 
 	getters: {
@@ -58,6 +58,7 @@ export default {
 		updateList(state, data) {
 			// A new list
 			if(data.hasOwnProperty('isNew')) {
+				state.strategies = [];
 				state.strategies = data.strategies
 			}
 			else if(data.hasOwnProperty('isUpload')) {
@@ -91,9 +92,6 @@ export default {
 			}
 			if(data.hasOwnProperty('hasNext')) {
 				state.hasNext = data.hasNext	
-			}
-			if(data.hasOwnProperty('nameFilter')) {
-				state.nameFilter = data.nameFilter	
 			}
 			if(data.hasOwnProperty('page')) {
 				state.page = data.page	
@@ -134,6 +132,13 @@ export default {
 		 */
 		removeStrategy(state, id) {
 			state.strategies = state.strategies.filter(elm => elm._id !== id)
+		},
+
+		/**
+		 * Set the strategy override
+		 */
+		setOverrides(state, overrides) {
+			state.overrides = overrides;
 		}
 	},
 
@@ -141,11 +146,10 @@ export default {
 		/**
 		 * Load the first page of results, should be called if use enter page filter
 		 */
-    async load({commit}, payload) {
+    async load({state, commit}) {
 			commit('setLoading', true)
 			try {
-				const pageFilter = payload.nameFilter || ''
-				const data = await ApiController.list(1, pageFilter, PAGE_SIZE);
+				const data = await ApiController.list(1, PAGE_SIZE, state.overrides);
 
 				commit('updateList', {
 					strategies: data.docs,
@@ -156,7 +160,6 @@ export default {
 					totalPages: data.totalPages,
 					hasPrev: data.hasPrevPage,
 					hasNext: data.hasNextPage,
-					nameFilter: pageFilter,
 					page: 2, // Set the next page to load
 				})
 			}
@@ -171,7 +174,7 @@ export default {
 		async loadMore({commit, state}) {
 			commit('setLoading', true)
 			try {
-				let data = await ApiController.list(state.page, state.nameFilter, PAGE_SIZE);
+				let data = await ApiController.list(state.page, PAGE_SIZE, state.overrides);
 				
 				commit('updateList', {
 					strategies: data.docs
@@ -206,13 +209,14 @@ export default {
 		/**
 		 * Remove a strategy. Need to take care of infinte scroll
 		 */
-		async remove({commit, state}, payload) {
+		async remove({commit, dispatch, state}, payload) {
 			commit('setLoadingRm', true)
 			try {
 				await ApiController.remove(payload.id)
 				commit('removeStrategy', payload.id)
+				commit('setOverrides', state.overrides.filter(e => e !== payload.id))
 				if(state.hasNext) {
-					const data = await ApiController.list(state.strategies.length + 1, state.nameFilter, 1);
+					const data = await ApiController.list(state.strategies.length + 1, 1, state.overrides);
 
 					commit('updateList', {
 						strategies: data.docs
@@ -230,6 +234,11 @@ export default {
 						total: state.total - 1
 					})
 				}
+
+				// Try and fetch some more
+				if(state.overrides.length === 0 && state.strategies.length === 0) {
+					await dispatch('load')
+				}
 			}
 			finally {
 				commit('setLoadingRm', false)
@@ -242,6 +251,7 @@ export default {
 		async upload({commit, state}, payload) {
 			try {
 				const strategy = await ApiController.upload(payload.fileName, payload.data, payload.source)
+				commit('setOverrides', [])
 				commit('setPaging', {
 					total: state.total + 1
 				})
