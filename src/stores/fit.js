@@ -186,7 +186,7 @@ export default {
 	},
 	
 	actions: {
-		async loadStrategy({commit, state}, params) {
+		async loadStrategy({commit, dispatch, state}, params) {
 			try {
 				if(params.id !== state.strategy._id) {
 					commit('isLoadingTS', true)
@@ -203,6 +203,8 @@ export default {
 						
 						commit('updateFit', fit)
 					}
+
+					dispatch('loadSims')
 				}
 			}
 			finally {
@@ -211,7 +213,7 @@ export default {
 			}
 		},
 
-		async setStrategy({commit, state}, strategy) {
+		async setStrategy({commit, dispatch, state}, strategy) {
 			try {
 				if(strategy._id !== state.strategy._id) {
 					commit('isFittingTS', true)
@@ -225,6 +227,8 @@ export default {
 						});
 						commit('updateFit', fit)
 					}
+
+					dispatch('loadSims')
 				}
 			}
 			finally {

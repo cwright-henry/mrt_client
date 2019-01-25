@@ -1,19 +1,7 @@
 <template>
 	<div class="mrt-strategy">
 		<mrt-search/>
-		<!-- <v-text-field
-			flat
-			solo-inverted
-			hide-details
-			clearable
-			v-model="search"
-			prepend-inner-icon="search"
-			label="Search Library">
-		</v-text-field> -->
 		<mrt-cardlist/>
-		<mrt-csv-import
-			:show="showCSVUpload"
-			@close="showCSVUpload=false"/>
 		<mrt-import 
 			:show="showInvestUpload"
 			@close="showInvestUpload=false"/>
@@ -42,9 +30,7 @@
 <script>
 import mrtSearch from './Search'
 import mrtCardlist from './CardList'
-import mrtCsvImport from './dialogs/ImportCsvDialog'
 import mrtImport from './dialogs/ImportDialog'
-import debounce from 'lodash/debounce'
 
 export default {
 	name: 'Home',
@@ -70,7 +56,6 @@ export default {
 	components: {
 		mrtSearch,
 		mrtCardlist,
-		mrtCsvImport,
 		mrtImport
 	},
   mounted() {

@@ -97,7 +97,6 @@ const options = () => {
 			spline: {
 				boostThreshold: 1,
 				lineWidth: 0.5,
-				color: '#CDDC39',
 				color: '#AEEA00'
 			}
 		}

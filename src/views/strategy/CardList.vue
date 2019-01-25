@@ -18,7 +18,12 @@
 							<div class="mrt-no-wrap">{{strategy.lastUpdate | date}}</div>
 						</div>
 						<v-spacer></v-spacer>
-						<v-btn outline small color="primary" :to="`/library/${strategy._id}/fit`">Fit Strategy</v-btn>
+						<v-btn 
+							outline 
+							small color="primary" 
+							:to="`/library/${strategy._id}/fit`">
+							Fit Strategy
+						</v-btn>
 						<v-btn :disabled="strategy.fit && strategy.fit.proctype === 'NONE'" outline small color="primary" flat :to="`/library/${strategy._id}/sltp`">SLTP</v-btn>
 					</v-card-actions>
 				</v-card>

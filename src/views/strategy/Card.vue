@@ -42,10 +42,8 @@ export default {
 		 * will not be fully loaded
 		 */
 		strategy: {
-			handler: async function(val, oldVal) {
-				if(!val.fit) {
-					this.load();
-				}
+			handler: async function() {
+				this.load();
 			},
 			deep: true
 		}
@@ -53,6 +51,7 @@ export default {
 	mounted() {
 		this.observer = new IntersectionObserver(([entry], self) => {
 			if (entry && entry.isIntersecting) {
+				console.log('observer')
 				this.load()
 				self.unobserve(entry.target)
 			}
@@ -68,9 +67,11 @@ export default {
 		async load() {
 			try {
 				this.isLoading = true
-				await this.$store.dispatch('strategies/loadStrategy', {
-					id: this.strategy._id
-				});
+				if(!this.strategy.ts) {
+					await this.$store.dispatch('strategies/loadStrategy', {
+						id: this.strategy._id
+					});
+				}
 			}
 			finally {
 				this.isLoading = false

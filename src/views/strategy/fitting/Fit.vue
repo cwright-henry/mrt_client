@@ -155,8 +155,6 @@ export default {
 					await this.$store.dispatch('fit/loadStrategy', {id: this.id})
 					this.$store.dispatch('strategies/load', {})
 				}
-
-				await this.$store.dispatch('fit/loadSims')
 			}
 		},
 
