@@ -188,7 +188,7 @@
 <script>
 import {mapState} from 'vuex'
 
-const isNumber = /^(\-)?(\d+)?((\.)?(\d+)?)?$/
+const isNumber = /^(-)?(\d+)?((\.)?(\d+)?)?$/
 
 export default {
 	data() {
@@ -221,8 +221,8 @@ export default {
 				}
 
 				let t = parseFloat(value)
-				if(t < 0.001 || t > 1000) {
-					this.kappaErrors.push('Must be between 0.001 and 1000')
+				if(t < 0.001 || t > 100) {
+					this.kappaErrors.push('Must be between 0.001 and 100')
 					return
 				}
 			}

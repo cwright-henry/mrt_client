@@ -126,6 +126,9 @@ export default {
 			}
 		}
 	},
+	activated() {
+		this.load()
+	},
 	components: {
 		mrtMultichart,
 		mrtFit,
@@ -227,16 +230,6 @@ export default {
 				console.log(e)
 				this.isSltp = false
 			}
-		},
-
-		reset() {
-			this.series = {
-				fit: {}
-			}
-			this.isLoading = false
-			this.isFitting = false
-			this.isSltp = false
-			this.datasets = null
 		}
 	}
 }
