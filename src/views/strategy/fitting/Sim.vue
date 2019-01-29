@@ -5,6 +5,7 @@
 		</div>
 		<div class="simulation-graph">
 			<mrt-simchart
+				ref="simChart"
 				@startdate="loadSimsForDate">
 			</mrt-simchart>
 		</div>
@@ -162,6 +163,7 @@ export default {
 		async reset() {
 			this.isPlaying = false;
 			clearTimeout(this.isPlayingTimeout)
+			this.$refs.simChart.resetPos();
 			this.$store.commit('fit/resetAnimationTime')
 			this.$store.commit('fit/resetSimHorizon')
 			this.$store.commit('fit/resetSimStart')

@@ -17,7 +17,7 @@
 						<div class="import-component">
 							<transition mode="out-in">
 								<keep-alive>
-									<component :is="importInput" :clear="show" @loaded="showSeries" @error="loadError" @clear="clear"></component>
+									<component :is="importInput" :clear="show" @loaded="showSeries" @clear="clear"></component>
 								</keep-alive>
 							</transition>
 							<v-menu
@@ -47,7 +47,7 @@
 								<div class="import-component">
 									<transition mode="out-in">
 										<keep-alive>
-											<component :is="importInputA" :clear="show" @loaded="showSeriesA" @error="loadErrorA" @clear="clearA"></component>
+											<component :is="importInputA" :clear="show" @loaded="showSeriesA" @clear="clearA"></component>
 										</keep-alive>
 									</transition>
 									<v-menu
@@ -75,7 +75,7 @@
 								<div class="import-component">
 									<transition mode="out-in">
 										<keep-alive>
-											<component :is="importInputB" :clear="show" @loaded="showSeriesB" @error="loadErrorB" @clear="clearB"></component>
+											<component :is="importInputB" :clear="show" @loaded="showSeriesB" @clear="clearB"></component>
 										</keep-alive>
 									</transition>
 									<v-menu
@@ -140,8 +140,8 @@
 							:loading="uploading"
 							@keyup.native.enter="upload"
 							label="Save As..."
+							:error-messages="errorMessages"
 							box
-							hide-details
 							ref="namefield"
 							required>
 							</v-text-field>
@@ -168,6 +168,7 @@ import CryptoSearch from './ImportCrypto'
 import mrtLinechart from '@/components/LineChart'
 import mrtImportOptions from './ImportOptions'
 import {EventBus} from '@/events'
+import {getErrorCode} from '@/utils'
 
 export default {
 	props: {
@@ -219,7 +220,8 @@ export default {
 			hedgeRatio: '',
 
 			// Name to save as
-			saveAs: ''
+			saveAs: '',
+			errorMessages: null
 		}
 	},
 	components: {
@@ -255,7 +257,7 @@ export default {
 			get () {
 				if(this.plusOne) {
 					if(this.seriesNameA && this.seriesNameB) {
-						return this.flip ? `${this.seriesNameB} vs ${this.seriesNameA}` : `${this.seriesNameA} vs ${this.seriesNameB}`;
+						return this.seriesNameC;
 					}
 				}
 				else if(this.seriesName) {
@@ -342,24 +344,6 @@ export default {
 			this.aggregator = 'diff'
 		},
 
-		loadError({msg}) {
-			this.timeseries = [];
-			this.seriesName = null;
-			EventBus.$emit('api-error', msg);  
-		},
-
-		loadErrorA({msg}) {
-			this.timeseriesA = [];
-			this.seriesNameA = null;
-			EventBus.$emit('api-error', msg);  
-		},
-
-		loadErrorB({msg}) {
-			this.timeseriesB = [];
-			this.seriesNameB = null;
-			EventBus.$emit('api-error', msg);  
-		},
-
 		setImportType(type) {
 			this.importInput = type
 		},
@@ -429,13 +413,14 @@ export default {
 						})
 						break;
 				}
+
+				this.seriesNameC = this.flip ? `${this.seriesNameB} vs ${this.seriesNameA}` : `${this.seriesNameA} vs ${this.seriesNameB}`;
 			}
 		},
 
 		async upload() {
 			this.uploading = true;
 			try {
-				this.$emit('close')
 				const strategy = await this.$store.dispatch('strategies/upload', {
 					fileName: this.plusOne ? this.seriesNameC : this.seriesName,
 					data: this.plusOne ?  this.timeseriesC : this.timeseries,
@@ -443,7 +428,20 @@ export default {
 				});
 				this.$store.commit('dictionary/addLibrary', strategy)
 				this.reset();
+				this.$emit('close')
 				window.scrollTo(0,0);
+			}
+			catch(error) {
+				const code = getErrorCode(error);
+				if(code === 'DUPLICATE_NAME') {
+					this.errorMessages = 'This Scenario already exists! Please provide a unique name'
+				}
+				else {
+					this.errorMessages = 'Unknown Error'
+				}
+				setTimeout(() => {
+					this.errorMessages = null
+				}, 5000)
 			}
 			finally {
 				this.uploading = false;
@@ -579,7 +577,7 @@ export default {
 	.middle-panel {
 		width: 100%;
 		padding:12px;
-		margin: 0 0 12px;
+		margin: 0 0 0 0;
 		border: solid #757575;
 		border-width: 1px 0px 1px 0px;
 		background-color: #455A64;
@@ -634,7 +632,7 @@ export default {
 	}
 	.bottom-panel {
 		width:100%;
-		margin: -12px 0 0 0;
+		margin: 4px 0 0 0;
 		text-align: center;
 		padding: 12px 16px 8px 16px;
 		background-color: #455A64;
@@ -642,6 +640,7 @@ export default {
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			margin: -20px 0 0 0;
 			button {
 				margin: 8px 0 0 0;
 			}

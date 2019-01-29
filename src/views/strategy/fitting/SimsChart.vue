@@ -94,12 +94,15 @@ export default {
 		'strategy.ts'() {
 			this.update()
 		},
-		selectedSim(val) {
-			this.drawSim()
+		selectedSim(value) {
+			if(value !== null) {
+				this.drawSim()
+			}
 		}
 	},
 	mounted() {
 		this.simSlider = new SimSlider(this, this.$refs.simschart.chart)
+		this.update();
 	},
 	methods: {
 		/**
@@ -112,7 +115,10 @@ export default {
 		async update() {
 			const chart = this.$refs.simschart.chart
 			if(this.strategy.ts.data.length) {
-				this.clearSeries()
+				const existing = chart.get('sim-chart')
+				if(existing) {
+					existing.remove();
+				}
 				this.average = mean(this.strategy.ts.data)
 				chart.addSeries({
 					type: 'line',
@@ -120,7 +126,7 @@ export default {
 					name: this.strategy.name,
 					threshold: this.average,
 					color: '#2196F3',
-					id: 'main-chart',
+					id: 'sim-chart',
 					lineWidth: 0.8,
 				});
 				let extremes = tsExtremes(this.strategy.ts.data)
@@ -129,6 +135,11 @@ export default {
 				this.simSlider.setPos(extremes.max, extremes.min, extremes.max)
 				chart.reflow()
 			}
+		},
+
+		resetPos() {
+			let extremes = tsExtremes(this.strategy.ts.data)
+			this.simSlider.updatePos(extremes.max)
 		},
 
 		drawSim() {
@@ -144,6 +155,7 @@ export default {
 						id: 'sim-sparkline',
 						data: this.sims[i].data
 					});
+					chart.reflow()
 					break;
 				}
 			}

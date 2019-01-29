@@ -139,11 +139,9 @@ export default {
 					source: "CSV"
 				})
 			}
-			filereader.onError = (e) => {
+			filereader.onError = () => {
 				this.parsing = false
-				console.log(e)
-				// TODO
-				// Find What generates this error!!!
+				this.$emit('clear')
 			}
 		},
 

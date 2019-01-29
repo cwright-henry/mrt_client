@@ -4,10 +4,11 @@
 		prepend-icon="search"
 		:loading="loading"
 		:disabled="loading"
+		:error-messages="errorMessages"
+		class="mrt-import-ticker"
 		label="Enter Ticker..."
 		color="blue lighten-2"
 		v-model="ticker"
-		hide-details
 		box
 		background-color="rgba(0,0,0,0.1)"
 		return-object
@@ -17,6 +18,7 @@
 
 <script>
 import ApiController from '@/services/ApiController'
+import {getErrorCode} from '@/utils'
 
 export default {
 	props: {
@@ -29,7 +31,8 @@ export default {
 		return {
 			loading: false,
 			uploading: false,
-			ticker: ''
+			ticker: '',
+			errorMessages: null
 		}
 	},
 	watch: {
@@ -43,6 +46,7 @@ export default {
 	methods: {
 		async findSeries() {
 			this.loading = true
+			this.errorMessages = null
 			try {
 				let series = await ApiController.findSeries(this.ticker, 'Alphavantage')
 				this.$emit('loaded', {
@@ -51,8 +55,15 @@ export default {
 					source: 'Alphavantage'
 				})
 			}
-			catch(e) {
-				this.$emit('error', e.response.data)
+			catch(error) {
+				this.$emit('clear')
+				const code = getErrorCode(error);
+				if(code === 'UNKNOWN_TICKER') {
+					this.errorMessages = `Unable to find data for ticker ${this.ticker}`;
+					setTimeout(() => {
+						this.errorMessages = null
+					}, 5000);
+				}
 			}
 			finally {
 				this.loading = false	
@@ -62,6 +73,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less">
+.mrt-import-ticker {
+	margin: 0 0 -28px 0 !important; 
+}
 </style>

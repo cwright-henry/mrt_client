@@ -53,6 +53,9 @@ export default {
 					source: value.source
 				});
 			}
+			catch(error) {
+				this.$emit('clear')
+			}
 			finally {
 				this.loading = false;
 			}

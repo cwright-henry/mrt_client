@@ -73,17 +73,20 @@ export default {
 </script>
 
 <style lang="less">
+.mrt-navigation {
+	border-radius: 2px;
+	background-color: #546E7A !important;
+
 	.v-list {
 		background: transparent !important;
 	}
-	.mrt-navigation {
-		border-radius: 2px;
-		background-color: #546E7A !important;
-	}
 	.router-link-active .mrt-menu--item {
-		color:#AEEA00;
+		border: solid #CDDC39;
+		border-width: 0 0 0 2px;
+		background: linear-gradient(0.25turn, #9E9D24, #546E7A);
+		color:#fff;
 		i {
-			color:#AEEA00;
+			color:#fff;
 		}
 	}
 	.router-link-active .v-badge__badge {
@@ -97,7 +100,8 @@ export default {
 	.mrt-menu--item {
 		display:flex;
 		flex-direction: column;
-		margin: 16px 0 24px;
+		padding: 12px 0;
+		margin: 4px 0;
 		justify-content: center;
 		align-items: center;
 		cursor: pointer;
@@ -106,4 +110,5 @@ export default {
 			color: var(--light-gray);
 		}
 	}
+}
 </style>

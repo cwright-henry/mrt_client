@@ -115,21 +115,23 @@ export default {
 	methods: {
 		update() {
 			const chart = this.$refs.residuals.chart;
-			this.clearSeries()
 			if(this.name) {
-				this.updateRange()
-				chart.addSeries({
-					type: 'scatter',
-					color: '#00B0FF',
-					marker: {
-						radius: 1.5
-					},
-					data: this.ts,
-					name: this.name,
-					clip: false
-				});
+				setTimeout(() => {
+					this.clearSeries()
+					this.updateRange()
+					chart.addSeries({
+						type: 'scatter',
+						color: '#00B0FF',
+						marker: {
+							radius: 1.5
+						},
+						data: this.ts,
+						name: this.name,
+						clip: false
+					});
+					chart.reflow()	
+				}, 1000)
 			}
-			chart.reflow()	
 		},
 
 		updateRange() {

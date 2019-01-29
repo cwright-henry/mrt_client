@@ -1,30 +1,33 @@
 <template>
 	<div>
-		<transition-group tag="ul" name="bounceRight">
-			<li v-for="strategy in strategies" :key="`${strategy._id}`" class="mb-4 mt-3">
+		<transition-group tag="ul" name="slideRight">
+			<li v-for="strat in strategies" :key="`${strat._id}`" class="mb-4 mt-3">
 				<v-card style="background-color: #455A64;">
 					<v-toolbar dense flat>
-						<v-toolbar-title class="mrt--header-color">{{strategy.name}}</v-toolbar-title>
+						<v-toolbar-title class="mrt--header-color">{{strat.name}}</v-toolbar-title>
 						<v-spacer></v-spacer>
 						<v-btn color="primary" flat icon>
-							<v-icon @click.self.passive="remove(strategy._id)">delete</v-icon>
+							<v-icon @click.self.passive="remove(strat._id)">delete</v-icon>
 						</v-btn>
 					</v-toolbar>
-					<mrt-card :strategy="strategy"></mrt-card>
+					<mrt-card :strategy="strat"></mrt-card>
 					<v-divider></v-divider>
 					<v-card-actions class="mrt-cardlist--actions">
 						<div class="mrt--fit lastupdated hidden-sm-and-down">
 							<div class="mrt-no-wrap">Last Updated</div>
-							<div class="mrt-no-wrap">{{strategy.lastUpdate | date}}</div>
+							<div class="mrt-no-wrap">{{strat.lastUpdate | date}}</div>
 						</div>
 						<v-spacer></v-spacer>
 						<v-btn 
 							outline 
-							small color="primary" 
-							:to="`/library/${strategy._id}/fit`">
+							:loading="strat._id === strategy._id && isLoadingStrategy"
+							@click="isLoadingStrategy = true"
+							small 
+							color="primary" 
+							:to="`/library/${strat._id}/fit`">
 							Fit Strategy
 						</v-btn>
-						<v-btn :disabled="strategy.fit && strategy.fit.proctype === 'NONE'" outline small color="primary" flat :to="`/library/${strategy._id}/sltp`">SLTP</v-btn>
+						<v-btn :disabled="strat.fit && strat.fit.proctype === 'NONE'" outline small color="primary" flat :to="`/library/${strat._id}/sltp`">SLTP</v-btn>
 					</v-card-actions>
 				</v-card>
 			</li>
@@ -41,7 +44,16 @@ import {mapState} from 'vuex'
 export default {
 	name: 'CardList',
 	computed: {
-		...mapState('strategies', ['strategies', 'loading'])
+		...mapState('strategies', ['strategies', 'loading']),
+		...mapState('fit', ['strategy']),
+		isLoadingStrategy: {
+			get() {
+				return this.$store.state.fit.isLoadingStrategy
+			},
+			set(value) {
+				this.$store.commit('fit/isLoadingStrategy', value);
+			}
+		}
 	},
 	components: {
 		mrtCard,

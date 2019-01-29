@@ -5,7 +5,7 @@
 		<v-spacer></v-spacer>
 		<div class="hidden-sm-and-down">
 			<span class="mrt-toolbar--name">{{ userName }}</span>
-			<v-avatar color="secondary" size="32">
+			<v-avatar color="#2196F3" size="32">
 				<v-icon dark>account_circle</v-icon>
 			</v-avatar>
 		</div>

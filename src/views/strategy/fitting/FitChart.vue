@@ -153,9 +153,6 @@ export default {
 			}
 		}
 	},
-	mounted() {
-		this.update()
-	},
 	methods: {
 		/**
 		 * The strategy should have been fitted after load
@@ -163,21 +160,20 @@ export default {
 		update() {
 			const chart = this.$refs.fitchart.chart
 			if(this.strategy.name) {
-				this.clearSeries()
+				setTimeout(()=> {
+					this.clearSeries()
+					chart.addSeries({
+						type: 'area',
+						data: this.strategy.ts.data,
+						name: this.strategy.name,
+						threshold: mean(this.strategy.ts.data)
+					});
 
-				chart.addSeries({
-					type: 'area',
-					data: this.strategy.ts.data,
-					name: this.strategy.name,
-					threshold: mean(this.strategy.ts.data)
-				});
-
-				//chart.rangeSelector.clickButton(5, true);
-				chart.xAxis[0].setExtremes(this.startDate, this.endDate)
+					//chart.rangeSelector.clickButton(5, true);
+					chart.xAxis[0].setExtremes(this.startDate, this.endDate)
+					chart.reflow()
+				}, 0)
 			}
-			setTimeout(() => {
-				chart.reflow()
-			}, 1000)
 		},
 
 		clearSeries() {

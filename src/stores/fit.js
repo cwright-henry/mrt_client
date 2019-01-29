@@ -26,7 +26,7 @@ export default {
 		sims: [],
 
 		// Notifications
-		isLoadingTS: false,
+		isLoadingStrategy: false,
 		isFittingTS: false,
 		isSavingFit: false,
 		isLoadingSims: false,
@@ -58,8 +58,8 @@ export default {
 	},
 
 	mutations: {
-		isLoadingTS(state, status) {
-			state.isLoadingTS = status;
+		isLoadingStrategy(state, status) {
+			state.isLoadingStrategy = status;
 		},
 
 		isFittingTS(state, status) {
@@ -187,9 +187,10 @@ export default {
 	
 	actions: {
 		async loadStrategy({commit, dispatch, state}, params) {
+			commit('isLoadingStrategy', true)
+
 			try {
 				if(params.id !== state.strategy._id) {
-					commit('isLoadingTS', true)
 					const strategy = await ApiController.loadStrategy(params.id);
 					commit('setStrategy', strategy)
 
@@ -203,23 +204,23 @@ export default {
 						
 						commit('updateFit', fit)
 					}
-
-					dispatch('loadSims')
+					await dispatch('loadSims')
 				}
 			}
 			finally {
 				commit('isFittingTS', false)
-				commit('isLoadingTS', false)
+				commit('isLoadingStrategy', false)
 			}
 		},
 
 		async setStrategy({commit, dispatch, state}, strategy) {
+			commit('isLoadingStrategy', true)
 			try {
 				if(strategy._id !== state.strategy._id) {
-					commit('isFittingTS', true)
 					commit('setStrategy', strategy)
 
 					if(strategy.fit.proctype === 'NONE') {
+						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
 							strategyId: state.strategy._id,
 							start_date: state.startDate,
@@ -228,11 +229,12 @@ export default {
 						commit('updateFit', fit)
 					}
 
-					dispatch('loadSims')
+					await dispatch('loadSims')
 				}
 			}
 			finally {
 				commit('isFittingTS', false)
+				commit('isLoadingStrategy', false)
 			}
 		},
 

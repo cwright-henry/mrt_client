@@ -53,6 +53,23 @@ const isEmpty = (value) => {
 	return value === null || value === undefined;
 }
 
+const knownError = (error) => {
+
+	// If response does exist must be network error	
+	if(!error.response) {
+		return 'NETWORK_ERROR'
+	}
+
+	// Handle server side error codes
+	if(error.hasOwnProperty('response') && error.response.hasOwnProperty('data')) {
+		if(error.response.data.hasOwnProperty('code') && error.response.data.code.length > 0) {
+			return error.response.data.code;
+		}
+	}
+
+	return 'UNKNOWN_ERROR';
+}
+
 export {
   sorter,
 	objectSorter,
@@ -60,5 +77,6 @@ export {
 	trimData,
 	closestNeighbour,
 	seedGen,
-	isEmpty
+	isEmpty,
+	knownError
 }

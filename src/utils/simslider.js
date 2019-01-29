@@ -3,6 +3,13 @@ const startTypes = ['mousedown', 'touchstart']
 const moveTypes = ['mousemove', 'touchmove']
 const endTypes = ['mouseup', 'touchend']
 
+/**
+ * Carefull here - noticed that container is sometimes undefined
+ * 
+ * @param {*} container 
+ * @param {*} types 
+ * @param {*} fn 
+ */
 const addListeners = (container, types, fn) => {
 	types.forEach(type => {
 		container.addEventListener(type, fn, {
@@ -58,6 +65,15 @@ export default class {
 
 		this.updatePlotLine(this.pos, 'pos');
 
+		let line = document.querySelector('.axis-label.pos')
+		addListeners(line, startTypes, () => {
+			this.move()
+		})
+	}
+
+	updatePos(pos) {
+		this.pos = pos;
+		this.updatePlotLine(this.pos, 'pos');
 		let line = document.querySelector('.axis-label.pos')
 		addListeners(line, startTypes, () => {
 			this.move()

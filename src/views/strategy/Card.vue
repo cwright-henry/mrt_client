@@ -1,13 +1,8 @@
 <template>
 	<div class="mrt-card">
-		<v-layout class="mt-4" justify-center v-if="isLoading">
-			Loading...
-		</v-layout>
 		<mrt-fit-process :fit="strategy.fit"/>
 		<div class="mrt-card--graphs">
-			<div class="mrt-card--graphs-series">
-				<mrt-serieschart :strategy="strategy"></mrt-serieschart>
-			</div>
+			<mrt-serieschart :strategy="strategy"></mrt-serieschart>
 		</div>
 	</div>
 </template>
@@ -51,7 +46,6 @@ export default {
 	mounted() {
 		this.observer = new IntersectionObserver(([entry], self) => {
 			if (entry && entry.isIntersecting) {
-				console.log('observer')
 				this.load()
 				self.unobserve(entry.target)
 			}
@@ -91,7 +85,7 @@ export default {
 	flex-wrap: wrap;
 	padding:16px;
 	background-color: #455A64;
-	min-height: 300px;
+	min-height: 340px;
 
 	.mrt-card--graphs {
 		width: calc(100%);

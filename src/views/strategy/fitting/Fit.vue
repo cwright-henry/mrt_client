@@ -88,6 +88,7 @@ import {EventBus} from '@/events'
 import {mapState, mapGetters} from 'vuex'
 
 export default {
+	name: 'MRT_FIT',
 	data() {
 		return {
 			autoFit: true,
@@ -117,7 +118,7 @@ export default {
 		}
 	},
 	activated() {
-		this.load()
+	//	this.load()
 	},
 	components: {
 		mrtParameters,
@@ -126,6 +127,21 @@ export default {
 		mrtHistogramchart,
 		mrtBreadcrumb,
 		mrtSims
+	},
+	beforeRouteEnter (to, from, next) {
+		next(async vm => {
+			if(vm.id) {
+				vm.autoFit = true;
+				const strategy = vm.findStrategy(vm.id)
+				if(strategy) {
+					await vm.$store.dispatch('fit/setStrategy', strategy)
+				}
+				else {
+					await vm.$store.dispatch('fit/loadStrategy', {id: vm.id})
+					vm.$store.dispatch('strategies/load', {})
+				}
+			}
+		})
 	},
 	computed: {
 		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isSavingFit']),
@@ -238,6 +254,7 @@ export default {
 }
 
 .mrt-fit {
+	will-change: transform;
 	.auto-fit {
 		display:flex;
 		justify-content: flex-end;

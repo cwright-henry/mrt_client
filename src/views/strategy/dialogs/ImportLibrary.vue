@@ -42,13 +42,18 @@ export default {
 	},
 	methods: {
 		async findSeries(id) {
-			let series = await ApiController.findSeries(id, 'Library')
-			this.$emit('loaded', {
-				series: series.ts.data,
-				errors: [],
-				name: series.name,
-				source: "Library"
-			})
+			try {
+				let series = await ApiController.findSeries(id, 'Library')
+				this.$emit('loaded', {
+					series: series.ts.data,
+					errors: [],
+					name: series.name,
+					source: "Library"
+				})
+			}
+			catch(error) {
+				this.$emit('clear')
+			}
 		}
 	}
 }

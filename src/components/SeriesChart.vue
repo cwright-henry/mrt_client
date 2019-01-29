@@ -1,5 +1,10 @@
 <template>
-	<highcharts :options="options" ref="linechart"></highcharts>
+	<transition name="zoom">
+		<div v-if="isLoading" class="mrt-strategy-loading" :class="!isLoading ? 'hide' : ''">
+			Rendering {{strategy.name}} ...
+		</div>
+		<highcharts v-else :options="options" ref="linechart"></highcharts>
+	</transition>
 </template>
 
 <script>
@@ -92,7 +97,8 @@ const options = (vm) => {
 export default {
 	data() {
 		return {
-			options: options(this)
+			options: options(this),
+			isLoading: false
 		}
 	},
 	props: {
@@ -122,29 +128,40 @@ export default {
 			deep: true
 		}
 	},
+	/**
+	 * Is this only called from hot-update
+	 */
 	mounted() {
 		this.update()
 	},
 	methods: {
 		update() {
-			const chart = this.$refs.linechart.chart
 			if(this.strategy.ts) {
-				this.clearSeries()
-				chart.addSeries({
-					type: 'area',
-					data: this.strategy.ts.data,
-					name: this.strategy.name,
-					threshold: mean(this.strategy.ts.data),
-					clip: false
-				});
+				this.isLoading = true;
+				setTimeout(() => {
+					this.isLoading = false;
 
-				if(this.strategy.fit.proctype === 'OU') {
-					chart.xAxis[0].addPlotLine(getStartPlotLine(this.strategy.fit.start_date))
-					chart.xAxis[0].addPlotLine(getEndPlotLine(this.strategy.fit.end_date))
-					chart.xAxis[0].addPlotBand(getPlotBand(this.strategy.fit.start_date, this.strategy.fit.end_date))
-				}
+					this.$nextTick(() => {
+						const chart = this.$refs.linechart.chart
+						this.clearSeries()
+						chart.addSeries({
+							type: 'area',
+							data: this.strategy.ts.data,
+							name: this.strategy.name,
+							threshold: mean(this.strategy.ts.data),
+							clip: false
+						});
+
+						if(this.strategy.fit.proctype === 'OU') {
+							chart.xAxis[0].addPlotLine(getStartPlotLine(this.strategy.fit.start_date))
+							chart.xAxis[0].addPlotLine(getEndPlotLine(this.strategy.fit.end_date))
+							chart.xAxis[0].addPlotBand(getPlotBand(this.strategy.fit.start_date, this.strategy.fit.end_date))
+						}
+
+						chart.reflow()
+					})
+				}, 1500)
 			}
-			chart.reflow()
 		},
 
 		clearSeries() {
@@ -160,6 +177,11 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="less">
+.mrt-strategy-loading {
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	height:0px;
+}
 </style>

@@ -109,22 +109,24 @@ export default {
 			this.clearSeries()
 			
 			if(this.ts) {
-				const series = trimData(this.ts, this.startDate, this.endDate)
-				const bins = this.createBins(series)
+				setTimeout(() => {
+					const series = trimData(this.ts, this.startDate, this.endDate)
+					const bins = this.createBins(series)
 
-				chart.addSeries({
-					name: 'Distribution',
-					data: bins,
-					color: '#00B0FF'
-				});
+					chart.addSeries({
+						name: 'Distribution',
+						data: bins,
+						color: '#00B0FF'
+					});
 
-				chart.addSeries({
-					name: 'Normal Distribution',
-					type: 'areaspline',
-					data: gaussionData(0, 1, bins)
-				});
+					chart.addSeries({
+						name: 'Normal Distribution',
+						type: 'areaspline',
+						data: gaussionData(0, 1, bins)
+					});
+					chart.reflow()	
+				}, 1000)
 			}
-			chart.reflow()	
 		},
 
 		clearSeries() {

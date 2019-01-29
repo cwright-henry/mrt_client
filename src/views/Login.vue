@@ -1,91 +1,165 @@
 <template>
-	<v-layout align-center justify-center app>
-		<v-flex xs12 sm8 md4>
-			<v-card class="elevation-12">
-				<v-toolbar dense>
-					<v-toolbar-title>MRT Login</v-toolbar-title>
-				</v-toolbar>
-				<v-card-text>
-					<v-container grid-list-md fluid>
-						<v-layout row wrap>
-							<v-flex xs12 mb-2>
-								<v-text-field 
-									prepend-icon="person" 
-									v-model="email" 
-									required
-									:counter="30"
-									single-line
-									box
-									autofocus
-									label="Email">
-								</v-text-field>
-							</v-flex>
-							<v-flex xs12>
-								<v-text-field 
-									prepend-icon="lock"
-									v-model="password" 
-									required
-									single-line
-									box
-									hide-details
-									label="Password" 
-									type="password">
-								</v-text-field>
-							</v-flex>
-						</v-layout>
-					</v-container>
-				</v-card-text>
-				<div class="mrt-login--failed" v-if="error">
-					{{error}}
+	<div app class="mrt-login">
+		<header class="header">
+		</header>
+		<section class="section">
+			<div class="login-box">
+				<div class="login-box__intro">
+					<h1>Mean Reversion Trader</h1>
+					<h3>Bluecrowe Software<logo/></h3>
 				</div>
-				<v-divider></v-divider>
-				<div class="mrt-login text-xs-right">
-					<v-btn @click="login" :loading="loading" color="primary">Login</v-btn>
+				<div class="login-box__contents elevation-8">
+					<div class="logo">
+						<i class="material-icons">person</i>
+						<h1>Login</h1>
+					</div>
+					<div class="email">
+						<v-text-field 
+							prepend-icon="person" 
+							v-model="email" 
+							:error-messages="errorMessages"
+							required
+							color="#1976D2"
+							background-color="#B0BEC5"
+							@keypress.enter="login"
+							box
+							autofocus
+							label="Email">
+						</v-text-field>
+					</div>
+					<div class="password">
+						<v-text-field 
+							prepend-icon="lock"
+							v-model="password"
+							:error-messages="errorMessages"
+							color="#1976D2"
+							background-color="#B0BEC5"
+							required
+							box
+							@keypress.enter="login"
+							label="Password" 
+							type="password">
+						</v-text-field>
+					</div>
+					<div class="action">
+						<v-btn @click="login" :loading="loading" block large>Login</v-btn>
+					</div>
 				</div>
-			</v-card>
-		</v-flex>
-	</v-layout>	
+			</div>
+		</section>
+	</div>
 </template>
 
 <script>
-	export default {
-		name: 'MRTLogin',
-		data() {
-			return {
-				valid: false,
-				email: '',
-				password: '',
-				error: null
-			}
-		},
-		computed: {
-			loading() {
-				return this.$store.state.user.loading;
-			}
-		},
-		methods: {
-			login () {
-				let payload = {
+import Logo from '../../public/svg/crowe.svg'
+import {mapState} from 'vuex'
+import {getErrorCode} from '../utils'
+
+export default {
+	name: 'MRTLogin',
+	data() {
+		return {
+			email: '',
+			password: '',
+			errorMessages: null
+		}
+	},
+	components: {
+		Logo
+	},
+	computed: {
+		...mapState('user', ['loading'])
+	},
+	methods: {
+		async login () {
+			try {
+				await this.$store.dispatch('user/login', {
 					email: this.email,
 					password: this.password
+				})
+				this.$router.push({path: '/'});
+			}
+			catch(error) {
+				const code = getErrorCode(error);
+				if(code === 'INVALID_LOGIN') {
+					this.errorMessages = 'Email or password is incorrect'
 				}
-				this.$store.dispatch('user/login', payload)
-				.then(() => {
-					this.$router.push({path: '/'});
-				})
-				.catch((e) => {
-					if(e.status == 403) {
-						this.error = 'Invalid email or password!';
-					}
-				})
+				else {
+					this.errorMessages = 'Unknown Error'
+				}
+				setTimeout(() => {
+					this.errorMessages = null
+				}, 2500)
 			}
 		}
-  }
+	}
+}
 </script>
 
 <style lang="less">
+
 .mrt-login {
-	padding:18px 36px;
+	display: flex;
+	flex-direction: column;
+	.v-icon {
+		color: #455A64 !important;
+	}
+	.header {
+		height: 400px;
+		width: 100%;
+		background-color: #37474F;
+	}
+	.login-box {
+		max-width: 500px;
+		margin: -300px auto 100px auto;
+		.login-box__intro {
+			text-align: center;
+			padding: 24px 0 24px 0;
+			h1  {
+				font-size: 32px;
+			}
+			h3 {
+				font-size: 16px;
+				font-weight: 300;
+				font-style: italic;
+				display: flex;
+				justify-content: center;
+				svg {
+					margin: 0 0 0 4px;
+				}
+			}
+		}
+		.login-box__contents {
+			background-color: #ECEFF1;
+			padding: 24px 48px;
+			border-radius: 2px;
+			.action {
+				margin: 12px 0 12px 0;
+				button {
+					color: #fff;
+					background-color:#1E88E5;
+				}
+			}
+			.logo {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+				i {
+					font-size:64px;
+					height:72px;
+					width:72px;
+					border-radius: 50%;
+					background-color: #37474F;
+				}
+				h1 {
+					color: #37474F;
+					font-weight: 300;
+					margin: 2px 0 32px 0;
+				}
+			}
+		}
+	}
 }
 .mrt-login--failed {
 	color: var(--error);

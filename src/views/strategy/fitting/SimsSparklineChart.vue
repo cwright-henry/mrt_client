@@ -140,20 +140,23 @@ export default {
 		draw() {
 			if(this.sim.data.length) {
 				const chart = this.$refs.sparkchart.chart
-				this.clearSeries();
-				const statistics = stats(this.sim.data)
-				this.min = statistics.min
-				this.max = statistics.max
-				this.mean = statistics.mean
-				this.std = statistics.std
-				chart.addSeries({
-					type: 'spline',
-					data: this.sim.data,
-					threshold: this.mean,
-				});
-				chart.reflow();
-				this.clicked = false
-				this.$emit('loaded', this.id)
+
+				setTimeout(() => {
+					this.clearSeries();
+					const statistics = stats(this.sim.data)
+					this.min = statistics.min
+					this.max = statistics.max
+					this.mean = statistics.mean
+					this.std = statistics.std
+					chart.addSeries({
+						type: 'spline',
+						data: this.sim.data,
+						threshold: this.mean,
+					});
+					chart.reflow();
+					this.clicked = false
+					this.$emit('loaded', this.id)
+				}, 1000)
 			}
 		},
 
