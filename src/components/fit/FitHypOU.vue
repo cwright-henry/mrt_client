@@ -18,7 +18,7 @@
 			</div>
 			<div>
 				<label>Beta</label>
-				<div>{{fit.nBeta | number}}</div>
+				<div>{{fit.nbeta | number}}</div>
 			</div>
 		</div>
 	</div>

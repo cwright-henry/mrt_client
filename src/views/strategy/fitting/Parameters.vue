@@ -111,6 +111,41 @@
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.theta_full | number}}</div>
 			</div>
+			<div v-if="proctype === 'hypOU'">
+				<label class="input-param">
+					<span>Beta</span>
+					<v-menu 
+						bottom 
+						v-model="betaMenu"
+						offset-y
+						:close-on-content-click="false"
+						origin="center center"
+						transition="scale-transition">
+						<v-icon slot="activator" class="elevation-3" :class="userBeta !== null ? 'on' : 'off'" size=16>{{userBeta !== null ? 'lock' : 'lock_open'}}</v-icon>
+						<div class="mrt-text-field">
+							<v-text-field
+								v-model="beta"
+								:append-icon="'refresh'"
+								:loading="isFittingTS"
+								:disabled="isFittingTS"
+								:error-messages="betaErrors"
+								label="Beta"
+								box
+								clearable
+								maxlength="1"
+								placeholder="Fix Beta"
+								@keyup.enter="fixBeta"
+								@click:clear="resetBeta"
+								@click:append="fixBeta">
+							</v-text-field>
+						</div>
+					</v-menu>
+				</label>
+				<div v-if="isFittingTS">...</div>
+				<div v-else>{{strategy.fit.nbeta | number}}</div>	
+				<div v-if="isLoadingTS">...</div>
+				<div v-else>{{strategy.fit.nbeta_full | number}}</div>
+			</div>
 		</div>
 		<div class="fittings">
 			<div class="header">
@@ -196,12 +231,15 @@ export default {
 			kappaMenu: false,
 			sigmaMenu: false,
 			thetaMenu: false,
+			betaMenu: false,
 			kappa: this.$store.state.fit.userKappa,
 			sigma: this.$store.state.fit.userSigma,
 			theta: this.$store.state.fit.userTheta,
+			beta: this.$store.state.fit.userBeta,
 			kappaErrors: [],
 			sigmaErrors: [],
 			thetaErrors: [],
+			betaErrors: [],
 			tsRange: this.$store.state.fit.range,
 			tsAvg: this.$store.state.fit.avg
 		}
@@ -256,10 +294,25 @@ export default {
 					return
 				}
 			}
+		},
+		beta(value) {
+			this.betaErrors = []
+			if(value !== '' && value !== null) {
+				if(!isNumber.test(value)) {
+					this.thetaErrors.push('Not a number!')
+					return;
+				}
+
+				let t = parseFloat(value)
+				if(t !== 1 || t !== 2) {
+					this.thetaErrors.push('Must be either 1 or 2')
+					return;
+				}
+			}
 		}
 	},
 	computed: {
-		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isSavingFit', 'userKappa', 'userTheta', 'userSigma', 'range', 'avg']),
+		...mapState('fit', ['strategy', 'proctype', 'isFittingTS', 'isLoadingTS', 'isSavingFit', 'userKappa', 'userTheta', 'userSigma', 'userBeta', 'range', 'avg']),
 		thetaMin() {
 			return this.avg - (2 * this.range);
 		},
@@ -281,7 +334,7 @@ export default {
 		},
 
 		resetSigma() {
-			const isDirty = this.sigmaKappa !== null
+			const isDirty = this.userSigma !== null
 			this.sigmaMenu = false;
 			this.$store.commit('fit/setSigma', null);
 			if(isDirty) {
@@ -290,9 +343,18 @@ export default {
 		},
 
 		resetTheta() {
-			const isDirty = this.sigmaTheta !== null
+			const isDirty = this.userTheta !== null
 			this.thetaMenu = false;
 			this.$store.commit('fit/setTheta', null);
+			if(isDirty) {
+				this.fit();
+			}
+		},
+
+		resetBeta() {
+			const isDirty = this.userBeta !== null
+			this.betaMenu = false;
+			this.$store.commit('fit/setBeta', null);
 			if(isDirty) {
 				this.fit();
 			}
@@ -318,6 +380,14 @@ export default {
 			if(this.thetaErrors.length === 0 && this.theta !== null && this.theta !== '') {
 				this.thetaMenu = false;
 				this.$store.commit('fit/setTheta', this.theta);
+				this.fit();
+			}
+		},
+
+		fixBeta() {
+			if(this.betaErrors.length === 0 && this.beta !== null && this.beta !== '') {
+				this.betaMenu = false;
+				this.$store.commit('fit/setBeta', this.beta);
 				this.fit();
 			}
 		},

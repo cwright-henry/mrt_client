@@ -39,6 +39,7 @@ export default {
 		userKappa: null,
 		userSigma: null,
 		userTheta: null,
+		userBeta: null,
 
 		// User sims
 		selectedSim: null,
@@ -84,6 +85,10 @@ export default {
 
 		setTheta(state, theta) {
 			state.userTheta = theta;
+		},
+
+		setBeta(state, beta) {
+			state.userBeta = beta;
 		},
 
 		setSimStart(state, start) {
@@ -152,6 +157,7 @@ export default {
 			state.userKappa = null;
 			state.userSigma = null;
 			state.userTheta = null;
+			state.userBeta = null;
 			state.range = minMax[1] - minMax[0];
 			state.avg = avg;
 
@@ -208,8 +214,7 @@ export default {
 							proctype: state.proctype,
 							strategyId: state.strategy._id,
 							start_date: state.startDate,
-							end_date: state.endDate,
-							nbeta: 1
+							end_date: state.endDate
 						});
 						
 						commit('updateFit', fit)
@@ -235,8 +240,7 @@ export default {
 							proctype: state.proctype,
 							strategyId: state.strategy._id,
 							start_date: state.startDate,
-							end_date: state.endDate,
-							nbeta: 1,
+							end_date: state.endDate
 						});
 						commit('updateFit', fit)
 					}
@@ -257,8 +261,7 @@ export default {
 					proctype: state.proctype,
 					strategyId: state.strategy._id,
 					start_date: state.startDate,
-					end_date: state.endDate,
-					nbeta: 1,
+					end_date: state.endDate
 				}
 
 				if(state.userKappa !== null) {
@@ -269,6 +272,9 @@ export default {
 				}
 				if(state.userTheta !== null) {
 					payload.theta = state.userTheta;
+				}
+				if(state.userBeta !== null) {
+					payload.nbeta = state.userBeta;
 				}
 
 				const fit = await ApiController.fit(payload);
@@ -317,7 +323,7 @@ export default {
 					kappa: state.userKappa !== null ? state.userKappa : state.strategy.fit.kappa,
 					sigma: state.userSigma !== null ? state.userSigma : state.strategy.fit.sigma,
 					theta: state.userTheta !== null ? state.userTheta : state.strategy.fit.theta,
-					nbeta: 1,
+					nbeta: state.userBeta !== null ? state.userBeta : state.strategy.fit.nbeta,
 					x_0: state.simStart.value,
 					x_0_date: state.simStart.date,
 					nsteps: state.simHorizon.value,
