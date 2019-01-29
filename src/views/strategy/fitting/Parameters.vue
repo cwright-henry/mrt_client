@@ -299,13 +299,13 @@ export default {
 			this.betaErrors = []
 			if(value !== '' && value !== null) {
 				if(!isNumber.test(value)) {
-					this.thetaErrors.push('Not a number!')
+					this.betaErrors.push('Not a number!')
 					return;
 				}
 
-				let t = parseFloat(value)
-				if(t !== 1 || t !== 2) {
-					this.thetaErrors.push('Must be either 1 or 2')
+				let t = parseInt(value)
+				if(t !== 1 && t !== 2) {
+					this.betaErrors.push('Must be either 1 or 2')
 					return;
 				}
 			}
