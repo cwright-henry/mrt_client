@@ -247,7 +247,7 @@ export default {
 					end_date: state.endDate
 				}
 
-				if(state.userKappa !== '') {
+				if(state.userKappa !== null) {
 					payload.kappa = state.userKappa;
 				}
 				if(state.userSigma !== null) {
@@ -271,6 +271,15 @@ export default {
 		async save({commit, state}) {
 			commit('isSavingFit', true)
 			try {
+				if(state.userKappa !== null) {
+					state.strategy.fit.kappa = state.userKappa;
+				}
+				if(state.userSigma !== null) {
+					state.strategy.fit.sigma = state.userSigma;
+				}
+				if(state.userTheta !== null) {
+					state.strategy.fit.theta = state.userTheta;
+				}
 				return await ApiController.saveOUFit({
 					name: state.strategy.name,
 					id: state.strategy._id,
