@@ -4,11 +4,8 @@ import { EventBus } from '@/events.js';
 import {closestNeighbour, tsExtremes, seedGen} from '@/utils/sorting'
 import {getMinMax, mean} from '@/utils/stats'
 
-/**
- * All data related to OU fitting. All components
- * associated with OU fitting commit thier modifications here and
- * all interested components watch for change using mapState utility
- */
+
+const DEFAULT_PROCTYPE = 'OU';
 const DEFAULT_SIM_HORIZON = { value: '780', text: '3 Years' };
 const DEFAULT_ANIMATION_TIME = 2;
 
@@ -24,6 +21,9 @@ export default {
 			fit: {}
 		},
 		sims: [],
+
+		// proctype
+		proctype: DEFAULT_PROCTYPE,
 
 		// Notifications
 		isLoadingStrategy: false,
@@ -97,6 +97,10 @@ export default {
 			state.simStart.date = extremes.max;
 		},
 
+		setProctype(state, proctype) {
+			state.proctype = proctype;
+		},
+
 		setSimHorizon(state, horizon) {
 			state.simHorizon = horizon;
 		},
@@ -133,8 +137,12 @@ export default {
 			const avg = mean(state.strategy.ts.data)
 			const extremes = tsExtremes(state.strategy.ts.data)
 
-
+			//
 			// Reset the transient data
+			//
+
+			// Proctype
+			state.proctype = state.strategy.fit.proctype === 'NONE' ?  DEFAULT_PROCTYPE : state.strategy.fit.proctype;
 
 			// Dates on graph
 			state.startDate = state.strategy.fit.proctype === 'NONE' ? extremes.min : state.strategy.fit.start_date;
@@ -197,9 +205,11 @@ export default {
 					if(strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
+							proctype: state.proctype,
 							strategyId: state.strategy._id,
 							start_date: state.startDate,
-							end_date: state.endDate
+							end_date: state.endDate,
+							nbeta: 1
 						});
 						
 						commit('updateFit', fit)
@@ -222,9 +232,11 @@ export default {
 					if(strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
+							proctype: state.proctype,
 							strategyId: state.strategy._id,
 							start_date: state.startDate,
-							end_date: state.endDate
+							end_date: state.endDate,
+							nbeta: 1,
 						});
 						commit('updateFit', fit)
 					}
@@ -242,9 +254,11 @@ export default {
 			commit('isFittingTS', true)
 			try {
 				const payload = {
+					proctype: state.proctype,
 					strategyId: state.strategy._id,
 					start_date: state.startDate,
-					end_date: state.endDate
+					end_date: state.endDate,
+					nbeta: 1,
 				}
 
 				if(state.userKappa !== null) {
@@ -280,6 +294,9 @@ export default {
 				if(state.userTheta !== null) {
 					state.strategy.fit.theta = state.userTheta;
 				}
+				if(state.proctype !== state.strategy.fit.proctype) {
+					state.strategy.fit.proctype = state.proctype;
+				}
 				return await ApiController.saveOUFit({
 					name: state.strategy.name,
 					id: state.strategy._id,
@@ -296,9 +313,11 @@ export default {
 			try {
 
 				const payload = {
+					proctype: state.proctype,
 					kappa: state.userKappa !== null ? state.userKappa : state.strategy.fit.kappa,
 					sigma: state.userSigma !== null ? state.userSigma : state.strategy.fit.sigma,
 					theta: state.userTheta !== null ? state.userTheta : state.strategy.fit.theta,
+					nbeta: 1,
 					x_0: state.simStart.value,
 					x_0_date: state.simStart.date,
 					nsteps: state.simHorizon.value,

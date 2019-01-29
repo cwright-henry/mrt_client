@@ -18,7 +18,6 @@
 					dense
 					box
 					hide-details
-					return-object
 					flat
 					label="Fit Process">
 				</v-select>
@@ -93,12 +92,11 @@ export default {
 		return {
 			autoFit: true,
 			fullscreen: false,
-			proctype: { value: 'OU', text: 'Ornstein-Uhlenbeck' },
 			proctypes: [
 				{value: 'OU', text: 'Ornstein-Uhlenbeck'},
 				{value: 'BMD', text: 'Brownian Motion with Drift', disabled: true},
 				{value: 'GBMD', text: 'Geometric Brownian Motion with Drift', disabled: true},
-				{value: 'HUFT', text: 'Hyperbolic Ornstein-Uhlenbeck', disabled: false},
+				{value: 'hypOU', text: 'Hyperbolic Ornstein-Uhlenbeck', disabled: false},
 				{value: 'CEV', text: 'Constant Elasticity of Variance', disabled: true},
 			]
 		}
@@ -138,6 +136,17 @@ export default {
       set (value) {
         this.$store.commit('fit/setStrategyName', value);
       }
+		},
+		proctype: {
+			get() {
+				return this.$store.state.fit.proctype;
+			},
+
+			async set(value) {
+				this.$store.commit('fit/setProctype', value);
+				await this.$store.dispatch('fit/fit')
+				await this.$store.dispatch('fit/loadSims')
+			}
 		}
 	},
 	methods: {

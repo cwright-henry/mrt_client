@@ -4,6 +4,7 @@
 
 <script>
 import OU from '@/components/fit/FitOU'
+import HypOU from '@/components/fit/FitHypOU'
 import NONE from '@/components/fit/FitNone'
 import LOADING from '@/components/fit/FitLoading'
 
@@ -18,6 +19,7 @@ export default {
 	},
 	components: {
 		OU,
+		HypOU,
 		NONE,
 		LOADING
 	},

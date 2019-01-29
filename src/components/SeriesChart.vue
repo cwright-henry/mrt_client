@@ -152,11 +152,9 @@ export default {
 							clip: false
 						});
 
-						if(this.strategy.fit.proctype === 'OU') {
-							chart.xAxis[0].addPlotLine(getStartPlotLine(this.strategy.fit.start_date))
-							chart.xAxis[0].addPlotLine(getEndPlotLine(this.strategy.fit.end_date))
-							chart.xAxis[0].addPlotBand(getPlotBand(this.strategy.fit.start_date, this.strategy.fit.end_date))
-						}
+						chart.xAxis[0].addPlotLine(getStartPlotLine(this.strategy.fit.start_date))
+						chart.xAxis[0].addPlotLine(getEndPlotLine(this.strategy.fit.end_date))
+						chart.xAxis[0].addPlotBand(getPlotBand(this.strategy.fit.start_date, this.strategy.fit.end_date))
 
 						chart.reflow()
 					})
