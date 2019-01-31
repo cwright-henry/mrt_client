@@ -1,6 +1,5 @@
 import ApiController from '@/services/ApiController'
 import moment from 'moment'
-import { EventBus } from '@/events.js';
 import {closestNeighbour, tsExtremes, seedGen} from '@/utils/sorting'
 import {getMinMax, mean} from '@/utils/stats'
 
@@ -280,9 +279,6 @@ export default {
 				const fit = await ApiController.fit(payload);
 				commit('updateFit', fit)
 			}
-			catch(error) {
-				EventBus.$emit('api-error', 'Fit.fit ' + error.response.data.msg);  
-			}
 			finally {
 				commit('isFittingTS', false)
 			}
@@ -347,9 +343,6 @@ export default {
 				const sims = await ApiController.scenarios(payload);
 				
 				commit('setSims', sims)
-			}
-			catch(error) {
-				EventBus.$emit('api-error', 'Fit.loadSims ' + error.response.data.msg);  
 			}
 			finally {
 				commit('isLoadingSims', false)

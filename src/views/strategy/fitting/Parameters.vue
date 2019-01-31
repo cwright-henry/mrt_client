@@ -364,7 +364,10 @@ export default {
 			if(this.kappaErrors.length === 0 && this.kappa !== null && this.kappa !== '') {
 				this.kappaMenu = false;
 				this.$store.commit('fit/setKappa', this.kappa);
-				this.fit();
+				this.fit()
+				.catch(() => {
+					this.$store.commit('fit/setKappa', null);
+				})
 			}
 		},
 
@@ -372,7 +375,10 @@ export default {
 			if(this.sigmaErrors.length === 0 && this.sigma !== null && this.sigma !== '') {
 				this.sigmaMenu = false;
 				this.$store.commit('fit/setSigma', this.sigma);
-				this.fit();
+				this.fit()
+				.catch(() => {
+					this.$store.commit('fit/setSigma', null);
+				})
 			}
 		},
 
@@ -380,7 +386,10 @@ export default {
 			if(this.thetaErrors.length === 0 && this.theta !== null && this.theta !== '') {
 				this.thetaMenu = false;
 				this.$store.commit('fit/setTheta', this.theta);
-				this.fit();
+				this.fit()
+				.catch(() => {
+					this.$store.commit('fit/setTheta', null);
+				})
 			}
 		},
 
@@ -388,7 +397,10 @@ export default {
 			if(this.betaErrors.length === 0 && this.beta !== null && this.beta !== '') {
 				this.betaMenu = false;
 				this.$store.commit('fit/setBeta', this.beta);
-				this.fit();
+				this.fit()
+				.catch(() => {
+					this.$store.commit('fit/setBeta', null);
+				})
 			}
 		},
 
