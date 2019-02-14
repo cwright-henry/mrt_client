@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import {mean} from '@/utils/stats'
+import {mean} from '@/utils'
 
 const options = (vm) => {
 	return {

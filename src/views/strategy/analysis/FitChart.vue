@@ -4,7 +4,7 @@
 
 <script>
 import {mapState} from 'vuex'
-import {mean} from '@/utils/stats'
+import {mean} from '@/utils'
 
 const options = (vm) => {
 	return {
@@ -152,6 +152,9 @@ export default {
 				this.clearSeries();
 			}
 		}
+	},
+	mounted() {
+		this.update()
 	},
 	methods: {
 		/**

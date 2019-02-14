@@ -4,15 +4,12 @@ import Login from '@/views/Login'
 import Mrt from '@/views/Mrt'
 import store from './store'
 
-// Strategies
+// List Strategies
 import StrategyRouter from '@/views/strategy/Router'
-import Strategy from '@/views/strategy/Strategy'
+import Strategy from '@/views/strategy/listing/Strategies'
 
-// Fitting
-import Fit from '@/views/strategy/fitting/Fit'
-
-// SLTP
-import Sltp from '@/views/strategy/sltp/Sltp'
+// Perform Scenario Analysis
+import Scenario from '@/views/strategy/analysis/Scenario'
 
 // Account
 import Account from '@/views/account/Account'
@@ -69,15 +66,9 @@ export default new Router({
               }
             },
             {
-              path: ':id/sltp',
-              name: 'sltp',
-              component: Sltp,
-              props: true 
-            },
-            {
-              path: ':id/fit',
-              name: 'fit',
-              component: Fit,
+              path: ':id/scenario',
+              name: 'scenario',
+              component: Scenario,
               props: true,
             }
           ]

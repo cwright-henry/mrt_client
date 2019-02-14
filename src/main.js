@@ -1,12 +1,13 @@
 import '@babel/polyfill'
 import 'intersection-observer'
 import Vue from 'vue'
+import {EventBus} from './events'
 import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import './registerServiceWorker'
-import 'vue2-animate/dist/vue2-animate.min.css'
+import 'animate.css/animate.css'
 
 import Highcharts from 'highcharts'
 import HighchartsVue from 'highcharts-vue'
@@ -79,6 +80,14 @@ Vue.filter('date-short', function (value) {
 		return new Intl.DateTimeFormat(navigator.language, optionsCompact).format(value);
 	return ''
 });
+
+Vue.config.errorHandler = function (err, vm, info) {
+	EventBus.$emit('api-error', `Vue Error - ${err} - ${info}`);
+}
+
+window.onerror = function (msg, url, line, col, error) {
+	EventBus.$emit('api-error', `Window Error - ${msg} - ${line} - ${col} - ${error}`);
+}
 
 new Vue({
   router,

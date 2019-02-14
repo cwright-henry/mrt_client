@@ -3,8 +3,7 @@
 </template>
 
 <script>
-import {trimData} from '@/utils/sorting'
-import {gaussionData} from '@/utils/stats'
+import {gaussionData, trimData} from '@/utils'
 import {mapState} from 'vuex'
 
 const MAX_BIN_NUMBER = 20;

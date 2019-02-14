@@ -25,14 +25,13 @@
 </template>
 
 <script>
-import {stats} from '@/utils/stats'
+import {stats} from '@/utils'
 import {mapState} from 'vuex'
 
 const options = () => {
 	return {
 		chart: {
 			height: 50,
-			width: 180,
 			backgroundColor: 'transparent',
 			margin:0
 		},
@@ -180,6 +179,7 @@ export default {
 	border:1px solid #37474F;
 	cursor: pointer;
 	margin: 12px 24px;
+	min-width:280px;
 	.stats {
 		display: flex;
 		justify-content: space-between;

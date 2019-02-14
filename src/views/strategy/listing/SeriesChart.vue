@@ -1,14 +1,16 @@
 <template>
-	<transition name="zoom">
-		<div v-if="isLoading" class="mrt-strategy-loading" :class="!isLoading ? 'hide' : ''">
-			Rendering {{strategy.name}} ...
+	<transition-group name="flip" tag="div">
+		<div v-show="isLoading" class="mrt-strategy-loading" key='loading'>
+			Loading {{strategy.name}}...
 		</div>
-		<highcharts v-else :options="options" ref="linechart"></highcharts>
-	</transition>
+		<div v-show="!isLoading" key="not_loading">
+		<highcharts :options="options" ref="linechart" ></highcharts>
+		</div>
+	</transition-group>
 </template>
 
 <script>
-import {mean} from '@/utils/stats'
+import {mean} from '@/utils'
 
 const getPlotBand = (from, to) => {
 	return  {
@@ -121,6 +123,7 @@ export default {
 		}
 	},
 	watch: {
+		// Called when the strategy gets updated i.e. after fitting
 		strategy: {
 			handler: function() {
 				this.update()
@@ -136,11 +139,9 @@ export default {
 	},
 	methods: {
 		update() {
+			this.isLoading = true;
 			if(this.strategy.ts) {
-				this.isLoading = true;
-				setTimeout(() => {
 					this.isLoading = false;
-
 					this.$nextTick(() => {
 						const chart = this.$refs.linechart.chart
 						this.clearSeries()
@@ -157,8 +158,7 @@ export default {
 						chart.xAxis[0].addPlotBand(getPlotBand(this.strategy.fit.start_date, this.strategy.fit.end_date))
 
 						chart.reflow()
-					})
-				}, 1500)
+				});
 			}
 		},
 
@@ -181,5 +181,21 @@ export default {
 	justify-content: center;
 	align-items: center;
 	height:0px;
+}
+.flip-enter-active {
+  transition: all .2s cubic-bezier(0.55, 0.085, 0.68, 0.53); //ease-in-quad
+}
+
+.flip-leave-active {
+  transition: all .25s cubic-bezier(0.25, 0.46, 0.45, 0.94); //ease-out-quad
+}
+
+.flip-leave-to {
+	
+}
+
+.flip-enter, .flip-leave-to {
+  transform: scaleY(0) translateZ(0);
+  opacity: 0;
 }
 </style>

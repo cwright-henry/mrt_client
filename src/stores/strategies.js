@@ -131,7 +131,12 @@ export default {
 		 * the update
 		 */
 		removeStrategy(state, id) {
-			state.strategies = state.strategies.filter(elm => elm._id !== id)
+			for(let i = 0; i < state.strategies.length; i++) {
+				if(state.strategies[i]._id === id) {
+					state.strategies.splice(i, 1)
+					break;
+				}
+			}
 		},
 
 		/**
@@ -216,6 +221,8 @@ export default {
 				commit('removeStrategy', payload.id)
 				commit('setOverrides', state.overrides.filter(e => e !== payload.id))
 				if(state.hasNext) {
+
+					// Ask for one more and pop it onto the list
 					const data = await ApiController.list(state.strategies.length + 1, 1, state.overrides);
 
 					commit('updateList', {

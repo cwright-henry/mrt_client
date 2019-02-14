@@ -30,7 +30,7 @@
 <script>
 import mrtSearch from './Search'
 import mrtCardlist from './CardList'
-import mrtImport from './dialogs/ImportDialog'
+import mrtImport from '../dialogs/ImportDialog'
 
 export default {
 	name: 'Home',

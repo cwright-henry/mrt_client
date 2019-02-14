@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import mrtSerieschart from '@/components/SeriesChart'
 import mrtFitProcess from '@/components/fit/Fit'
+import mrtSerieschart from './SeriesChart'
 
 export default {
 	data() {

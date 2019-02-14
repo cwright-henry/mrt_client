@@ -1,6 +1,6 @@
 
 import ApiController from '@/services/ApiController'
-import {objectSorter} from '@/utils/sorting'
+import {objectSorter} from '@/utils'
 
 const sorter = objectSorter('name')
 

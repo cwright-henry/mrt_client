@@ -3,10 +3,8 @@
 </template>
 
 <script>
-import {tsExtremes} from '@/utils/sorting'
-import {mean} from '@/utils/stats'
 import SimSlider from '@/utils/simslider'
-import {getPlotBand, getPlotLine} from '@/utils/chart'
+import {getPlotBand, getPlotLine, tsExtremes, mean} from '@/utils'
 import {mapState} from 'vuex'
 
 const MIN_PLOTLINE_ID = 'SIM_MIN_PLOTLINE'

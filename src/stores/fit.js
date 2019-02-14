@@ -1,11 +1,10 @@
 import ApiController from '@/services/ApiController'
 import moment from 'moment'
-import {closestNeighbour, tsExtremes, seedGen} from '@/utils/sorting'
-import {getMinMax, mean} from '@/utils/stats'
+import {closestNeighbour, tsExtremes, seedGen, getMinMax, mean} from '@/utils'
 
 
 const DEFAULT_PROCTYPE = 'OU';
-const DEFAULT_SIM_HORIZON = { value: '780', text: '3 Years' };
+const DEFAULT_SIM_HORIZON = {value: '-1', text: 'Align'};
 const DEFAULT_ANIMATION_TIME = 2;
 
 export default {
@@ -19,7 +18,6 @@ export default {
 			},
 			fit: {}
 		},
-		sims: [],
 
 		// proctype
 		proctype: DEFAULT_PROCTYPE,
@@ -34,14 +32,15 @@ export default {
 		startDate: null,
 		endDate: null,
 
-		// User Parameters
+		// Parameters
 		userKappa: null,
 		userSigma: null,
 		userTheta: null,
 		userBeta: null,
 
-		// User sims
+		// Sims
 		selectedSim: null,
+		sims: [],
 		simStart: {
 			value: null,
 			date: null
@@ -54,7 +53,26 @@ export default {
 		// Min, max of series used for validation -
 		// not sure these derived values should here!!
 		range: 0,
-		avg: 0
+		avg: 0,
+
+		// SLTP
+		opt_SL: {},
+		opt_TP: {},
+		opt_Ext: {},
+		ET: {},
+		ER: {},
+		EIR: {},
+		EPnl: {},
+		pblta: {},
+
+		// Notifications
+		isLoadingSLTP: false,
+
+		// Slider value on SLTP [value, date]
+		userValue: null,
+		userDate: null,
+
+
 	},
 
 	mutations: {
@@ -168,6 +186,23 @@ export default {
 			state.simSeed = seedGen();
 			state.simSliderValue = state.endDate;
 			state.simAnimationTime = DEFAULT_ANIMATION_TIME;
+
+			// SLTP
+			state.opt_SL = {};
+			state.opt_TP = {};
+			state.opt_Ext = {};
+			state.ET = {};
+			state.ER = {};
+			state.EIR = {};
+			state.EPnl = {};
+			state.pblta = {};
+
+			// Notifications
+			state.isLoadingSLTP = false;
+
+			// User data
+			state.userValue = extremes.maxValue;
+			state.userDate = extremes.max;
 		},
 
 		setStrategyName(state, name) {
@@ -195,11 +230,26 @@ export default {
 			else {
 				state.selectedSim = state.sims[0].id
 			}
+		},
+
+		setSltpData(state, data) {
+			state.opt_SL = Object.freeze(data.opt_SL)		// Freeze the object so that Vue does not try to attach listeners
+			state.opt_TP = Object.freeze(data.opt_TP)
+			state.opt_Ext = Object.freeze(data.opt_Ext)
+			state.ET = Object.freeze(data.ET)
+			state.ER = Object.freeze(data.ER)
+			state.EIR = Object.freeze(data.EIR)
+			state.EPnl = Object.freeze(data.EPnl)
+			state.pblta = Object.freeze(data.pblta)
+		},
+
+		isLoadingSLTP(state, status) {
+			state.isLoadingSLTP = status;
 		}
 	},
 	
 	actions: {
-		async loadStrategy({commit, dispatch, state}, params) {
+		async loadStrategy({commit, state}, params) {
 			commit('isLoadingStrategy', true)
 
 			try {
@@ -218,7 +268,6 @@ export default {
 						
 						commit('updateFit', fit)
 					}
-					await dispatch('loadSims')
 				}
 			}
 			finally {
@@ -227,7 +276,7 @@ export default {
 			}
 		},
 
-		async setStrategy({commit, dispatch, state}, strategy) {
+		async setStrategy({commit, state}, strategy) {
 			commit('isLoadingStrategy', true)
 			try {
 				if(strategy._id !== state.strategy._id) {
@@ -243,8 +292,6 @@ export default {
 						});
 						commit('updateFit', fit)
 					}
-
-					await dispatch('loadSims')
 				}
 			}
 			finally {
@@ -346,6 +393,36 @@ export default {
 			}
 			finally {
 				commit('isLoadingSims', false)
+			}
+		},
+
+		async loadSltp({commit, state}) {
+			commit('isLoadingSLTP', true)
+			try {
+				const payload = {
+					proctype: state.strategy.fit.proctype,
+					kappa: state.strategy.fit.kappa, 
+					sigma: state.strategy.fit.sigma,
+					theta: state.strategy.fit.theta,
+					carry: 0.1,
+					x_0: state.userValue, 
+					trans_oneway_stdev: 0.05
+				}
+				const data = await ApiController.sltp(payload);
+
+				commit('setSltpData', {
+					opt_SL: data['opt']['opt SL'],
+					opt_TP: data['opt']['opt TP'],
+					opt_Ext: data['opt']['E[x_0] NBC'],
+					ER: data['ER'],
+					ET: data['ET'],
+					EIR: data['EIR'],
+					EPnl: data['EPnL'],
+					pblta: data['pblta']
+				});
+			}
+			finally {
+				commit('isLoadingSLTP', false)
 			}
 		}
 	}

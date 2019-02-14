@@ -53,7 +53,7 @@
 <script>
 import Logo from '../../public/svg/crowe.svg'
 import {mapState} from 'vuex'
-import {getErrorCode} from '../utils'
+import {getErrorCode} from '@/utils'
 
 export default {
 	name: 'MRTLogin',

@@ -1,8 +1,9 @@
 <template>
 	<div>
 		<div class="fittings">
+			<h1>Parameters</h1>
 			<div class="header">
-				<label>Parameters</label>
+				<label></label>
 				<div>Selection</div>
 				<div>Full</div>
 			</div>
@@ -148,8 +149,9 @@
 			</div>
 		</div>
 		<div class="fittings">
+			<h1>Goodness of Fit</h1>
 			<div class="header">
-				<label>Goodness of Fit</label>
+				<label></label>
 				<div>Selection</div>
 				<div>Full</div>
 			</div>
@@ -176,8 +178,9 @@
 			</div>
 		</div>
 		<div class="fittings">
+			<h1>Residuals</h1>
 			<div class="header">
-				<label>Residuals</label>
+				<label></label>
 				<div>Selection</div>
 				<div>Full</div>
 			</div>
@@ -412,6 +415,65 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="less">
+.mrt-analysis {
+	.fittings {
+		background-color:var(--bg-color);
+		height:100%;
+		padding: 8px 0px;
+		border-radius: 2px;
+		h1 {
+			font-weight: 400;
+			font-size: 16px;
+			margin: 0 0 4px 0;
+			color:#fff;
+			border: solid #546E7A;
+			border-width: 0px 0px 1px 0px;
+		}
+		> div {
+			display: flex;
+			margin: 0 0 4px 0;
+			padding: 0 0 2px 0;
+			align-items: baseline;
+			label {
+				width: 120px;
+				color: var(--light-gray);
+				font-size: 13px;
+				&.input-param {
+					display:flex;
+					justify-content: space-between;
+					align-items: center;
+					cursor: pointer;
+					.v-icon {
+						font-size: 14px !important;
+						border-radius: 50%;
+						background-color:#0091EA;
+						height:24px;
+						width:24px;
+						&.on {
+							background-color:#AEEA00;
+							color:#424242;
+						}
+					}
+				}
+			} 
+			> div {
+				flex: 1;
+				text-align: right;
+				&:nth-child(3) {
+					font-size:13px;
+					color: var(--light-gray);
+				}
+			}
+			&.header {
+				padding: 2px 8px;
+				margin: 0 -8px 0px -8px;
+				border:none;
+				&:nth-child(2) {
+					color:#AEEA00;
+				}
+			}
+		}
+	}
+}
 </style>
