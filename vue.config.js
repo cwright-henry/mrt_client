@@ -4,7 +4,7 @@ module.exports = {
 	devServer: {
 		proxy: {
 			"/api": {
-				target: "http://localhost:3031/"
+				target: "http://mrt-server:3031/"
 			}
 		}
 	},
