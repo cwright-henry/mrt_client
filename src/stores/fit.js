@@ -3,6 +3,7 @@ import moment from 'moment'
 import {closestNeighbour, tsExtremes, seedGen, getMinMax, mean} from '@/utils'
 
 
+const DEFAULT_ACTIVE_TAB = '1';
 const DEFAULT_PROCTYPE = 'OU';
 const DEFAULT_SIM_HORIZON = {value: '-1', text: 'Align'};
 const DEFAULT_ANIMATION_TIME = 2;
@@ -18,6 +19,9 @@ export default {
 			},
 			fit: {}
 		},
+
+		// Active Tab
+		activeTab: DEFAULT_ACTIVE_TAB,
 
 		// proctype
 		proctype: DEFAULT_PROCTYPE,
@@ -56,9 +60,7 @@ export default {
 		avg: 0,
 
 		// SLTP
-		opt_SL: {},
-		opt_TP: {},
-		opt_Ext: {},
+		opt: {},
 		ET: {},
 		ER: {},
 		EIR: {},
@@ -71,9 +73,17 @@ export default {
 		// Slider value on SLTP [value, date]
 		userValue: null,
 		userDate: null,
+  },
+  
+  getters: {
+		findEIR: state => (sl, tp) => {
+			return state.EIR[sl][tp]
+    },
 
-
-	},
+    findET: state => (sl, tp) => {
+			return state.ET[sl][tp]
+    }
+  },
 
 	mutations: {
 		isLoadingStrategy(state, status) {
@@ -90,6 +100,10 @@ export default {
 
 		isSavingFit(state, status) {
 			state.isSavingFit = status;
+		},
+
+		setActiveTab(state, tab) {
+			state.activeTab = tab;
 		},
 
 		setKappa(state, kappa) {
@@ -155,13 +169,16 @@ export default {
 			state.strategy = strategy;
 
 			// min/max and avg for validation of Sigma and Theta
-			const minMax = getMinMax(state.strategy.ts.data)
-			const avg = mean(state.strategy.ts.data)
-			const extremes = tsExtremes(state.strategy.ts.data)
+			const minMax = getMinMax(state.strategy.ts.data);
+			const avg = mean(state.strategy.ts.data);
+			const extremes = tsExtremes(state.strategy.ts.data);
 
 			//
 			// Reset the transient data
 			//
+
+			// Active Tab
+			state.activeTab = DEFAULT_ACTIVE_TAB;
 
 			// Proctype
 			state.proctype = state.strategy.fit.proctype === 'NONE' ?  DEFAULT_PROCTYPE : state.strategy.fit.proctype;
@@ -188,9 +205,7 @@ export default {
 			state.simAnimationTime = DEFAULT_ANIMATION_TIME;
 
 			// SLTP
-			state.opt_SL = {};
-			state.opt_TP = {};
-			state.opt_Ext = {};
+			state.opt = {};
 			state.ET = {};
 			state.ER = {};
 			state.EIR = {};
@@ -232,10 +247,15 @@ export default {
 			}
 		},
 
+    // Freeze the object so that Vue does not try to attach listeners
 		setSltpData(state, data) {
-			state.opt_SL = Object.freeze(data.opt_SL)		// Freeze the object so that Vue does not try to attach listeners
-			state.opt_TP = Object.freeze(data.opt_TP)
-			state.opt_Ext = Object.freeze(data.opt_Ext)
+      state.opt = Object.freeze({
+        SL: Object.freeze(data.opt.SL),
+        TP: Object.freeze(data.opt.TP),
+        Ext: Object.freeze(data.opt.Ext),
+        maxVal: Object.freeze(data.opt.maxVal),
+        tradePL: Object.freeze(data.opt.tradePL)
+      });
 			state.ET = Object.freeze(data.ET)
 			state.ER = Object.freeze(data.ER)
 			state.EIR = Object.freeze(data.EIR)
@@ -377,10 +397,10 @@ export default {
 				if(payload.nsteps === '-1') {
 					const point = closestNeighbour(state.strategy.ts.data, payload.x_0_date)
 					const index = state.strategy.ts.data.findIndex(elm => elm[0] === point[0])
-					let diff = state.strategy.ts.data.length - index ;											// Mark is giving one more than asked for
+					let diff = state.strategy.ts.data.length - index ;						// Mark is giving one more than asked for
 					for(let i = index, len = state.strategy.ts.data.length; i < len; i++) {	// If weekends exists skip these when asking for sims
-						if(moment.utc(state.strategy.ts.data[i][0]).day() === 6 ||						// Ignore Saturday
-								moment.utc(state.strategy.ts.data[i][0]).day() === 0) {						// Ignore Sunday
+						if(moment.utc(state.strategy.ts.data[i][0]).day() === 6 ||			// Ignore Saturday
+								moment.utc(state.strategy.ts.data[i][0]).day() === 0) {		// Ignore Sunday
 							diff--;
 						}
 					}
@@ -411,9 +431,13 @@ export default {
 				const data = await ApiController.sltp(payload);
 
 				commit('setSltpData', {
-					opt_SL: data['opt']['opt SL'],
-					opt_TP: data['opt']['opt TP'],
-					opt_Ext: data['opt']['E[x_0] NBC'],
+					opt : {
+            SL: data['opt']['opt SL'],
+            TP: data['opt']['opt TP'],
+            Ext: data['opt']['E[x_0] NBC'],
+            maxVal: data['opt']['max val'],
+            tradePL: data['opt']['trad P/L ratio']
+					},
 					ER: data['ER'],
 					ET: data['ET'],
 					EIR: data['EIR'],

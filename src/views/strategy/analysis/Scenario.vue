@@ -26,37 +26,29 @@
 		</div>
 
 		<fullscreen :fullscreen.sync="fullscreen" ref="fullscreen">
-			<v-tabs grow color="#546E7A" icons-and-text v-model="activeTab">
-				<v-tabs-slider color="#AEEA00"></v-tabs-slider>
+			<v-stepper v-model="activeTab">
+        
+				<v-stepper-header style="background-color:#546E7A">
+					<v-stepper-step editable step="1">Fit Process</v-stepper-step>
+					<v-divider></v-divider>
+					<v-stepper-step editable step="2">Run Simulations</v-stepper-step>
+					<v-divider></v-divider>
+					<v-stepper-step editable step="3">Stop Loss / Take Profit</v-stepper-step>
+				</v-stepper-header>
 
-				<v-tab href="#fit_process">
-					Fit Process
-					<v-icon>build</v-icon>
-				</v-tab>
+        <v-stepper-items>
+          <v-stepper-content step="1" style="padding:0">
+            <mrt-fit/>
+          </v-stepper-content>
+          <v-stepper-content step="2" style="padding:0">
+            <mrt-sims/>
+          </v-stepper-content>
+          <v-stepper-content step="3" style="padding:0">
+            <mrt-sltp/>
+          </v-stepper-content>
+        </v-stepper-items>
 
-				<v-tab href="#run_simulations">
-					Run Simulations
-					<v-icon>directions_run</v-icon>
-				</v-tab>
-
-				<v-tab href="#stoploss_takeprofit">
-					Stop Loss / Take Profit
-					<v-icon>share</v-icon>
-				</v-tab>
-
-				<v-tab-item lazy key="fit_process" value="fit_process">
-					<mrt-fit/>
-				</v-tab-item>
-
-				<v-tab-item lazy key="run_simulations" value="run_simulations">
-					<mrt-sims/>
-				</v-tab-item>
-
-				<v-tab-item lazy key="stoploss_takeprofit" value="stoploss_takeprofit">
-					<mrt-sltp/>
-				</v-tab-item>
-
-			</v-tabs>
+			</v-stepper>
 		</fullscreen>
 	</div>
 </template>
@@ -72,8 +64,7 @@ export default {
 	name: 'MRT_SCENARIO',
 	data() {
 		return {
-			fullscreen: false,
-			activeTab:'stoploss_takeprofit'
+			fullscreen: false
 		}
 	},
 	props: {
@@ -93,13 +84,21 @@ export default {
 	computed: {
 		...mapState('fit', ['strategy', 'isFittingTS', 'isLoadingTS', 'isSavingFit']),
 		...mapGetters('strategies', ['findStrategy']),
+		activeTab: {
+			get () {
+				return this.$store.state.fit.activeTab
+			},
+			set (value) {
+				this.$store.commit('fit/setActiveTab', value);
+			}
+		},
 		name: {
 			get () {
-        return this.$store.state.fit.strategy.name
-      },
-      set (value) {
-        this.$store.commit('fit/setStrategyName', value);
-      }
+				return this.$store.state.fit.strategy.name
+			},
+			set (value) {
+				this.$store.commit('fit/setStrategyName', value);
+			}
 		}
 	},
 	methods: {
@@ -162,14 +161,14 @@ export default {
 }
 
 .fullscreen {
-	padding: 0 12px;
+  padding: 0 12px;
 }
 
 .mrt-fit--details {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin: 0 0 8px 0;
+	margin: 0 0 24px 0;
 	.selection {
 		display:flex;
 		> div {

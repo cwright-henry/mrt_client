@@ -1,6 +1,6 @@
 <template>
 	<div class="panel sltp">
-		<div class="sim-navigation">
+		<div class="navigation">
 			<mrt-fit-process :fit="strategy.fit"/>
 			<div class="mrt-fit--actions">
 				<div>
@@ -9,6 +9,9 @@
 				</div>
 			</div>
 		</div>
+    <div class="parameters">
+      <mrt-parameters/>
+    </div>
 		<mrt-sltpchart/>
 		<ul class="mrt-optimize--surfaces">
 			<li>
@@ -39,6 +42,7 @@ import mrtFitProcess from '@/components/fit/Fit'
 import mrtSltpchart from './SltpChart'
 import mrtSurfaceChart from './SltpSurfaceChart'
 import mrtSurfaceChartDialog from './SltpSurfaceChartDialog'
+import mrtParameters from './SltpParameters'
 import {mapState, mapGetters} from 'vuex'
 
 export default {
@@ -62,7 +66,8 @@ export default {
 		mrtSltpchart,
 		mrtFitProcess,
 		mrtSurfaceChart,
-		mrtSurfaceChartDialog
+    mrtSurfaceChartDialog,
+    mrtParameters
 	},
 	methods: {
 		runSltp() {
@@ -80,14 +85,20 @@ export default {
 <style lang="less">
 .mrt-analysis {
 	.sltp {
-		.sim-navigation {
+		.navigation {
 			display:flex;
 			justify-content: space-between;
+			margin: 0 0 12px;
+    }
+    .parameters {
+			display:flex;
+			justify-content: center;
 			margin: 0 0 12px;
 		}
 	}
 }
 .mrt-optimize--surfaces {
+  margin: 36px 0 0 0;
 	display: flex;
 	flex-direction: row;
 	list-style: none;
