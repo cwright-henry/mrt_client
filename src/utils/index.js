@@ -132,6 +132,7 @@ const stats = (arr) => {
     mean: mean(arr)
   }
 }
+
 const getPlotBand = (from, to, id="plot-band") => {
 	return  {
 		from,
@@ -163,6 +164,14 @@ const getPlotLine = (value, id='plot-line', className='axis-label') => {
 	}
 }
 
+const getAtIndex = (data, index) => {
+	if (data.length - 1 < index) {
+		return data[0]
+	}
+
+	return data[data.length - 1 - index]
+}
+
 export {
 	getErrorCode,
 	sorter,
@@ -178,5 +187,6 @@ export {
   getMinMax,
 	stats,
 	getPlotBand,
-	getPlotLine
+	getPlotLine,
+	getAtIndex
 }

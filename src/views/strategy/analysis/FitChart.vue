@@ -75,10 +75,10 @@ const options = (vm) => {
 		},
 		navigator: {
 			maskFill: 'rgba(255, 152, 0, 0.05)',
-			outlineColor: '#AEEA00',
+			outlineColor: '#BA68C8',
 			outlineWidth: 0.5,
 			handles: {
-				borderColor: '#AEEA00',
+				borderColor: '#BA68C8',
 				lineWidth: 0.5
 			},
 			series: {
@@ -133,7 +133,7 @@ export default {
 	props: {
 		height: {
 			type: Number,
-			default: 410
+			default: 470
 		},
 		backgroundColor: {
 			type: String,

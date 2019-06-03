@@ -44,9 +44,6 @@ export default {
 .mrt-toolbar {
 	display: flex;
 	align-items: center;
-	.cls-1 {
-		fill: var(--blue);
-	}
 	span {
 		padding-left:8px;
 	}

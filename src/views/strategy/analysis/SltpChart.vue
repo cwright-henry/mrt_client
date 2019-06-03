@@ -5,6 +5,7 @@
 <script>
 import ChartSlider from '@/utils/dualslider'
 import {mapState} from 'vuex'
+import moment from 'moment'
 
 const ONE_YEAR = 1000*60*60*24*365;
 
@@ -250,7 +251,7 @@ export default {
 		},
 	},
 	computed: {
-		...mapState('fit', ['strategy', 'opt', 'userDate'])
+		...mapState('fit', ['strategy', 'opt', 'userDate', 'optSLValue', 'optTPValue'])
 	},
 	watch: {
 		strategy() {
@@ -310,17 +311,37 @@ export default {
         this.drawOptLine(OPT.TRADE, data)
 
         this.addPlotBand(this.userDate, maxHorizon)
-        this.addToolTipListeners()
+        removeListeners(this.$el, moveTypes, this.toolTipListner)
+        addListeners(this.$el, moveTypes, this.toolTipListner)
+      }
+    },
+
+    clearOptChart() {
+      removeListeners(this.$el, moveTypes, this.toolTipListner)
+      this.clearFromChart(OPT.PLOT_BAND.id)
+      this.clearFromChart(OPT.SL.id)
+      this.clearFromChart(OPT.TP.id)
+      this.clearFromChart(OPT.EXT.id)
+      this.clearFromChart(OPT.MAX.id)
+      this.clearFromChart(OPT.TRADE.id)
+      this.clearFromChart(OPT.PLOT_BAND.id)
+
+      chart.yAxis[1].update({visible:false})
+      chart.yAxis[2].update({visible:false})
+    },
+
+    clearFromChart(id) {
+      const chart = this.$refs.sltpchart.chart
+      const existing = chart.get(id)
+			if(existing) {
+				existing.remove();
       }
     },
 
     drawOptLine(opts, data) {
       const chart = this.$refs.sltpchart.chart
-			const existing = chart.get(opts.id)
-			if(existing) {
-				existing.remove();
-      }
-      
+      this.clearFromChart(opts.id)
+
       chart.addSeries({
         type: 'line',
         data: data,
@@ -350,45 +371,22 @@ export default {
         id: OPT.PLOT_BAND.id,
         zIndex:20,
         events: {
-          click: function (e) {
+          click: (e) => {
             // self.eventBus.trigger('main-chart:fixBands')
+            this.addPlotLines(this.optSLValue, this.optTPValue)
           }
         }
       });
       chart.xAxis[0].setExtremes(from - 4 * ONE_YEAR, to); // my addition as it was going to 'all' by default
     },
 
-    addToolTipListeners() {
-      const fn = () => {
-        const toolTips = this.$el.querySelectorAll('.highcharts-tooltip text')
-        for(let tip of toolTips) {
-          let txt = tip.textContent
-          if(txt && (txt.indexOf('opt TP') != -1 || 
-                     txt.indexOf('opt SL') != -1 || 
-                     txt.indexOf('opt Exp') != -1)) {
-              let str = txt.split(':');
-              this.$emit('tooltip-move', {
-                control: str[0],
-                value:str[1]
-              })
-          }
-          else if(txt && txt.indexOf(':') == -1) {
-            this.$emit('tooltip-move', {
-              control: 'Date',
-              value: txt
-            })
-          }
-        }
-      }
-      removeListeners(this.$el, moveTypes, fn)
-      addListeners(this.$el, moveTypes, fn)
-    },
-
-    addPlotLines(max, min) {
+    addPlotLines(sl, tp) {  
       const chart = this.$refs.sltpchart.chart
+
+      this.clearOptChart()
       chart.yAxis[0].addPlotLine({
-          value: min, // orig: min
-          color: 'red',  // TODO: add param to define whether SL or TP (TP = green, SL = red)
+          value: sl,      // orig: min
+          color: 'red',   // TODO: add param to define whether SL or TP (TP = green, SL = red)
           width: 2,
           label: {
             align:'center',
@@ -398,8 +396,8 @@ export default {
           id:'sl-plotline'
       });
       chart.yAxis[0].addPlotLine({
-          value: max, // orig: max
-          color: 'green',  // TODO: add param to define whether SL or TP (TP = green, SL = red)
+          value: tp,        // orig: max
+          color: 'green',   // TODO: add param to define whether SL or TP (TP = green, SL = red)
           width: 2,
           label: {
             align:'center',
@@ -409,6 +407,47 @@ export default {
           id:'tp-plotline'
       });
     },
+
+    toolTipListner() {
+      const toolTips = this.$el.querySelectorAll('.highcharts-tooltip text')
+      for(let tip of toolTips) {
+        let txt = tip.textContent
+        if(txt && txt.indexOf(':') != -1) {
+          let str = txt.split(':');
+          switch(str[0]) {
+            case 'Opt SL':
+              this.$store.commit('fit/setOptSLValue', str[1]);
+              break;
+
+            case 'Opt TP':
+              this.$store.commit('fit/setOptTPValue', str[1]);
+              break;
+
+            case 'Max EIR':
+              this.$store.commit('fit/setOptIRValue', str[1]);
+              break;
+
+            case 'Trad P/L Ratio':
+              this.$store.commit('fit/setOptTradPLValue', str[1]);
+              break;
+          }
+        }
+        else {
+          const t = moment(txt, 'DD MMM YYYY');
+          var diff = moment(this.userDate).diff(t, 'days');
+          if(diff < 0) {
+              this.$store.commit('fit/setOptHorizonValue', -1 * diff);
+          }
+          else {
+              this.$store.commit('fit/setOptSLValue', null);
+              this.$store.commit('fit/setOptTPValue', null);
+              this.$store.commit('fit/setOptIRValue', null);
+              this.$store.commit('fit/setOptTradPLValue', null);
+              this.$store.commit('fit/setOptHorizonValue', null);
+          }
+        }
+      }
+    }
 	}
 }
 </script>

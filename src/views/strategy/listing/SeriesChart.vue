@@ -16,7 +16,7 @@ const getPlotBand = (from, to) => {
 	return  {
 		from,
 		to,
-		color: 'rgba(255, 152, 0, 0.05)',
+		color: 'rgba(156, 39, 176, 0.1)',
 		id: 'plot-band'
 	}
 }
@@ -24,7 +24,7 @@ const getPlotBand = (from, to) => {
 const getStartPlotLine = (value) => {
 	return {
 		value,
-		color: '#FF9800',
+		color: '#CE93D8',
 		dashStyle: 'Dash',
 		width: 1,
 		id:'plot-line-start',
@@ -35,7 +35,7 @@ const getStartPlotLine = (value) => {
 const getEndPlotLine = (value) => {
 	return {
 		value,
-		color: '#FF9800',
+		color: '#CE93D8',
 		dashStyle: 'Dash',
 		width: 1,
 		id:'plot-line-end',

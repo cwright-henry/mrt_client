@@ -72,7 +72,14 @@ export default {
 
 		// Slider value on SLTP [value, date]
 		userValue: null,
-		userDate: null,
+    userDate: null,
+    
+    // opt values
+    optSLValue: null,
+    optTPValue: null,
+    optIRValue: null,
+    optHorizonValue: null,
+    optTradPLValue: null
   },
   
   getters: {
@@ -187,7 +194,7 @@ export default {
 			state.startDate = state.strategy.fit.proctype === 'NONE' ? extremes.min : state.strategy.fit.start_date;
 			state.endDate = state.strategy.fit.proctype === 'NONE' ? extremes.max : state.strategy.fit.end_date;
 
-			// Parameters
+			// Process Parameters
 			state.userKappa = null;
 			state.userSigma = null;
 			state.userTheta = null;
@@ -195,7 +202,7 @@ export default {
 			state.range = minMax[1] - minMax[0];
 			state.avg = avg;
 
-			// Sims
+      // Sims
 			state.selectedSim = null;
 			state.simStart.value = extremes.maxValue;
 			state.simStart.date = extremes.max;
@@ -217,7 +224,14 @@ export default {
 
 			// User data
 			state.userValue = extremes.maxValue;
-			state.userDate = extremes.max;
+      state.userDate = extremes.max;
+      
+      // Opt Values
+      state.optSLValue = null;
+      state.optTPValue = null;
+      state.optIRValue = null;
+      state.optHorizonValue = null;
+      state.optTradPLValue = null;
 		},
 
 		setStrategyName(state, name) {
@@ -265,7 +279,27 @@ export default {
 
 		isLoadingSLTP(state, status) {
 			state.isLoadingSLTP = status;
-		}
+    },
+    
+    setOptSLValue(state, value) {
+      state.optSLValue = value;
+    },
+
+    setOptTPValue(state, value) {
+      state.optTPValue = value;
+    },
+
+    setOptIRValue(state, value) {
+      state.optIRValue = value;
+    },
+
+    setOptHorizonValue(state, value) {
+      state.optHorizonValue = value;
+    },
+
+    setOptTradPLValue(state, value) {
+      state.optTradPLValue = value;
+    }
 	},
 	
 	actions: {

@@ -2,49 +2,64 @@
     <div class="sltp-parameters">
         <div>
             <v-text-field
-								v-model="stopLoss"
-								label="Stop Loss"
-								box
-								maxlength="10"
-								placeholder="-">
+              v-model="optSLValue"
+              label="Stop Loss"
+              box
+              readonly
+              maxlength="10"
+              placeholder="-">
 						</v-text-field>
         </div>
         <div>
             <v-text-field
-								v-model="stopLoss"
-								label="Take Profit"
-								box
-								maxlength="10"
-								placeholder="-">
+              v-model="optTPValue"
+              label="Take Profit"
+              box
+              readonly
+              maxlength="10"
+              placeholder="-">
 						</v-text-field>
         </div>
         <div>
             <v-text-field
-								v-model="stopLoss"
-								label="Information Ratio"
-								box
-								maxlength="10"
-								placeholder="-">
+              v-model="optIRValue"
+              label="Information Ratio"
+              box
+              readonly
+              maxlength="10"
+              placeholder="-">
 						</v-text-field>
         </div>
         <div>
             <v-text-field
-								v-model="stopLoss"
-								label="Date"
-								box
-								maxlength="10"
-								placeholder="-">
+              v-model="optHorizonValue"
+              label="Horizon"
+              box
+              suffix="days"
+              readonly
+              maxlength="10"
+              placeholder="-">
+						</v-text-field>
+        </div>
+        <div>
+            <v-text-field
+              v-model="optTradPLValue"
+              label="Trad PL Ratio"
+              box
+              readonly
+              maxlength="10"
+              placeholder="-">
 						</v-text-field>
         </div>
     </div>
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
 export default {
-  data() {
-    return {
-      stopLoss: null
-    }
+  computed: {
+    ...mapState('fit', ['optSLValue' ,'optTPValue', 'optIRValue', 'optHorizonValue', 'optTradPLValue'])
   }
 }
 </script>

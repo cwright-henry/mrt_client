@@ -9,7 +9,7 @@ const getPlotBand = (from, to) => {
 	return  {
 		from,
 		to,
-		color: 'rgba(255, 152, 0, 0.05)',
+		color: 'rgba(255,255,0,0.02)',
 		id: 'plot-band'
 	}
 }
@@ -17,7 +17,7 @@ const getPlotBand = (from, to) => {
 const getPlotLine = (value, type) => {
 	return {
 		value,
-		color: '#AEEA00',
+		color: '#BA68C8',
 		width: 0.5,
 		label: {
 			align:'center',
@@ -83,7 +83,7 @@ export default {
 		},
 		height: {
 			type: Number,
-			default: 180
+			default: 320
 		},
 		backgroundColor: {
 			type: String,
@@ -162,7 +162,7 @@ export default {
 	display: inline-block;
 	overflow: hidden;
 	cursor: ew-resize;
-	background-color: #AEEA00;
+	background-color: #BA68C8;
 	position: relative;
 	top:6px;
 	left:158px;

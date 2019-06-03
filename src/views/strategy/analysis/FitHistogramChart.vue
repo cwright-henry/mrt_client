@@ -6,7 +6,7 @@
 import {gaussionData, trimData} from '@/utils'
 import {mapState} from 'vuex'
 
-const MAX_BIN_NUMBER = 20;
+const MAX_BIN_NUMBER = 50;
 
 const options = (vm) => {
 	return {
@@ -50,7 +50,7 @@ const options = (vm) => {
 			},
 			areaspline: {
 				lineWidth: 0.5,
-				fillColor: 'rgba(255, 152, 0, 0.5)',
+				fillColor: 'rgba(128,128,128, 0.3)',
 				color: '#827717',
 				marker: {
 					enabled: false
@@ -79,7 +79,7 @@ export default {
 		},
 		height: {
 			type: Number,
-			default: 180
+			default: 320
 		},
 		backgroundColor: {
 			type: String,

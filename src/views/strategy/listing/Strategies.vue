@@ -16,7 +16,7 @@
 			<v-btn
 				slot="activator"
 				v-model="fab"
-				color="#AEEA00"
+				color="#9C27B0"
 				@click.stop="showInvestUpload=true"
 				dark
 				fab>

@@ -15,7 +15,7 @@
 						label="Fit Process">
 					</v-select>
 					<div class="auto-fit">
-						<v-switch v-model="autoFit" color="#0091EA" hide-details label="Auto Fit"></v-switch>
+						<v-switch v-model="autoFit" color="#9C27B0" hide-details label="Auto Fit"></v-switch>
 					</div>
 				</div>
 				<div class="graph">
@@ -30,7 +30,7 @@
 		</div>
 
 		<div class="panel residuals">
-			<h3>Residuals</h3>
+			<h3>Residual Graphs</h3>
 			<div class="graphs">
 				<div class="residual-graph">
 					<mrt-risdualschart 

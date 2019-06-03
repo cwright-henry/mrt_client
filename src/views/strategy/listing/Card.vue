@@ -84,7 +84,6 @@ export default {
 	flex-direction: row;
 	flex-wrap: wrap;
 	padding:16px;
-	background-color: #455A64;
 	min-height: 340px;
 
 	.mrt-card--graphs {

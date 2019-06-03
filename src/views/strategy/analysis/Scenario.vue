@@ -7,7 +7,6 @@
 					v-model="name"
 					label="Name"
 					box
-					background-color="#546E7A"
 					hide-details
 					ref="namefield"
 					required>
@@ -15,11 +14,11 @@
 			</div>
 			<div class="mrt-fit--actions">
 				<div>
-					<v-btn small fab color="#0091EA" :loading="isSavingFit" @click="save"><v-icon>cloud_upload</v-icon></v-btn>
+					<v-btn small fab color="#9C27B0" :loading="isSavingFit" @click="save"><v-icon>cloud_upload</v-icon></v-btn>
 					<label>Save Scenario</label>
 				</div>
 				<div>
-					<v-btn small fab color="#0091EA" @click="toggle"><v-icon>fullscreen</v-icon></v-btn>
+					<v-btn small fab color="#9C27B0" @click="toggle"><v-icon>fullscreen</v-icon></v-btn>
 					<label>Full Screen</label>
 				</div>
 			</div>
@@ -28,25 +27,25 @@
 		<fullscreen :fullscreen.sync="fullscreen" ref="fullscreen">
 			<v-stepper v-model="activeTab">
         
-				<v-stepper-header style="background-color:#546E7A">
-					<v-stepper-step editable step="1">Fit Process</v-stepper-step>
+				<v-stepper-header>
+					<v-stepper-step editable color="#9C27B0" step="1">Fit Process</v-stepper-step>
 					<v-divider></v-divider>
-					<v-stepper-step editable step="2">Run Simulations</v-stepper-step>
+					<v-stepper-step editable color="#9C27B0" step="2">Run Simulations</v-stepper-step>
 					<v-divider></v-divider>
-					<v-stepper-step editable step="3">Stop Loss / Take Profit</v-stepper-step>
+					<v-stepper-step editable color="#9C27B0" step="3">Stop Loss / Take Profit</v-stepper-step>
 				</v-stepper-header>
 
-        <v-stepper-items>
-          <v-stepper-content step="1" style="padding:0">
-            <mrt-fit/>
-          </v-stepper-content>
-          <v-stepper-content step="2" style="padding:0">
-            <mrt-sims/>
-          </v-stepper-content>
-          <v-stepper-content step="3" style="padding:0">
-            <mrt-sltp/>
-          </v-stepper-content>
-        </v-stepper-items>
+				<v-stepper-items>
+					<v-stepper-content step="1" style="padding:0">
+						<mrt-fit/>
+					</v-stepper-content>
+					<v-stepper-content step="2" style="padding:0">
+						<mrt-sims/>
+					</v-stepper-content>
+					<v-stepper-content step="3" style="padding:0">
+						<mrt-sltp/>
+					</v-stepper-content>
+				</v-stepper-items>
 
 			</v-stepper>
 		</fullscreen>
@@ -161,7 +160,6 @@ export default {
 }
 
 .fullscreen {
-  padding: 0 12px;
 }
 
 .mrt-fit--details {
@@ -209,20 +207,19 @@ export default {
 		}
 		.panel:nth-child(1)  {
 			margin-right: 0px;
-			border-width: 1px 0px 0px 1px;
 		}
 	}
 	.panel {
 		border: solid #607D8B;
-		border-width: 1px 1px 0px 1px;
+		border-width: 0;
 		padding:16px;
-		background-color: #455A64;
+		background-color: #303030;
 		margin: 0px 0;
 		h3 {
 			text-transform: uppercase;
-			font-weight:400;
-			margin: 0 0 16px 0;
-			color: var(--light-gray)
+			font-weight:300;
+			margin: 8px 0 16px 0;
+			color: #FFFFFF;
 		}
 	}
 	.strategy {
@@ -251,9 +248,6 @@ export default {
 			}
 		}
 	}
-}
-
-.v-tabs__item--active {
 }
 
 @media screen and (max-width: 600px) {

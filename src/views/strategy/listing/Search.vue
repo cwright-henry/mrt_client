@@ -7,6 +7,7 @@
 		v-model="select"
 		clearable
 		chips
+		class="mrt-autocomplete"
 		ref="select"
 		item-text="name"
 		item-value="id"
@@ -14,7 +15,6 @@
 		label="Search your library"
 		box
 		multiple
-		background-color='#455A64'
 		color='#0091EA'>
 		<template slot="no-data">
 			<v-list-tile>
@@ -107,5 +107,8 @@ export default {
 </script>
 
 <style>
-
+.mrt-autocomplete {
+	background-color: #616161;
+	border-radius:3px;
+}
 </style>
