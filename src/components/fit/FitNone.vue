@@ -8,9 +8,7 @@
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style scoped lang="less">
@@ -26,7 +24,7 @@ export default {
 		div {
 			font-size: 16px;
 			color: var(--orange);
-			color: #FF5722;
+			color: #ff5722;
 		}
 	}
 }

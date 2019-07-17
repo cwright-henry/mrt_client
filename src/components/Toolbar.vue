@@ -1,7 +1,12 @@
 <template>
 	<v-toolbar dense fixed clipped-left app class="mrt-toolbar-class">
 		<v-toolbar-side-icon @click.stop="$emit('togglemenu')"></v-toolbar-side-icon>
-		<v-toolbar-title class="hidden-xs-and-down mr-4 pl-2"><div class="mrt-toolbar"><logo/><span>Mean Reversion Trader</span></div></v-toolbar-title>
+		<v-toolbar-title class="hidden-xs-and-down mr-4 pl-2">
+			<div class="mrt-toolbar">
+				<logo />
+				<span>Mean Reversion Trader</span>
+			</div>
+		</v-toolbar-title>
 		<v-spacer></v-spacer>
 		<div class="hidden-sm-and-down">
 			<span class="mrt-toolbar--name">{{ userName }}</span>
@@ -13,24 +18,23 @@
 </template>
 
 <script>
-import Logo from '../../public/svg/crowe.svg'
+import Logo from "../../public/svg/crowe.svg";
 
 export default {
-	name: 'MrtToolbar',
+	name: "MrtToolbar",
 
 	data() {
-		return {
-		}
+		return {};
 	},
 	components: {
 		Logo
 	},
 	computed: {
 		userName() {
-			return this.$store.state.user.user.email
+			return this.$store.state.user.user.email;
 		}
 	}
-}
+};
 </script>
 
 <style lang="less">
@@ -45,7 +49,7 @@ export default {
 	display: flex;
 	align-items: center;
 	span {
-		padding-left:8px;
+		padding-left: 8px;
 	}
 }
 </style>

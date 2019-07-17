@@ -34,12 +34,12 @@ const getPlotLine = (value, type) => {
 		color: '#AEEA00',
 		width: 1,
 		label: {
-			align:'center',
+			align: 'center',
 			useHTML: true,
 			text: `<span class="axis-label ${type}"></span>`
 		},
-		id:`${type}-plotline`,
-		zIndex:999
+		id: `${type}-plotline`,
+		zIndex: 999
 	}
 }
 
@@ -93,7 +93,7 @@ export default class {
 		const step = (e) => {
 			this.pos = this.toCoords(e.chartX)
 			this.maxPos = this.scale(this.maxPos)
-			if(this.pos >= this.min && this.pos < this.max) {
+			if (this.pos >= this.min && this.pos < this.max) {
 				this.updatePlotLine(this.pos, 'pos')
 			}
 		}
@@ -104,10 +104,10 @@ export default class {
 			addListeners(line, startTypes, () => {
 				this.move()
 			})
-			
+
 			this.vm.$emit('startdate', this.pos)
 		}
-	
+
 		addListeners(this.container, moveTypes, step)
 		addListeners(this.container, endTypes, stop)
 	}
@@ -115,7 +115,7 @@ export default class {
 
 	scale(value) {
 		const width = this.width()
-		if(this.currentWidth !== width) {
+		if (this.currentWidth !== width) {
 			value *= (width / this.currentWidth)
 			this.currentWidth = width
 		}

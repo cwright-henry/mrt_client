@@ -5,18 +5,18 @@
 		:loading="loading"
 		:items="library"
 		item-text="name"
-    item-value="_id"
+		item-value="_id"
 		hide-details
 		box
 		dense
 		@change="findSeries"
-		label="Select from Library">
-	</v-select>
+		label="Select from Library"
+	></v-select>
 </template>
 
 <script>
-import ApiController from '@/services/ApiController'
-import {mapState} from 'vuex'
+import ApiController from "@/services/ApiController";
+import { mapState } from "vuex";
 
 export default {
 	props: {
@@ -26,35 +26,34 @@ export default {
 		}
 	},
 	data: () => ({
-		ticker: '',
+		ticker: "",
 		loading: false
 	}),
 	computed: {
-		...mapState('dictionary', ['library'])
+		...mapState("dictionary", ["library"])
 	},
 	watch: {
 		clear() {
-			this.ticker = ''
+			this.ticker = "";
 		}
 	},
 	activated() {
-		this.ticker = ''
+		this.ticker = "";
 	},
 	methods: {
 		async findSeries(id) {
 			try {
-				let series = await ApiController.findSeries(id, 'Library')
-				this.$emit('loaded', {
+				let series = await ApiController.findSeries(id, "Library");
+				this.$emit("loaded", {
 					series: series.ts.data,
 					errors: [],
 					name: series.name,
 					source: "Library"
-				})
-			}
-			catch(error) {
-				this.$emit('clear')
+				});
+			} catch (error) {
+				this.$emit("clear");
 			}
 		}
 	}
-}
+};
 </script>

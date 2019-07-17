@@ -1,25 +1,22 @@
 <template>
 	<div v-show="hasNext">
 		<div class="text-xs-center" :options="options" v-if="isInfiniteScrolling">
-			<v-progress-circular
-				indeterminate
-				color="primary">
-			</v-progress-circular>
+			<v-progress-circular indeterminate color="primary"></v-progress-circular>
 		</div>
 		<div class="text-xs-center" :options="options" v-else>
 			<v-btn
-      :loading="loading"
-      :disabled="loading"
-			outline
-      color="primary"
-      @click="loadMore">
-      Load {{pageSize}} More</v-btn>
+				:loading="loading"
+				:disabled="loading"
+				outline
+				color="primary"
+				@click="loadMore"
+			>Load {{pageSize}} More</v-btn>
 		</div>
 	</div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from "vuex";
 
 export default {
 	props: {
@@ -29,24 +26,24 @@ export default {
 				return {
 					root: null,
 					threshold: 0
-				}
+				};
 			}
 		}
 	},
 	data() {
 		return {
 			observer: null
-		}
+		};
 	},
 	computed: {
-		...mapState('strategies', ['hasNext', 'loading', 'pageSize']),
-		...mapGetters('strategies', ['isInfiniteScrolling']),
-		...mapGetters('user', ['isAuthenticated'])
+		...mapState("strategies", ["hasNext", "loading", "pageSize"]),
+		...mapGetters("strategies", ["isInfiniteScrolling"]),
+		...mapGetters("user", ["isAuthenticated"])
 	},
 	mounted() {
 		this.observer = new IntersectionObserver(([entry], self) => {
 			if (entry && entry.isIntersecting) {
-				this.autoMore()
+				this.autoMore();
 			}
 		}, this.options);
 
@@ -54,21 +51,20 @@ export default {
 	},
 	methods: {
 		autoMore() {
-			if(this.isInfiniteScrolling && this.isAuthenticated) {
-				this.$emit('loadmore')
+			if (this.isInfiniteScrolling && this.isAuthenticated) {
+				this.$emit("loadmore");
 			}
 		},
 
 		loadMore() {
-			this.$emit('loadmore')
+			this.$emit("loadmore");
 		}
 	},
 	destroyed() {
-		this.observer.disconnect()
-  }
-}
+		this.observer.disconnect();
+	}
+};
 </script>
 
 <style>
-
 </style>

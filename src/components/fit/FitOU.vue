@@ -27,15 +27,15 @@ export default {
 			type: Object,
 			default: () => {
 				return {
-					proctype: 'Ornstein-Uhlenbeck',
+					proctype: "Ornstein-Uhlenbeck",
 					kappa: 0,
 					sigma: 0,
 					theta: 0
-				}
+				};
 			}
 		}
 	}
-}
+};
 </script>
 
 <style scoped lang="less">
@@ -47,7 +47,7 @@ export default {
 		font-size: 18px;
 	}
 	.parameters {
-		display:flex;
+		display: flex;
 		margin: 0 0 8px 0;
 		> div {
 			border: 1px solid #616161;
@@ -62,7 +62,7 @@ export default {
 			}
 			div {
 				font-size: 16px;
-				color: #CE93D8;
+				color: #ce93d8;
 			}
 			&:last-child {
 				margin: 0;

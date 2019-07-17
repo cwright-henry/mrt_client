@@ -2,13 +2,13 @@
 const getErrorCode = (error) => {
 
 	// If response does exist must be network error	
-	if(!error.response) {
+	if (!error.response) {
 		return 'NETWORK_ERROR'
 	}
 
 	// Handle server side error codes 400 and 500
-	if(error.hasOwnProperty('response') && error.response.hasOwnProperty('data')) {
-		if(error.response.data.hasOwnProperty('code') && error.response.data.code.length > 0) {
+	if (error.hasOwnProperty('response') && error.response.hasOwnProperty('data')) {
+		if (error.response.data.hasOwnProperty('code') && error.response.data.code.length > 0) {
 			return error.response.data.code;
 		}
 	}
@@ -19,7 +19,7 @@ const getErrorCode = (error) => {
 
 
 const sorter = (sort) => {
-	return function(a, b) {
+	return function (a, b) {
 		if (a < b) return sort ? (sort == 'desc' ? -1 : 1) : -1;
 		if (a > b) return sort ? (sort == 'desc' ? 1 : -1) : 1;
 		return 0;
@@ -27,10 +27,10 @@ const sorter = (sort) => {
 }
 
 const objectSorter = (property, sort) => {
-	return function(a, b) {
-		if(!!a[property] && !!b[property]) {
-				if (a[property] < b[property]) return sort ? (sort == 'desc' ? -1 : 1) : -1;
-				if (a[property] > b[property]) return sort ? (sort == 'desc' ? 1 : -1) : 1;
+	return function (a, b) {
+		if (!!a[property] && !!b[property]) {
+			if (a[property] < b[property]) return sort ? (sort == 'desc' ? -1 : 1) : -1;
+			if (a[property] > b[property]) return sort ? (sort == 'desc' ? 1 : -1) : 1;
 		}
 		return 0;
 	}
@@ -42,17 +42,17 @@ const tsExtremes = (arr) => {
 	const max = arr[arr.length - 1][0]
 	const maxValue = arr[arr.length - 1][1]
 
-	return {min: min, max: max, minValue: minValue, maxValue: maxValue}
+	return { min: min, max: max, minValue: minValue, maxValue: maxValue }
 }
 
 const closestNeighbour = (arr, value) => {
-	return arr.reduce(function(prev, curr) {
+	return arr.reduce(function (prev, curr) {
 		return (Math.abs(curr[0] - value) < Math.abs(prev[0] - value) ? curr : prev);
 	});
 }
 
 const trimData = (arr, startDate, endDate) => {
-	if(arr.length) {
+	if (arr.length) {
 		let minNeighbour = closestNeighbour(arr, startDate)
 		let maxNeighbour = closestNeighbour(arr, endDate)
 		let minBound = arr.findIndex(elm => elm[0] === minNeighbour[0])
@@ -65,7 +65,7 @@ const trimData = (arr, startDate, endDate) => {
 }
 
 const seedGen = () => {
-	return parseInt(Math.random().toString().slice(2,11))
+	return parseInt(Math.random().toString().slice(2, 11))
 }
 
 const isEmpty = (value) => {
@@ -78,63 +78,63 @@ const isEmpty = (value) => {
  */
 
 const std = (arr) => {
-  let avg = mean(arr), temp = [], sum = 0;
-  
-  // Note that the map incurs stack overhead dur the function call
-  // Could use reduce which seems to be implemented using a while loop
-  for (let i = 1, len=arr.length; i < len; i++) {
-    temp.push(Math.pow(arr[i][1] - avg, 2))
-  }
-  for(let i = 0, len = temp.length; i < len; i++) {
-    sum += temp[i]
-  }
+	let avg = mean(arr), temp = [], sum = 0;
 
-  return Math.sqrt(sum / temp.length);
+	// Note that the map incurs stack overhead dur the function call
+	// Could use reduce which seems to be implemented using a while loop
+	for (let i = 1, len = arr.length; i < len; i++) {
+		temp.push(Math.pow(arr[i][1] - avg, 2))
+	}
+	for (let i = 0, len = temp.length; i < len; i++) {
+		sum += temp[i]
+	}
+
+	return Math.sqrt(sum / temp.length);
 }
 
 const mean = (data) => {
-  let sum = 0
-  for(let i = 0, len = data.length; i < len; i++) {
-    sum += data[i][1]
-  }
-  return sum / data.length;
+	let sum = 0
+	for (let i = 0, len = data.length; i < len; i++) {
+		sum += data[i][1]
+	}
+	return sum / data.length;
 }
 
 const gaussionData = (mean, std, bins) => {
-  const data = [];
+	const data = [];
 
-  for (let i = 0, len = bins.length; i < len; i++) {
-    let x = bins[i][0];
-    let y = (1 / (std * Math.sqrt(2 * Math.PI))) * (Math.exp(-0.5 * Math.pow((x - mean)/std, 2)));
-    data.push([x, y]);
-  }
+	for (let i = 0, len = bins.length; i < len; i++) {
+		let x = bins[i][0];
+		let y = (1 / (std * Math.sqrt(2 * Math.PI))) * (Math.exp(-0.5 * Math.pow((x - mean) / std, 2)));
+		data.push([x, y]);
+	}
 
-  return data;
+	return data;
 }
 
 const getMinMax = (arr) => {
-  let min = arr[0][1], max = arr[0][1], v;
+	let min = arr[0][1], max = arr[0][1], v;
 
-  for (let i = 1, len=arr.length; i < len; i++) {
-    v = arr[i][1];
-    min = (v < min) ? v : min;
-    max = (v > max) ? v : max;
-  }
-  return [min, max]
+	for (let i = 1, len = arr.length; i < len; i++) {
+		v = arr[i][1];
+		min = (v < min) ? v : min;
+		max = (v > max) ? v : max;
+	}
+	return [min, max]
 }
 
 const stats = (arr) => {
-  let minMax = getMinMax(arr)
+	let minMax = getMinMax(arr)
 	return {
-    min: minMax[0],
-    max: minMax[1],
-    std: std(arr),
-    mean: mean(arr)
-  }
+		min: minMax[0],
+		max: minMax[1],
+		std: std(arr),
+		mean: mean(arr)
+	}
 }
 
-const getPlotBand = (from, to, id="plot-band") => {
-	return  {
+const getPlotBand = (from, to, id = "plot-band") => {
+	return {
 		from,
 		to,
 		color: 'rgba(255, 152, 0, 0.05)',
@@ -149,18 +149,18 @@ const getPlotBand = (from, to, id="plot-band") => {
  * @param {*} id The id of the plotline so as to ba able to remove it later
  * @param {*} className A class used to style the plot away from the default
  */
-const getPlotLine = (value, id='plot-line', className='axis-label') => {
+const getPlotLine = (value, id = 'plot-line', className = 'axis-label') => {
 	return {
 		value,
 		color: '#AEEA00',
 		width: 0.5,
 		label: {
-			align:'center',
+			align: 'center',
 			useHTML: true,
 			text: `<span class="${className} ${id}"></span>`
 		},
-		id:`${id}`,
-		zIndex:999
+		id: `${id}`,
+		zIndex: 999
 	}
 }
 
@@ -182,9 +182,9 @@ export {
 	seedGen,
 	isEmpty,
 	std,
-  mean,
-  gaussionData,
-  getMinMax,
+	mean,
+	gaussionData,
+	getMinMax,
 	stats,
 	getPlotBand,
 	getPlotLine,

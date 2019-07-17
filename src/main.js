@@ -1,7 +1,7 @@
 import '@babel/polyfill'
 import 'intersection-observer'
 import Vue from 'vue'
-import {EventBus} from './events'
+import { EventBus } from './events'
 import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
@@ -32,26 +32,26 @@ Vue.use(HighchartsVue)
 Highcharts.setOptions(theme);
 
 const options = {
-  year: 'numeric', month: 'short', day: 'numeric',
-  hour: 'numeric', minute: 'numeric', second: 'numeric',
-  hour12: false,
+	year: 'numeric', month: 'short', day: 'numeric',
+	hour: 'numeric', minute: 'numeric', second: 'numeric',
+	hour12: false,
 	timeZone: 'UTC',
 	timeZoneName: 'short'
 };
 
 const optionsCompact = {
-  year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC'
+	year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC'
 };
 
 Vue.filter('number', function (value) {
-	if(value !== null && !isNaN(value)) {
+	if (value !== null && !isNaN(value)) {
 		let precision = 0;
 
 		let t = Math.abs(value);
-		if(t < 10) {
+		if (t < 10) {
 			precision = 3;
 		}
-		else if(t < 100) {
+		else if (t < 100) {
 			precision = 2;
 		}
 		else if (t < 1000) {
@@ -61,22 +61,22 @@ Vue.filter('number', function (value) {
 			precision = 0;
 		}
 		else {
-			return new Intl.NumberFormat(navigator.language, {maximumFractionDigits: 2, minimumFractionDigits: 2}).format((value / 1000).toFixed(2)) + 'k';
+			return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format((value / 1000).toFixed(2)) + 'k';
 		}
 
-		return new Intl.NumberFormat(navigator.language, {maximumFractionDigits: precision, minimumFractionDigits: precision}).format(value);
+		return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: precision, minimumFractionDigits: precision }).format(value);
 	}
 	return ''
 });
 
 Vue.filter('date', function (value) {
-	if(value)
+	if (value)
 		return new Intl.DateTimeFormat(navigator.language, options).format(value);
 	return ''
 });
 
 Vue.filter('date-short', function (value) {
-	if(value)
+	if (value)
 		return new Intl.DateTimeFormat(navigator.language, optionsCompact).format(value);
 	return ''
 });
@@ -90,7 +90,7 @@ window.onerror = function (msg, url, line, col, error) {
 }
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+	router,
+	store,
+	render: h => h(App)
 }).$mount('#app')

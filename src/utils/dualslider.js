@@ -22,7 +22,7 @@ const removeListeners = (container, types, fn) => {
 }
 
 const getPlotBand = (from, to) => {
-	return  {
+	return {
 		from,
 		to,
 		color: 'rgba(255, 152, 0, 0.05)',
@@ -36,12 +36,12 @@ const getPlotLine = (value, type) => {
 		color: '#FF9800',
 		width: 1,
 		label: {
-			align:'center',
+			align: 'center',
 			useHTML: true,
 			text: `<span class="axis-label ${type}"></span>`
 		},
-		id:`${type}-plotline`,
-		zIndex:999
+		id: `${type}-plotline`,
+		zIndex: 999
 	}
 }
 
@@ -54,7 +54,7 @@ const getPlotLine = (value, type) => {
  * @param {timeestamp} value 
  */
 const closestNeighbour = (arr, value) => {
-	return arr.reduce(function(prev, curr) {
+	return arr.reduce(function (prev, curr) {
 		return (Math.abs(curr[0] - value) < Math.abs(prev[0] - value) ? curr : prev);
 	})[0];
 }
@@ -125,7 +125,7 @@ export default class {
 		const step = (e) => {
 			this.minPos = this.toCoords(e.chartX)
 			this.maxPos = this.scale(this.maxPos)
-			if(this.minPos >= this.min && this.minPos < this.max) {
+			if (this.minPos >= this.min && this.minPos < this.max) {
 				this.updatePlotLine(this.minPos, 'min')
 				this.updatePlotband(this.minPos, this.maxPos)
 			}
@@ -137,10 +137,10 @@ export default class {
 			addListeners(line, startTypes, () => {
 				this.moveMin()
 			})
-			
+
 			this.vm.$emit('startdate', closestNeighbour(this.ts, this.minPos))
 		}
-	
+
 		addListeners(this.container, moveTypes, step)
 		addListeners(this.container, endTypes, stop)
 	}
@@ -149,7 +149,7 @@ export default class {
 		const step = (e) => {
 			this.maxPos = this.toCoords(e.chartX);
 			this.minPos = this.scale(this.minPos)
-			if(this.maxPos <= this.max && this.maxPos > this.minPos) {
+			if (this.maxPos <= this.max && this.maxPos > this.minPos) {
 				this.updatePlotLine(this.maxPos, 'max')
 				this.updatePlotband(this.minPos, this.maxPos)
 			}
@@ -171,7 +171,7 @@ export default class {
 
 	scale(value) {
 		const width = this.width()
-		if(this.currentWidth !== width) {
+		if (this.currentWidth !== width) {
 			value *= (width / this.currentWidth)
 			this.currentWidth = width
 		}

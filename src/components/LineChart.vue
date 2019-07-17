@@ -3,13 +3,13 @@
 </template>
 
 <script>
-import {mean} from '@/utils'
+import { mean } from "@/utils";
 
-const options = (vm) => {
+const options = vm => {
 	return {
 		chart: {
 			height: vm._props.height,
-			zoomType: 'x',
+			zoomType: "x",
 			backgroundColor: vm._props.backgroundColor
 		},
 		title: {
@@ -19,7 +19,7 @@ const options = (vm) => {
 			enabled: false
 		},
 		xAxis: {
-			type: 'datetime',
+			type: "datetime",
 			visible: true,
 			title: {
 				text: null
@@ -45,31 +45,31 @@ const options = (vm) => {
 				}
 			},
 			area: {
-				fillColor: '#00B0FF',
-				negativeFillColor: '#1E88E5',
-				negativeColor: '#FFFFFF',
-				color: '#FFFFFF',
-				lineWidth: 0.5,
+				fillColor: "#00B0FF",
+				negativeFillColor: "#1E88E5",
+				negativeColor: "#FFFFFF",
+				color: "#FFFFFF",
+				lineWidth: 0.5
 			},
 			line: {
-				color: '#00B0FF',
+				color: "#00B0FF",
 				lineWidth: 0.5
 			}
 		}
-	}
-}
+	};
+};
 
 export default {
 	data() {
 		return {
 			options: options(this)
-		}
+		};
 	},
 	props: {
 		ts: {
 			type: Array,
 			default: () => {
-				return []
+				return [];
 			}
 		},
 		height: {
@@ -78,7 +78,7 @@ export default {
 		},
 		name: {
 			type: String,
-			default: 'Series'
+			default: "Series"
 		},
 		lazyload: {
 			type: Boolean,
@@ -90,33 +90,32 @@ export default {
 		},
 		backgroundColor: {
 			type: String,
-			default: 'rgba(0, 0, 0, 0.0)'
+			default: "rgba(0, 0, 0, 0.0)"
 		}
 	},
 	watch: {
 		ts(data) {
-			this.clearSeries()
-			const chart = this.$refs.linechart.chart
+			this.clearSeries();
+			const chart = this.$refs.linechart.chart;
 			chart.addSeries({
-				type: 'area',
+				type: "area",
 				data: data,
 				name: this.name,
 				threshold: mean(data)
-			})
-			chart.reflow()
+			});
+			chart.reflow();
 		}
 	},
 	methods: {
 		clearSeries() {
-      const chart = this.$refs.linechart.chart
-      while(chart.series.length > 0) {
-        chart.series[0].remove(false);
-      }
+			const chart = this.$refs.linechart.chart;
+			while (chart.series.length > 0) {
+				chart.series[0].remove(false);
+			}
 		}
 	}
-}
+};
 </script>
 
 <style scoped>
-
 </style>

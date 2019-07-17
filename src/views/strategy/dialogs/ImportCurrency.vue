@@ -5,20 +5,20 @@
 		:loading="loading"
 		:items="currencies"
 		item-text="name"
-    item-value="curr_id"
+		item-value="curr_id"
 		color="blue lighten-2"
 		hide-details
 		box
 		dense
 		@change="findSeries"
 		return-object
-		label="Choose a Currency">
-	</v-select>
+		label="Choose a Currency"
+	></v-select>
 </template>
 
 <script>
-import ApiController from '@/services/ApiController'
-import {mapState} from 'vuex'
+import ApiController from "@/services/ApiController";
+import { mapState } from "vuex";
 
 export default {
 	props: {
@@ -28,38 +28,39 @@ export default {
 		}
 	},
 	data: () => ({
-		ticker: '',
+		ticker: "",
 		loading: false
 	}),
 	computed: {
-		...mapState('dictionary', ['currencies'])
+		...mapState("dictionary", ["currencies"])
 	},
 	activated() {
-		this.ticker = ''
+		this.ticker = "";
 	},
 	watch: {
 		clear() {
-			this.ticker = ''
+			this.ticker = "";
 		}
 	},
 	methods: {
 		async findSeries(value) {
 			this.loading = true;
 			try {
-				let series = await ApiController.findSeries(value.curr_id, value.source);
-				this.$emit('loaded', {
+				let series = await ApiController.findSeries(
+					value.curr_id,
+					value.source
+				);
+				this.$emit("loaded", {
 					series: series.data,
 					name: value.name,
 					source: value.source
 				});
-			}
-			catch(error) {
-				this.$emit('clear')
-			}
-			finally {
+			} catch (error) {
+				this.$emit("clear");
+			} finally {
 				this.loading = false;
 			}
 		}
 	}
-}
+};
 </script>

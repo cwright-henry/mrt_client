@@ -3,17 +3,17 @@
 </template>
 
 <script>
-import OU from '@/components/fit/FitOU'
-import HypOU from '@/components/fit/FitHypOU'
-import NONE from '@/components/fit/FitNone'
-import LOADING from '@/components/fit/FitLoading'
+import OU from "@/components/fit/FitOU";
+import HypOU from "@/components/fit/FitHypOU";
+import NONE from "@/components/fit/FitNone";
+import LOADING from "@/components/fit/FitLoading";
 
 export default {
 	props: {
 		fit: {
 			type: Object,
 			default: () => {
-				return {}
+				return {};
 			}
 		}
 	},
@@ -25,12 +25,11 @@ export default {
 	},
 	computed: {
 		fitProcess() {
-			return this.fit.proctype ? this.fit.proctype : 'LOADING';
+			return this.fit.proctype ? this.fit.proctype : "LOADING";
 		}
 	}
-}
+};
 </script>
 
 <style>
-
 </style>

@@ -25,15 +25,15 @@
 </template>
 
 <script>
-import {stats} from '@/utils'
-import {mapState} from 'vuex'
+import { stats } from "@/utils";
+import { mapState } from "vuex";
 
 const options = () => {
 	return {
 		chart: {
 			height: 50,
-			backgroundColor: 'transparent',
-			margin:0
+			backgroundColor: "transparent",
+			margin: 0
 		},
 		title: {
 			text: null
@@ -56,7 +56,7 @@ const options = () => {
 			tickPositions: [],
 			lineWidth: 0,
 			minorGridLineWidth: 1,
-			type: 'datetime',
+			type: "datetime",
 			plotBands: []
 		},
 		yAxis: {
@@ -68,8 +68,8 @@ const options = () => {
 			title: {
 				text: null
 			},
-			gridLineColor: '#B0BEC5',
-			gridLineWidth: '0.5px',
+			gridLineColor: "#B0BEC5",
+			gridLineWidth: "0.5px",
 			tickPositions: [0]
 		},
 		legend: {
@@ -87,31 +87,31 @@ const options = () => {
 				}
 			},
 			area: {
-				fillColor: '#00B0FF',
-				negativeFillColor: '#1E88E5',
-				negativeColor: '#FFFFFF',
-				color: '#FFFFFF',
-				lineWidth: 0.5,
+				fillColor: "#00B0FF",
+				negativeFillColor: "#1E88E5",
+				negativeColor: "#FFFFFF",
+				color: "#FFFFFF",
+				lineWidth: 0.5
 			},
 			spline: {
 				boostThreshold: 1,
 				lineWidth: 0.5,
-				color: '#AEEA00'
+				color: "#AEEA00"
 			}
 		}
-	}
-}
+	};
+};
 
 export default {
 	data() {
 		return {
 			options: options(this),
 			clicked: false,
-			min:0,
-			max:0,
-			mean:0,
-			std:0
-		}
+			min: 0,
+			max: 0,
+			mean: 0,
+			std: 0
+		};
 	},
 	props: {
 		sim: {
@@ -120,71 +120,71 @@ export default {
 				return {
 					id: null,
 					data: []
-				}
+				};
 			}
 		}
 	},
 	computed: {
-		...mapState('fit', ['selectedSim']),
+		...mapState("fit", ["selectedSim"]),
 		isSelected() {
 			return this.selectedSim === this.sim.id;
 		}
 	},
 	watch: {
-		'sim.id'() {
-			this.draw()
+		"sim.id"() {
+			this.draw();
 		}
 	},
 	methods: {
 		draw() {
-			if(this.sim.data.length) {
-				const chart = this.$refs.sparkchart.chart
+			if (this.sim.data.length) {
+				const chart = this.$refs.sparkchart.chart;
 
 				setTimeout(() => {
 					this.clearSeries();
-					const statistics = stats(this.sim.data)
-					this.min = statistics.min
-					this.max = statistics.max
-					this.mean = statistics.mean
-					this.std = statistics.std
+					const statistics = stats(this.sim.data);
+					this.min = statistics.min;
+					this.max = statistics.max;
+					this.mean = statistics.mean;
+					this.std = statistics.std;
 					chart.addSeries({
-						type: 'spline',
+						type: "spline",
 						data: this.sim.data,
-						threshold: this.mean,
+						threshold: this.mean
 					});
 					chart.reflow();
-					this.clicked = false
-					this.$emit('loaded', this.id)
-				}, 1000)
+					this.clicked = false;
+					this.$emit("loaded", this.id);
+				}, 1000);
 			}
 		},
 
 		clearSeries() {
-      const chart = this.$refs.sparkchart.chart
-      while(chart.series.length > 0) {
-        chart.series[0].remove(false);
-      }
+			const chart = this.$refs.sparkchart.chart;
+			while (chart.series.length > 0) {
+				chart.series[0].remove(false);
+			}
 		},
 
 		toggleSparkLine() {
-			this.$store.commit('fit/setSelectedSim', this.sim.id);
+			this.$store.commit("fit/setSelectedSim", this.sim.id);
 		}
 	}
-}
+};
 </script>
 
 <style scoped lang="less">
 .mrt-simulation {
 	border-radius: 2px;
-	border:1px solid #37474F;
+	border: 1px solid #37474f;
 	cursor: pointer;
 	margin: 12px 24px;
-	min-width:280px;
+	min-width: 280px;
 	.stats {
 		display: flex;
 		justify-content: space-between;
-		background-color: #37474F;
-		padding:4px 8px;
+		background-color: #37474f;
+		padding: 4px 8px;
 		.stat {
 			display: flex;
 			flex-direction: column;
@@ -199,9 +199,9 @@ export default {
 		}
 	}
 	.graph {
-		padding:8px;
-		background-color: #546E7A;
-		min-height: 60px
+		padding: 8px;
+		background-color: #546e7a;
+		min-height: 60px;
 	}
 	&.selected {
 		.stats {

@@ -1,33 +1,25 @@
 <template>
-  <div id="app" v-cloak>
-    <v-app dark>
-      <router-view></router-view>
-      <v-snackbar
+	<div id="app" v-cloak>
+		<v-app dark>
+			<router-view></router-view>
+			<v-snackbar
 				v-model="apiauth"
 				:timeout="timeout"
 				color="error"
-				:vertical="$vuetify.breakpoint.mdAndDown">
+				:vertical="$vuetify.breakpoint.mdAndDown"
+			>
 				{{ text }}
-				<v-btn
-					dark
-					flat
-					@click="apiauth = false">
-					Close
-				</v-btn>
+				<v-btn dark flat @click="apiauth = false">Close</v-btn>
 			</v-snackbar>
-      <v-snackbar
+			<v-snackbar
 				v-model="apierror"
 				:top="true"
 				:timeout="timeout"
 				color="error"
-				:vertical="$vuetify.breakpoint.mdAndDown">
+				:vertical="$vuetify.breakpoint.mdAndDown"
+			>
 				{{ text }}
-				<v-btn
-					dark
-					flat
-					@click="apierror = false">
-					Close
-				</v-btn>
+				<v-btn dark flat @click="apierror = false">Close</v-btn>
 			</v-snackbar>
 			<v-snackbar
 				v-model="apisuccess"
@@ -35,113 +27,110 @@
 				:timeout="4000"
 				:left="true"
 				:bottom="true"
-				:vertical="$vuetify.breakpoint.mdAndDown">
+				:vertical="$vuetify.breakpoint.mdAndDown"
+			>
 				{{ text }}
-				<v-btn
-					dark
-					color="secondary"
-					flat
-					@click="apisuccess = false">
-					Close
-				</v-btn>
+				<v-btn dark color="secondary" flat @click="apisuccess = false">Close</v-btn>
 			</v-snackbar>
-    </v-app>
-  </div>
+		</v-app>
+	</div>
 </template>
 
 <script>
-import { EventBus } from './events.js';
+import { EventBus } from "./events.js";
 
 export default {
-  name: 'MrtApplication',
-  data() {
-    return {
-      apiauth: false,
+	name: "MrtApplication",
+	data() {
+		return {
+			apiauth: false,
 			apierror: false,
 			apisuccess: false,
-      text: '',
-      timeout: 6000
-    }
-  },
-  watch: {
+			text: "",
+			timeout: 6000
+		};
+	},
+	watch: {
 		apiauth(v) {
-			if(!v) {
-				this.$store.dispatch('user/logout')
-				.then(() => {
-					this.$router.push('/login')
-				})
+			if (!v) {
+				this.$store.dispatch("user/logout").then(() => {
+					this.$router.push("/login");
+				});
 			}
 		}
 	},
-  mounted() {
-		EventBus.$on('api-auth', (reason) => {
-			this.apiauth = true
-			this.text=reason
-    });
-    EventBus.$on('api-error', (reason) => {
-			this.apierror = true
-			this.text=reason
+	mounted() {
+		EventBus.$on("api-auth", reason => {
+			this.apiauth = true;
+			this.text = reason;
 		});
-		EventBus.$on('api-strategy-save', (reason) => {
-			this.apisuccess = true
-			this.text = reason
+		EventBus.$on("api-error", reason => {
+			this.apierror = true;
+			this.text = reason;
+		});
+		EventBus.$on("api-strategy-save", reason => {
+			this.apisuccess = true;
+			this.text = reason;
 		});
 	}
-}
+};
 </script>
 
 <style lang="less">
-  a {
-    text-decoration: none;
-  }
-  :root {
-    --blue: #64B5F6;
-    --orange: #FFA726;
-    --green: #00E676;
-    --error: #EF5350;
-		--light-gray:#9E9E9E;
-		--purple: rgb(0, 249, 166);
-		
-		/* Application theme colors */
-		--color-primary: #212121;
-		--color-secondary: #607D8B;
-		--color-teriatry: #263238;
+a {
+	text-decoration: none;
+}
+:root {
+	--blue: #64b5f6;
+	--orange: #ffa726;
+	--green: #00e676;
+	--error: #ef5350;
+	--light-gray: #9e9e9e;
+	--purple: rgb(0, 249, 166);
 
-		/* buttun colors */
-		--color-btn-primary:  #AB47BC;
-		--color-btn-secondary:  #4fc3f7;
+	/* Application theme colors */
+	--color-primary: #212121;
+	--color-secondary: #607d8b;
+	--color-teriatry: #263238;
 
-		/* Background colors */
-		--color-bk-primary: #212121;
-		--color-bk-secondary: #303030;
-		--color-bk-var1: #424242;
-	}
+	/* buttun colors */
+	--color-btn-primary: #ab47bc;
+	--color-btn-secondary: #4fc3f7;
 
-	.theme--dark.v-navigation-drawer {
-		background-color:#303030;
-	}
+	/* Background colors */
+	--color-bk-primary: #212121;
+	--color-bk-secondary: #303030;
+	--color-bk-var1: #424242;
+}
 
-	.theme--dark.v-toolbar {
-		background-color:var(--color-primary);
-	}
-	.theme--dark.v-card {
-		background-color:#303030;
-		border:1px solid #424242;
-		color: #fff;
-	}
+.theme--dark.v-navigation-drawer {
+	background-color: #303030;
+}
 
-	.theme--dark .v-stepper__header {
-		background-color:#212121;
-		color: #fff;
-	}
+.theme--dark.v-toolbar {
+	background-color: var(--color-primary);
+}
+.theme--dark.v-card {
+	background-color: #303030;
+	border: 1px solid #424242;
+	color: #fff;
+}
 
-  [v-cloak] {
-     display: none;
-  }
-	.container.fluid {
-		max-width: 1785px;
-		background-color:#424242;
-	}
-	.menuable__content__active { /*Fix for Safari dialog display. Reference Vuetify issue #2111 */ z-index:250!important; }
+.theme--dark .v-stepper__header {
+	background-color: #212121;
+	color: #fff;
+}
+
+[v-cloak] {
+	display: none;
+}
+.container.fluid {
+	max-width: 1785px;
+	background-color: #424242;
+}
+.menuable__content__active {
+	/*Fix for Safari dialog display. Reference Vuetify issue #2111 */
+	z-index: 250 !important;
+}
 </style>
 

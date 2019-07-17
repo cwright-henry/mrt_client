@@ -23,10 +23,10 @@ const seperators = [
 
 const createFormats = () => {
 	const formats = [];
-	seperators.forEach(function(sep) {
-		dayFormat.forEach(function(day) {
-			monthFormat.forEach(function(month) {
-				yearFormat.forEach(function(year) {
+	seperators.forEach(function (sep) {
+		dayFormat.forEach(function (day) {
+			monthFormat.forEach(function (month) {
+				yearFormat.forEach(function (year) {
 					formats.push(`${day}${sep}${month}${sep}${year}`)
 					formats.push(`${month}${sep}${day}${sep}${year}`)
 					formats.push(`${year}${sep}${month}${sep}${day}`)

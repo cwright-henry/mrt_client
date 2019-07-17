@@ -4,18 +4,18 @@ module.exports = {
 	devServer: {
 		proxy: {
 			"/api": {
-				target: "http://mrt-server:3031/"
+				target: `http://${process.env.MRT_HOST}:${process.env.MRT_PORT}/`
 			}
 		}
 	},
 	configureWebpack: {
-    plugins: [
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    ]
+		plugins: [
+			new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+		]
 	},
 	chainWebpack: (config) => {
-    const svgRule = config.module.rule('svg');
-    svgRule.uses.clear();
-    svgRule.use('vue-svg-loader').loader('vue-svg-loader');
-  }
+		const svgRule = config.module.rule('svg');
+		svgRule.uses.clear();
+		svgRule.use('vue-svg-loader').loader('vue-svg-loader');
+	}
 }

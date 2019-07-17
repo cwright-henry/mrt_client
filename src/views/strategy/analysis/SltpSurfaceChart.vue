@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import vis from 'vis'
+import vis from "vis";
 
 const options = {
-	width: '200px',
-	height: '200px',
-	style: 'surface',
+	width: "200px",
+	height: "200px",
+	style: "surface",
 	showPerspective: false,
 	showGrid: false,
 	showXAxis: false,
@@ -27,35 +27,35 @@ export default {
 		values: {
 			type: Object,
 			default: () => {
-				return {}
+				return {};
 			}
 		},
 		title: {
 			type: String,
-			default: ''
+			default: ""
 		},
 		id: {
 			type: String,
-			default: 'graph'
+			default: "graph"
 		}
 	},
 	data() {
 		return {
 			data: new vis.DataSet(),
 			graph: null
-		}
+		};
 	},
 	watch: {
 		values(v) {
 			this.data = new vis.DataSet();
-			if(Object.keys(v).length !== 0) {
+			if (Object.keys(v).length !== 0) {
 				let xCount = 0;
 				let id = 0;
-				for(let x in v) {
+				for (let x in v) {
 					let yCount = 0;
-					if(xCount++ % 2 == 0) {
-						for(let y in v[x]) {
-							if(yCount++ % 2 === 0) {
+					if (xCount++ % 2 == 0) {
+						for (let y in v[x]) {
+							if (yCount++ % 2 === 0) {
 								this.data.add({
 									id: id++,
 									x: parseFloat(x),
@@ -66,36 +66,35 @@ export default {
 						}
 					}
 				}
-				this.graph.setData(this.data)
-				this.graph.redraw()
-			}
-			else {
+				this.graph.setData(this.data);
+				this.graph.redraw();
+			} else {
 				this.data.add({
 					x: parseFloat(0),
 					y: parseFloat(0),
 					z: parseFloat(0)
 				});
-				this.graph.setData(this.data)
-				this.graph.redraw()
+				this.graph.setData(this.data);
+				this.graph.redraw();
 			}
 		}
 	},
 	mounted() {
-		const containerT = document.getElementById(this.id)
-		this.graph = new vis.Graph3d(containerT, null, options)
+		const containerT = document.getElementById(this.id);
+		this.graph = new vis.Graph3d(containerT, null, options);
 	},
 	methods: {
 		reveal() {
-			this.$emit('showSurfaceDialog', this.data)
+			this.$emit("showSurfaceDialog", this.data);
 		}
 	}
-}
+};
 </script>
 
 <style lang="less">
 .mrt-surface-chart {
 	border-radius: 2px;
-	border: 1px solid #37474F;
+	border: 1px solid #37474f;
 	margin: 12px 24px;
 	width: 200px;
 	h1 {
@@ -106,20 +105,19 @@ export default {
 	}
 	.graph {
 		position: relative;
-		background-color: #546E7A;
+		background-color: #546e7a;
 		min-height: 0px;
 		cursor: pointer;
 		&:before {
-			position:absolute;
-			top:0;
-			left:0;
-			right:0;
-			bottom:0;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
 			background-color: transparent;
 			content: "";
 			z-index: 999;
 		}
 	}
-
 }
 </style>

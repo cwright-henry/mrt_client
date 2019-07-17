@@ -4,12 +4,12 @@
 			<keep-alive>
 				<router-view></router-view>
 			</keep-alive>
-    </transition>
+		</transition>
 	</v-container>
 </template>
 
 <script>
 export default {
-	name: 'MrtHome'
-}
+	name: "MrtHome"
+};
 </script>

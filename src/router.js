@@ -22,15 +22,15 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  scrollBehavior (to, from, savedPosition) {
+  scrollBehavior(to, from, savedPosition) {
     let position = { x: 0, y: 0 };
     if (savedPosition) {
       position = savedPosition
     }
-    if(to.name === 'strategy') {
+    if (to.name === 'strategy') {
       position = { x: 0, y: to.meta.yPos }
     }
-    
+
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(position)
@@ -43,11 +43,11 @@ export default new Router({
       name: 'Mrt',
       component: Mrt,
       redirect: '/library',
-      beforeEnter (to, from, next) {
+      beforeEnter(to, from, next) {
         store.commit('user/initialize');
         if (!store.getters['user/isAuthenticated']) {
           next('/login')
-        } 
+        }
         else {
           next()
         }

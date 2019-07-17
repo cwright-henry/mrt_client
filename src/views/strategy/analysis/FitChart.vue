@@ -1,12 +1,17 @@
 <template>
-	<highcharts :constructor-type="'stockChart'" :options="options" :strategy="strategy" ref="fitchart"></highcharts>
+	<highcharts
+		:constructor-type="'stockChart'"
+		:options="options"
+		:strategy="strategy"
+		ref="fitchart"
+	></highcharts>
 </template>
 
 <script>
-import {mapState} from 'vuex'
-import {mean} from '@/utils'
+import { mapState } from "vuex";
+import { mean } from "@/utils";
 
-const options = (vm) => {
+const options = vm => {
 	return {
 		chart: {
 			height: vm._props.height,
@@ -14,31 +19,37 @@ const options = (vm) => {
 		},
 		rangeSelector: {
 			selected: 6,
-			buttons: [{
-				type: 'year',
-				count: 1,
-				text: '1y'
-			},{
-				type: 'year',
-				count: 2,
-				text: '2y'
-			},{
-				type: 'year',
-				count: 3,
-				text: '3y'
-			},{
-				type: 'year',
-				count: 4,
-				text: '4y'
-			},
-			{
-				type: 'year',
-				count: 5,
-				text: '5y'
-			},{
-				type: 'all',
-				text: 'All'
-			}]
+			buttons: [
+				{
+					type: "year",
+					count: 1,
+					text: "1y"
+				},
+				{
+					type: "year",
+					count: 2,
+					text: "2y"
+				},
+				{
+					type: "year",
+					count: 3,
+					text: "3y"
+				},
+				{
+					type: "year",
+					count: 4,
+					text: "4y"
+				},
+				{
+					type: "year",
+					count: 5,
+					text: "5y"
+				},
+				{
+					type: "all",
+					text: "All"
+				}
+			]
 		},
 		title: {
 			text: null
@@ -47,26 +58,26 @@ const options = (vm) => {
 			enabled: false
 		},
 		xAxis: {
-			type: 'datetime',
+			type: "datetime",
 			visible: true,
 			title: {
 				text: null
 			},
 			events: {
-				setExtremes: function (e) {
-					switch(e.trigger) {
-						case 'rangeSelectorButton':
-							vm.$emit('dateRangeChange', {
+				setExtremes: function(e) {
+					switch (e.trigger) {
+						case "rangeSelectorButton":
+							vm.$emit("dateRangeChange", {
 								startDate: e.min,
 								endDate: e.max
-							})
+							});
 							break;
-						case 'navigator' :
-							if(e.DOMEvent && e.DOMEvent.type === 'mouseup') {
-								vm.$emit('dateRangeChange', {
+						case "navigator":
+							if (e.DOMEvent && e.DOMEvent.type === "mouseup") {
+								vm.$emit("dateRangeChange", {
 									startDate: e.min,
 									endDate: e.max
-								})
+								});
 							}
 							break;
 					}
@@ -74,19 +85,19 @@ const options = (vm) => {
 			}
 		},
 		navigator: {
-			maskFill: 'rgba(255, 152, 0, 0.05)',
-			outlineColor: '#BA68C8',
+			maskFill: "rgba(255, 152, 0, 0.05)",
+			outlineColor: "#BA68C8",
 			outlineWidth: 0.5,
 			handles: {
-				borderColor: '#BA68C8',
+				borderColor: "#BA68C8",
 				lineWidth: 0.5
 			},
 			series: {
-				type: 'spline',
-				color: '#00B0FF',
+				type: "spline",
+				color: "#00B0FF",
 				lineWidth: 1
 			}
-    },
+		},
 		yAxis: {
 			title: {
 				text: null
@@ -112,23 +123,23 @@ const options = (vm) => {
 				}
 			},
 			area: {
-				fillColor: '#1976D2',
-				color: '#FFFFFF',
-				lineWidth: 0.5,
+				fillColor: "#1976D2",
+				color: "#FFFFFF",
+				lineWidth: 0.5
 			},
 			line: {
-				color:'#00B0FF',
+				color: "#00B0FF",
 				lineWidth: 1
 			}
 		}
-	}
-}
+	};
+};
 
 export default {
 	data() {
 		return {
 			options: options(this)
-		}
+		};
 	},
 	props: {
 		height: {
@@ -137,54 +148,54 @@ export default {
 		},
 		backgroundColor: {
 			type: String,
-			default: 'rgba(0, 0, 0, 0.0)'
+			default: "rgba(0, 0, 0, 0.0)"
 		}
 	},
 	computed: {
-		...mapState('fit', ['strategy', 'startDate', 'endDate', 'isLoadingTS'])
+		...mapState("fit", ["strategy", "startDate", "endDate", "isLoadingTS"])
 	},
 	watch: {
 		strategy() {
-			this.update()
+			this.update();
 		},
 		isLoadingTS(isLoading) {
-			if(isLoading) {
+			if (isLoading) {
 				this.clearSeries();
 			}
 		}
 	},
 	mounted() {
-		this.update()
+		this.update();
 	},
 	methods: {
 		/**
 		 * The strategy should have been fitted after load
 		 */
 		update() {
-			const chart = this.$refs.fitchart.chart
-			if(this.strategy.name) {
-				setTimeout(()=> {
-					this.clearSeries()
+			const chart = this.$refs.fitchart.chart;
+			if (this.strategy.name) {
+				setTimeout(() => {
+					this.clearSeries();
 					chart.addSeries({
-						type: 'area',
+						type: "area",
 						data: this.strategy.ts.data,
 						name: this.strategy.name,
 						threshold: mean(this.strategy.ts.data)
 					});
 
 					//chart.rangeSelector.clickButton(5, true);
-					chart.xAxis[0].setExtremes(this.startDate, this.endDate)
-					chart.reflow()
-				}, 0)
+					chart.xAxis[0].setExtremes(this.startDate, this.endDate);
+					chart.reflow();
+				}, 0);
 			}
 		},
 
 		clearSeries() {
-      const chart = this.$refs.fitchart.chart
-      while(chart.series.length > 0) {
-        chart.series[0].remove(false);
-      }
+			const chart = this.$refs.fitchart.chart;
+			while (chart.series.length > 0) {
+				chart.series[0].remove(false);
+			}
 		}
 	}
-}
+};
 </script>

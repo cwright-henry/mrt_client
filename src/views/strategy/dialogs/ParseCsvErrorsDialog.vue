@@ -45,33 +45,32 @@ export default {
 	},
 	computed: {
 		dialog: {
-      get () {
-        return this.show
-      },
-      set (value) {
-        if (!value) {
-          this.$emit('close')
-        }
-      }
+			get() {
+				return this.show;
+			},
+			set(value) {
+				if (!value) {
+					this.$emit("close");
+				}
+			}
 		}
 	},
-	methods: {
-	}
-}
+	methods: {}
+};
 </script>
 
 <style scoped lang="less">
 .mrt-upload--error {
-	display:flex;
+	display: flex;
 	> div {
-		min-width:20px;
-		margin: 0 8px 0 0
+		min-width: 20px;
+		margin: 0 8px 0 0;
 	}
 	> div:nth-child(1) {
-		width:40px;
+		width: 40px;
 	}
 	> div:nth-child(2) {
-		width:70px
+		width: 70px;
 	}
 }
 </style>

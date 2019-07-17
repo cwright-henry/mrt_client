@@ -3,33 +3,33 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from "vuex";
 
 const getPlotBand = (from, to) => {
-	return  {
+	return {
 		from,
 		to,
-		color: 'rgba(255,255,0,0.02)',
-		id: 'plot-band'
-	}
-}
+		color: "rgba(255,255,0,0.02)",
+		id: "plot-band"
+	};
+};
 
 const getPlotLine = (value, type) => {
 	return {
 		value,
-		color: '#BA68C8',
+		color: "#BA68C8",
 		width: 0.5,
 		label: {
-			align:'center',
+			align: "center",
 			useHTML: true,
 			text: `<span class="residual-axis-label ${type}"></span>`
 		},
-		id:`${type}-plotline`,
-		zIndex:999
-	}
-}
+		id: `${type}-plotline`,
+		zIndex: 999
+	};
+};
 
-const options = (vm) => {
+const options = vm => {
 	return {
 		chart: {
 			height: vm._props.height,
@@ -48,15 +48,15 @@ const options = (vm) => {
 			enabled: true
 		},
 		xAxis: {
-			title: { 
-				text: '' 
+			title: {
+				text: ""
 			},
 			alignTicks: true,
-			type: 'datetime'
+			type: "datetime"
 		},
 		yAxis: {
-			title: { 
-				text: '' 
+			title: {
+				text: ""
 			},
 			opposite: true
 		},
@@ -66,20 +66,20 @@ const options = (vm) => {
 			}
 		},
 		series: []
-	}
-}
+	};
+};
 
 export default {
 	props: {
 		ts: {
 			type: Array,
 			default: () => {
-				return []
+				return [];
 			}
 		},
 		name: {
 			type: String,
-			default: ''
+			default: ""
 		},
 		height: {
 			type: Number,
@@ -87,41 +87,41 @@ export default {
 		},
 		backgroundColor: {
 			type: String,
-			default: 'rgba(0, 0, 0, 0)'
+			default: "rgba(0, 0, 0, 0)"
 		}
 	},
 	data() {
 		return {
 			options: options(this)
-		}
+		};
 	},
 	computed: {
-		...mapState('fit', ['startDate' ,'endDate'])
+		...mapState("fit", ["startDate", "endDate"])
 	},
 	watch: {
 		startDate() {
-			this.updateRange()
+			this.updateRange();
 		},
 		endDate() {
-			this.updateRange()
+			this.updateRange();
 		},
 		ts() {
-			this.update()
+			this.update();
 		}
 	},
 	mounted() {
-		this.update()
+		this.update();
 	},
 	methods: {
 		update() {
 			const chart = this.$refs.residuals.chart;
-			if(this.name) {
+			if (this.name) {
 				setTimeout(() => {
-					this.clearSeries()
-					this.updateRange()
+					this.clearSeries();
+					this.updateRange();
 					chart.addSeries({
-						type: 'scatter',
-						color: '#00B0FF',
+						type: "scatter",
+						color: "#00B0FF",
 						marker: {
 							radius: 1.5
 						},
@@ -129,8 +129,8 @@ export default {
 						name: this.name,
 						clip: false
 					});
-					chart.reflow()	
-				}, 1000)
+					chart.reflow();
+				}, 1000);
 			}
 		},
 
@@ -138,20 +138,22 @@ export default {
 			const chart = this.$refs.residuals.chart;
 			chart.xAxis[0].removePlotLine(`min-plotline`);
 			chart.xAxis[0].removePlotLine(`max-plotline`);
-			chart.xAxis[0].removePlotBand('plot-band');
-			chart.xAxis[0].addPlotBand(getPlotBand(this.startDate, this.endDate))
-			chart.xAxis[0].addPlotLine(getPlotLine(this.startDate, 'min'))
-			chart.xAxis[0].addPlotLine(getPlotLine(this.endDate, 'max'))
+			chart.xAxis[0].removePlotBand("plot-band");
+			chart.xAxis[0].addPlotBand(
+				getPlotBand(this.startDate, this.endDate)
+			);
+			chart.xAxis[0].addPlotLine(getPlotLine(this.startDate, "min"));
+			chart.xAxis[0].addPlotLine(getPlotLine(this.endDate, "max"));
 		},
 
 		clearSeries() {
-      const chart = this.$refs.residuals.chart
-      while(chart.series.length > 0) {
-        chart.series[0].remove(false);
-      }
+			const chart = this.$refs.residuals.chart;
+			while (chart.series.length > 0) {
+				chart.series[0].remove(false);
+			}
 		}
 	}
-}
+};
 </script>
 
 <style>
@@ -162,10 +164,10 @@ export default {
 	display: inline-block;
 	overflow: hidden;
 	cursor: ew-resize;
-	background-color: #BA68C8;
+	background-color: #ba68c8;
 	position: relative;
-	top:6px;
-	left:158px;
+	top: 6px;
+	left: 158px;
 }
 </style>
 

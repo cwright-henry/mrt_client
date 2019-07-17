@@ -1,7 +1,7 @@
 <template>
 	<v-layout row wrap>
-		<mrt-navigation :show="showMenu" @close="showMenu=false"/>
-		<mrt-toolbar @togglemenu="showMenu = !showMenu"/>
+		<mrt-navigation :show="showMenu" @close="showMenu=false" />
+		<mrt-toolbar @togglemenu="showMenu = !showMenu" />
 		<v-content>
 			<keep-alive>
 				<router-view></router-view>
@@ -11,26 +11,26 @@
 </template>
 
 <script>
-import mrtToolbar from "@/components/Toolbar"
-import mrtNavigation from "@/components/Navigation"
-import mrtFooter  from '@/components/Footer'
+import mrtToolbar from "@/components/Toolbar";
+import mrtNavigation from "@/components/Navigation";
+import mrtFooter from "@/components/Footer";
 
 export default {
-  name: 'Mrt',
-  data() {
-    return {
-      showMenu: this.$vuetify.breakpoint.lg
-    }
+	name: "Mrt",
+	data() {
+		return {
+			showMenu: this.$vuetify.breakpoint.lg
+		};
 	},
-  components: {
-    mrtToolbar,
-    mrtNavigation,
-    mrtFooter
+	components: {
+		mrtToolbar,
+		mrtNavigation,
+		mrtFooter
 	},
 	mounted() {
-		this.$store.dispatch('dictionary/load')
+		this.$store.dispatch("dictionary/load");
 	}
-}
+};
 </script>
 
 <style>
