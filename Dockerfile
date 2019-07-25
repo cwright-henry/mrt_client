@@ -1,3 +1,7 @@
+# Multi-stage docker build file
+#
+# Build the artifacts and use them in
+# production stage by copings
 FROM node:10-alpine as build-stage
 WORKDIR /app
 COPY package.json yarn.lock ./

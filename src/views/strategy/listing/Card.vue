@@ -1,6 +1,6 @@
 <template>
 	<div class="mrt-card">
-		<mrt-fit-process :fit="strategy.fit"/>
+		<mrt-fit-process :fit="strategy.fit" />
 		<div class="mrt-card--graphs">
 			<mrt-serieschart :strategy="strategy"></mrt-serieschart>
 		</div>
@@ -8,24 +8,24 @@
 </template>
 
 <script>
-import mrtFitProcess from '@/components/fit/Fit'
-import mrtSerieschart from './SeriesChart'
+import mrtFitProcess from "@/components/fit/Fit";
+import mrtSerieschart from "./SeriesChart";
 
 export default {
 	data() {
 		return {
 			observer: null,
 			isLoading: false
-		}
+		};
 	},
 	props: {
 		strategy: {
 			type: Object,
 			default: () => {
 				return {
-					ts:{},
-					fit:{}
-				}
+					ts: {},
+					fit: {}
+				};
 			}
 		}
 	},
@@ -46,8 +46,8 @@ export default {
 	mounted() {
 		this.observer = new IntersectionObserver(([entry], self) => {
 			if (entry && entry.isIntersecting) {
-				this.load()
-				self.unobserve(entry.target)
+				this.load();
+				self.unobserve(entry.target);
 			}
 		}, {});
 
@@ -60,30 +60,29 @@ export default {
 	methods: {
 		async load() {
 			try {
-				this.isLoading = true
-				if(!this.strategy.ts) {
-					await this.$store.dispatch('strategies/loadStrategy', {
+				this.isLoading = true;
+				if (!this.strategy.ts) {
+					await this.$store.dispatch("strategies/loadStrategy", {
 						id: this.strategy._id
 					});
 				}
-			}
-			finally {
-				this.isLoading = false
+			} finally {
+				this.isLoading = false;
 			}
 		}
 	},
 	destroyed() {
-		this.observer.disconnect()
-  }
-}
+		this.observer.disconnect();
+	}
+};
 </script>
 
 <style scoped lang="less">
 .mrt-card {
-	display:flex;
+	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	padding:16px;
+	padding: 16px;
 	min-height: 340px;
 
 	.mrt-card--graphs {

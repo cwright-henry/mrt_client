@@ -189,16 +189,10 @@
 
 <script>
 import ApiController from "@/services/ApiController";
-import CSV from "./ImportCSV";
-import TickerSearch from "./ImportTicker";
-import CurrencySearch from "./ImportCurrency";
-import CommoditySearch from "./ImportCommodity";
-import LibrarySearch from "./ImportLibrary";
-import IndexSearch from "./ImportIndex";
-import CryptoSearch from "./ImportCrypto";
+import LibrarySearch from "./ImportSearch";
+import CSVSearch from "./ImportCSV";
 import mrtLinechart from "@/components/LineChart";
 import mrtImportOptions from "./ImportOptions";
-import { EventBus } from "@/events";
 import { getErrorCode } from "@/utils";
 
 export default {
@@ -256,14 +250,9 @@ export default {
 		};
 	},
 	components: {
-		CSV,
-		TickerSearch,
-		CurrencySearch,
-		CommoditySearch,
+		CSVSearch,
 		LibrarySearch,
-		IndexSearch,
 		mrtLinechart,
-		CryptoSearch,
 		mrtImportOptions
 	},
 	computed: {
@@ -484,7 +473,7 @@ export default {
 						source: "COMBO"
 					}
 				);
-				this.$store.commit("dictionary/addLibrary", strategy);
+				this.$store.commit("library/addLibrary", strategy);
 				this.reset();
 				this.$emit("close");
 				window.scrollTo(0, 0);

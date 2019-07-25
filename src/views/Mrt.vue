@@ -28,7 +28,7 @@ export default {
 		mrtFooter
 	},
 	mounted() {
-		this.$store.dispatch("dictionary/load");
+		this.$store.dispatch("library/load");
 	}
 };
 </script>

@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import strategies from '@/stores/strategies'
 import user from '@/stores/user'
 import fit from '@/stores/fit'
-import dictionary from '@/stores/dictionary'
+import library from '@/stores/library'
 
 Vue.use(Vuex)
 
@@ -12,6 +12,6 @@ export default new Vuex.Store({
     user,
     strategies,
     fit,
-    dictionary
+    library
   }
 })

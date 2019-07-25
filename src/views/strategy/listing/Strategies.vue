@@ -1,10 +1,8 @@
 <template>
 	<div class="mrt-strategy">
-		<mrt-search/>
-		<mrt-cardlist/>
-		<mrt-import 
-			:show="showInvestUpload"
-			@close="showInvestUpload=false"/>
+		<mrt-search />
+		<mrt-cardlist />
+		<mrt-import :show="showInvestUpload" @close="showInvestUpload=false" />
 		<v-speed-dial
 			v-model="fab"
 			bottom
@@ -12,14 +10,16 @@
 			fixed
 			open-on-hover
 			direction="top"
-			transition="scale-transition">
+			transition="scale-transition"
+		>
 			<v-btn
 				slot="activator"
 				v-model="fab"
 				color="#9C27B0"
 				@click.stop="showInvestUpload=true"
 				dark
-				fab>
+				fab
+			>
 				<v-icon>playlist_add</v-icon>
 				<v-icon>edit</v-icon>
 			</v-btn>
@@ -28,19 +28,19 @@
 </template>
 
 <script>
-import mrtSearch from './Search'
-import mrtCardlist from './CardList'
-import mrtImport from '../dialogs/ImportDialog'
+import mrtSearch from "./Search";
+import mrtCardlist from "./CardList";
+import mrtImport from "../dialogs/ImportDialog";
 
 export default {
-	name: 'Home',
+	name: "Home",
 	data() {
 		return {
 			fab: false,
 			showCSVUpload: false,
 			showInvestUpload: false,
-			search: ''
-		}
+			search: ""
+		};
 	},
 	computed: {
 		loading() {
@@ -48,25 +48,25 @@ export default {
 		}
 	},
 	beforeRouteLeave(to, from, next) {
-		if(from.name === 'strategy') {
-			from.meta.yPos = document.documentElement.scrollTop
+		if (from.name === "strategy") {
+			from.meta.yPos = document.documentElement.scrollTop;
 		}
-    next()
+		next();
 	},
 	components: {
 		mrtSearch,
 		mrtCardlist,
 		mrtImport
 	},
-  mounted() {
-		this.load()
-  },
-	methods : {
+	mounted() {
+		this.load();
+	},
+	methods: {
 		load() {
-			this.$store.dispatch('strategies/load')
+			this.$store.dispatch("strategies/load");
 		}
 	}
-}
+};
 </script>
 
 <style lang="less">
