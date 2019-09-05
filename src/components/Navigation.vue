@@ -60,10 +60,10 @@ export default {
 		]
 	}),
 	methods: {
-		logout() {
-			this.$store.dispatch("user/logout").then(() => {
-				this.$router.push("/login");
-			});
+		async logout() {
+			await this.$store.dispatch("user/logout");
+			await this.$store.commit("strategies/reset");
+			this.$router.push("/login");
 		}
 	}
 };
@@ -77,14 +77,14 @@ export default {
 	}
 	.router-link-active {
 		.mrt-menu--item {
-			color: #ffffff;
+			color: var(--nav-link--color);
 			i {
-				color: #ffffff;
+				color: var(--nav-link--color);
 			}
 		}
 		.v-badge__badge {
-			background-color: #ffffff !important;
-			color: #212121;
+			background-color: var(--nav-link--color) !important;
+			color: #fff;
 		}
 	}
 	.v-badge__badge {
@@ -101,7 +101,8 @@ export default {
 		cursor: pointer;
 		text-transform: uppercase;
 		font-size: 12px;
-		color: var(--light-gray);
+		font-weight: 300;
+		color: #ffffff;
 		i {
 			color: var(--light-gray);
 		}

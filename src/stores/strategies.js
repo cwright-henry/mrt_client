@@ -18,17 +18,17 @@ export default {
 	namespaced: true,
 
 	state: {
-		strategies: [], 					/* Array of strategies on view */
-		total: 0,									/* Total number of strategies */
-		page: 1,									/* Current Page */
-		pageSize: PAGE_SIZE,			/* The number of items in each page */
-		totalPages: 0,						/* Total number of pages */
-		hasPrev: false,						/* Has a previous page */
-		hasNext: true,						/* Has a next page */
-		loading: false,						/* Called for initial search but not infinite search or load more */
+		strategies: [], 			/* Array of strategies on view */
+		total: 0,					/* Total number of strategies */
+		page: 1,					/* Current Page */
+		pageSize: PAGE_SIZE,		/* The number of items in each page */
+		totalPages: 0,				/* Total number of pages */
+		hasPrev: false,				/* Has a previous page */
+		hasNext: true,				/* Has a next page */
+		loading: false,				/* Called for initial search but not infinite search or load more */
 		loadingStrategy: false,		/* Flag for loading a ts */
-		loadingRm: false,					/* Flag used when removing a stratedgy */
-		overrides: []							/* A list of strategy _ids used to filter searching */
+		loadingRm: false,			/* Flag used when removing a stratedgy */
+		overrides: []				/* A list of strategy _ids used to filter searching */
 	},
 
 	getters: {
@@ -57,16 +57,16 @@ export default {
 		 */
 		updateList(state, data) {
 			// A new list
-			if(data.hasOwnProperty('isNew')) {
+			if (data.hasOwnProperty('isNew')) {
 				state.strategies = [];
 				state.strategies = data.strategies
 			}
-			else if(data.hasOwnProperty('isUpload')) {
+			else if (data.hasOwnProperty('isUpload')) {
 				// Add the new one to top of list
 				state.strategies.unshift(data.strategy)
 				// If there is more to view then pop last one
 				// to preserve infinit scroll
-				if(state.hasNext) {
+				if (state.hasNext) {
 					state.strategies.pop();
 				}
 			}
@@ -81,20 +81,20 @@ export default {
 		 * existence of the property
 		 */
 		setPaging(state, data) {
-			if(data.hasOwnProperty('total')) {
-				state.total = data.total	
+			if (data.hasOwnProperty('total')) {
+				state.total = data.total
 			}
-			if(data.hasOwnProperty('totalPages')) {
-				state.totalPages = data.totalPages	
+			if (data.hasOwnProperty('totalPages')) {
+				state.totalPages = data.totalPages
 			}
-			if(data.hasOwnProperty('hasPrev')) {
-				state.hasPrev = data.hasPrev	
+			if (data.hasOwnProperty('hasPrev')) {
+				state.hasPrev = data.hasPrev
 			}
-			if(data.hasOwnProperty('hasNext')) {
-				state.hasNext = data.hasNext	
+			if (data.hasOwnProperty('hasNext')) {
+				state.hasNext = data.hasNext
 			}
-			if(data.hasOwnProperty('page')) {
-				state.page = data.page	
+			if (data.hasOwnProperty('page')) {
+				state.page = data.page
 			}
 		},
 
@@ -118,8 +118,8 @@ export default {
 		 * Vue.set on the index for vue to react to updates
 		 */
 		updateStrategy(state, strategy) {
-			for(let i = 0; i < state.strategies.length; i++) {
-				if(state.strategies[i]._id === strategy._id) {
+			for (let i = 0; i < state.strategies.length; i++) {
+				if (state.strategies[i]._id === strategy._id) {
 					Vue.set(state.strategies, i, strategy);
 					break;
 				}
@@ -131,8 +131,8 @@ export default {
 		 * the update
 		 */
 		removeStrategy(state, id) {
-			for(let i = 0; i < state.strategies.length; i++) {
-				if(state.strategies[i]._id === id) {
+			for (let i = 0; i < state.strategies.length; i++) {
+				if (state.strategies[i]._id === id) {
 					state.strategies.splice(i, 1)
 					break;
 				}
@@ -144,6 +144,23 @@ export default {
 		 */
 		setOverrides(state, overrides) {
 			state.overrides = overrides;
+		},
+
+		/**
+		 * Reset state as in after logout
+		 */
+		reset(state) {
+			state.strategies = [];
+			state.total = 0;
+			state.page = 1;
+			state.pageSize = PAGE_SIZE;
+			state.totalPages = 0;
+			state.hasPrev = false;
+			state.hasNext = true;
+			state.loading = false;
+			state.loadingStrategy = false;
+			state.loadingRm = false;
+			state.overrides = [];
 		}
 	},
 
@@ -151,7 +168,7 @@ export default {
 		/**
 		 * Load the first page of results, should be called if use enter page filter
 		 */
-    async load({state, commit}) {
+		async load({ state, commit }) {
 			commit('setLoading', true)
 			try {
 				const data = await ApiController.list(1, PAGE_SIZE, state.overrides);
@@ -176,11 +193,11 @@ export default {
 		/**
 		 * load more results taking into account any page filter
 		 */
-		async loadMore({commit, state}) {
+		async loadMore({ commit, state }) {
 			commit('setLoading', true)
 			try {
 				let data = await ApiController.list(state.page, PAGE_SIZE, state.overrides);
-				
+
 				commit('updateList', {
 					strategies: data.docs
 				})
@@ -200,7 +217,7 @@ export default {
 		/**
 		 * Load full strategy
 		 */
-		async loadStrategy({commit}, payload) {
+		async loadStrategy({ commit }, payload) {
 			commit('setLoadingStrategy', true)
 			try {
 				const data = await ApiController.loadStrategy(payload.id)
@@ -214,13 +231,13 @@ export default {
 		/**
 		 * Remove a strategy. Need to take care of infinte scroll
 		 */
-		async remove({commit, dispatch, state}, payload) {
+		async remove({ commit, dispatch, state }, payload) {
 			commit('setLoadingRm', true)
 			try {
 				await ApiController.remove(payload.id)
 				commit('removeStrategy', payload.id)
 				commit('setOverrides', state.overrides.filter(e => e !== payload.id))
-				if(state.hasNext) {
+				if (state.hasNext) {
 
 					// Ask for one more and pop it onto the list
 					const data = await ApiController.list(state.strategies.length + 1, 1, state.overrides);
@@ -243,7 +260,7 @@ export default {
 				}
 
 				// Try and fetch some more
-				if(state.overrides.length === 0 && state.strategies.length === 0) {
+				if (state.overrides.length === 0 && state.strategies.length === 0) {
 					await dispatch('load')
 				}
 			}
@@ -255,7 +272,7 @@ export default {
 		/**
 		 * Upload a new one.
 		 */
-		async upload({commit, state}, payload) {
+		async upload({ commit, state }, payload) {
 			try {
 				const strategy = await ApiController.upload(payload.fileName, payload.data, payload.source)
 				commit('setOverrides', [])
@@ -273,5 +290,5 @@ export default {
 				// TODO
 			}
 		}
-  }
+	}
 }

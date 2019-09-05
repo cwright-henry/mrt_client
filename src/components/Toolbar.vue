@@ -39,7 +39,7 @@ export default {
 
 <style lang="less">
 .mrt-toolbar-class {
-	background-color: var(--color-primary) !important;
+	background-color: rgba(255, 255, 255, 0.16) !important;
 }
 .mrt-toolbar--name {
 	margin: 0 12px 0 0;
@@ -50,6 +50,7 @@ export default {
 	align-items: center;
 	span {
 		padding-left: 8px;
+		font-weight: 300;
 	}
 }
 </style>

@@ -8,11 +8,8 @@ Vue.use(Vuetify, {
   theme: {
     primary: '#AB47BC',
     secondary: colors.green.lighten1,
-    accent: colors.indigo.lighten1,
     error: colors.red.lighten1,
-    highlight:colors.blue.accent4,
-
-
+    highlight: colors.blue.accent4,
     fab: '#00E676',
   }
 })

@@ -81,7 +81,7 @@ a {
 	text-decoration: none;
 }
 :root {
-	--blue: #64b5f6;
+	--blue: #14bb83;
 	--orange: #ffa726;
 	--green: #00e676;
 	--error: #ef5350;
@@ -101,18 +101,22 @@ a {
 	--color-bk-primary: #212121;
 	--color-bk-secondary: #303030;
 	--color-bk-var1: #424242;
-}
 
+	/* Navigation Link Colors */
+	--nav-link--color: #9c27b0;
+}
+.theme--dark.application {
+	background-color: #121212;
+}
 .theme--dark.v-navigation-drawer {
-	background-color: #303030;
+	background-color: rgba(255, 255, 255, 0.08);
 }
 
 .theme--dark.v-toolbar {
-	background-color: var(--color-primary);
+	background-color: rgba(255, 255, 255, 0.16);
 }
 .theme--dark.v-card {
-	background-color: #303030;
-	border: 1px solid #424242;
+	background-color: rgba(255, 255, 255, 0.08);
 	color: #fff;
 }
 
@@ -126,11 +130,17 @@ a {
 }
 .container.fluid {
 	max-width: 1785px;
-	background-color: #424242;
+	background-color: #121212;
 }
 .menuable__content__active {
 	/*Fix for Safari dialog display. Reference Vuetify issue #2111 */
 	z-index: 250 !important;
+}
+.mrt-nav--link {
+	background-color: var(--nav-link--color) !important;
+}
+.mrt-nav--link-icon {
+	color: var(--nav-link--color) !important;
 }
 </style>
 

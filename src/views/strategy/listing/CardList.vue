@@ -1,12 +1,12 @@
 <template>
 	<div style="margin-top:16px;">
 		<transition-group tag="ul" @enter="enter" @leave="leave" @before-leave="beforeLeave" :css="false">
-			<li v-for="strat in strategies" :key="strat._id" class="mb-4 mt-3 mrt-card">
+			<li v-for="strat in strategies" :key="strat._id" class="mb-3 mt-3 mrt-card">
 				<v-card>
 					<v-toolbar dense flat>
 						<v-toolbar-title class="mrt--header-color">{{strat.name}}</v-toolbar-title>
 						<v-spacer></v-spacer>
-						<v-btn color="primary" flat icon>
+						<v-btn class="mrt-nav--link-icon" flat icon>
 							<v-icon @click.self.passive="remove(strat._id)">delete</v-icon>
 						</v-btn>
 					</v-toolbar>
@@ -22,7 +22,7 @@
 							:loading="strat._id === strategy._id && isLoading"
 							small
 							dark
-							color="primary"
+							class="mrt-nav--link"
 							:to="`/library/${strat._id}/scenario`"
 						>Scenario Analysis</v-btn>
 					</v-card-actions>
@@ -106,8 +106,8 @@ export default {
 	white-space: nowrap;
 }
 .mrt--header-color {
-	color: #ffffff;
-	font-weight: 500;
+	color: #fff;
+	font-weight: 300;
 }
 .mrt--fit {
 	&.lastupdated {

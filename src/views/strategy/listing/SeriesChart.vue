@@ -2,7 +2,7 @@
 	<transition-group name="flip" tag="div">
 		<div v-show="isLoading" class="mrt-strategy-loading" key="loading">Loading {{strategy.name}}...</div>
 		<div v-show="!isLoading" key="not_loading">
-			<highcharts :options="options" ref="linechart"></highcharts>
+			<highcharts :constructor-type="'stockChart'" :options="options" ref="linechart"></highcharts>
 		</div>
 	</transition-group>
 </template>
@@ -72,8 +72,62 @@ const options = vm => {
 		tooltip: {
 			enabled: true
 		},
+		navigator: {
+			maskFill: "rgba(255, 152, 0, 0.05)",
+			outlineWidth: 0.5,
+			series: {
+				fillColor: "#4A148C",
+				color: "#BA68C8",
+				lineWidth: 0.5,
+				marker: {
+					enabled: false
+				}
+			}
+		},
+		rangeSelector: {
+			selected: 0,
+			buttons: [
+				{
+					type: "month",
+					count: 6,
+					text: "6m"
+				},
+				{
+					type: "year",
+					count: 1,
+					text: "1y"
+				},
+				{
+					type: "year",
+					count: 2,
+					text: "2y"
+				},
+				{
+					type: "year",
+					count: 3,
+					text: "3y"
+				},
+				{
+					type: "year",
+					count: 4,
+					text: "4y"
+				},
+				{
+					type: "year",
+					count: 5,
+					text: "5y"
+				},
+				{
+					type: "all",
+					text: "All"
+				}
+			]
+		},
 		plotOptions: {
 			series: {
+				dataGrouping: {
+					enabled: false /* By default highstocks groups data into weeks */
+				},
 				states: {
 					hover: {
 						enabled: false
@@ -81,14 +135,13 @@ const options = vm => {
 				}
 			},
 			area: {
-				fillColor: "#00B0FF",
-				negativeFillColor: "#1E88E5",
-				negativeColor: "#FFFFFF",
+				fillColor: "#1976D2",
 				color: "#FFFFFF",
-				lineWidth: 0.5,
-				marker: {
-					enabled: false
-				}
+				lineWidth: 0.5
+			},
+			line: {
+				color: "#BA68C8",
+				lineWidth: 2
 			}
 		}
 	};
@@ -113,7 +166,7 @@ export default {
 		},
 		height: {
 			type: Number,
-			default: 220
+			default: 400
 		},
 		backgroundColor: {
 			type: String,
@@ -124,6 +177,7 @@ export default {
 		// Called when the strategy gets updated i.e. after fitting
 		strategy: {
 			handler: function() {
+				console.log(`Handler= ${this.strategy.name}`);
 				this.update();
 			},
 			deep: true
@@ -133,25 +187,28 @@ export default {
 	 * Is this only called from hot-update
 	 */
 	mounted() {
+		console.log(`Mounting ${this.strategy.name}`);
 		this.update();
 	},
 	methods: {
 		update() {
 			this.isLoading = true;
+			console.log(`Strategy= ${this.strategy.name}`);
 			if (this.strategy.ts) {
 				this.isLoading = false;
 				this.$nextTick(() => {
 					const chart = this.$refs.linechart.chart;
 					this.clearSeries();
+					console.log(`Drawing ${this.strategy.name}`);
 					chart.addSeries({
-						type: "area",
+						type: "line",
 						data: this.strategy.ts.data,
 						name: this.strategy.name,
 						threshold: mean(this.strategy.ts.data),
 						clip: false
 					});
 
-					chart.xAxis[0].addPlotLine(
+					/*	chart.xAxis[0].addPlotLine(
 						getStartPlotLine(this.strategy.fit.start_date)
 					);
 					chart.xAxis[0].addPlotLine(
@@ -162,7 +219,7 @@ export default {
 							this.strategy.fit.start_date,
 							this.strategy.fit.end_date
 						)
-					);
+					); */
 
 					chart.reflow();
 				});

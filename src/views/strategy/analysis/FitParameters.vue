@@ -10,7 +10,7 @@
 			</div>
 			<div class="kappa">
 				<label class="input-param">
-					<span>kappa</span>
+					<span>Kappa</span>
 					<v-menu
 						bottom
 						v-model="kappaMenu"

@@ -1,8 +1,12 @@
 <template>
 	<div class="mrt-card">
-		<mrt-fit-process :fit="strategy.fit" />
-		<div class="mrt-card--graphs">
-			<mrt-serieschart :strategy="strategy"></mrt-serieschart>
+		<div class="mrt-card--details">
+			<div class="mrt-card--graphs">
+				<mrt-serieschart :strategy="strategy"></mrt-serieschart>
+			</div>
+			<div class="mrt-card--info">
+				<mrt-details :fit="strategy.fit" />
+			</div>
 		</div>
 	</div>
 </template>
@@ -10,6 +14,7 @@
 <script>
 import mrtFitProcess from "@/components/fit/Fit";
 import mrtSerieschart from "./SeriesChart";
+import mrtDetails from "./Details";
 
 export default {
 	data() {
@@ -55,7 +60,8 @@ export default {
 	},
 	components: {
 		mrtSerieschart,
-		mrtFitProcess
+		mrtFitProcess,
+		mrtDetails
 	},
 	methods: {
 		async load() {
@@ -80,13 +86,19 @@ export default {
 <style scoped lang="less">
 .mrt-card {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	flex-wrap: wrap;
 	padding: 16px;
 	min-height: 340px;
 
-	.mrt-card--graphs {
-		width: calc(100%);
+	.mrt-card--details {
+		display: flex;
+		.mrt-card--graphs {
+			flex: 1;
+		}
+		.mrt-card--info {
+			width: 350px;
+		}
 	}
 }
 @media screen and (max-width: 600px) {
