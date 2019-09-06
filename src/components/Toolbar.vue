@@ -39,7 +39,7 @@ export default {
 
 <style lang="less">
 .mrt-toolbar-class {
-	background-color: rgba(255, 255, 255, 0.16) !important;
+	background-color: #383838 !important;
 }
 .mrt-toolbar--name {
 	margin: 0 12px 0 0;

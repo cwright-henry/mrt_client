@@ -109,7 +109,7 @@ a {
 	background-color: #121212;
 }
 .theme--dark.v-navigation-drawer {
-	background-color: rgba(255, 255, 255, 0.08);
+	background-color: #252525;
 }
 
 .theme--dark.v-toolbar {
