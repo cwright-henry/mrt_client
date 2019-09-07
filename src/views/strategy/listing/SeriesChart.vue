@@ -41,12 +41,15 @@ const getEndPlotLine = value => {
 	};
 };
 
+const SERIES_COLOR = "#BA68C8";
+
 const options = vm => {
 	return {
 		chart: {
 			height: vm._props.height,
 			zoomType: "x",
-			backgroundColor: vm._props.backgroundColor
+			backgroundColor: vm._props.backgroundColor,
+			spacingRight: 70
 		},
 		title: {
 			text: null
@@ -76,8 +79,8 @@ const options = vm => {
 			maskFill: "rgba(255, 152, 0, 0.05)",
 			outlineWidth: 0.5,
 			series: {
-				fillColor: "#4A148C",
-				color: "#BA68C8",
+				fillColor: SERIES_COLOR,
+				color: "#FFF",
 				lineWidth: 0.5,
 				marker: {
 					enabled: false
@@ -85,7 +88,7 @@ const options = vm => {
 			}
 		},
 		rangeSelector: {
-			selected: 0,
+			selected: 1,
 			buttons: [
 				{
 					type: "month",
@@ -132,15 +135,34 @@ const options = vm => {
 					hover: {
 						enabled: false
 					}
+				},
+				dataLabels: {
+					enabled: true,
+					align: "left",
+					color: "#FFF",
+					borderRadius: 4,
+					backgroundColor: SERIES_COLOR,
+					borderWidth: 1,
+					borderColor: "#FFF",
+					fontWeight: 300,
+					x: 10,
+					formatter: function() {
+						if (this.point.index == this.series.data.length - 1) {
+							return this.y.toFixed(2);
+						} else {
+							return null;
+						}
+					},
+					style: {
+						textOutline: false,
+						fontSize: "13px"
+					},
+					crop: false,
+					overflow: false
 				}
 			},
-			area: {
-				fillColor: "#1976D2",
-				color: "#FFFFFF",
-				lineWidth: 0.5
-			},
 			line: {
-				color: "#BA68C8",
+				color: SERIES_COLOR,
 				lineWidth: 2
 			}
 		}
@@ -166,7 +188,7 @@ export default {
 		},
 		height: {
 			type: Number,
-			default: 400
+			default: 420
 		},
 		backgroundColor: {
 			type: String,
@@ -177,7 +199,6 @@ export default {
 		// Called when the strategy gets updated i.e. after fitting
 		strategy: {
 			handler: function() {
-				console.log(`Handler= ${this.strategy.name}`);
 				this.update();
 			},
 			deep: true
@@ -193,13 +214,11 @@ export default {
 	methods: {
 		update() {
 			this.isLoading = true;
-			console.log(`Strategy= ${this.strategy.name}`);
 			if (this.strategy.ts) {
 				this.isLoading = false;
 				this.$nextTick(() => {
 					const chart = this.$refs.linechart.chart;
 					this.clearSeries();
-					console.log(`Drawing ${this.strategy.name}`);
 					chart.addSeries({
 						type: "line",
 						data: this.strategy.ts.data,

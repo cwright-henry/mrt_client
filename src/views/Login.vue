@@ -107,7 +107,6 @@ export default {
 	.login-box {
 		max-width: 450px;
 		margin: 80px auto 100px auto;
-		opacity1: 0.95;
 		border-radius: 8px;
 		.login-box__intro {
 			text-align: center;

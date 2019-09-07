@@ -1,5 +1,9 @@
 <template>
 	<div class="search-fit">
+		<div class="proctype">
+			<label>Fit Process</label>
+			<div>{{fitProcess}}</div>
+		</div>
 		<div class="section">
 			<div class="header">
 				<label>Parameters</label>
@@ -94,7 +98,7 @@ export default {
 			type: Object,
 			default: () => {
 				return {
-					proctype: "...",
+					proctype: null,
 					kappa: null,
 					kappa_full: null,
 					sigma: null,
@@ -122,6 +126,19 @@ export default {
 				};
 			}
 		}
+	},
+	computed: {
+		fitProcess() {
+			switch (this.fit.proctype) {
+				case "hypOU":
+					return "Hyperbolic Ornstein-Uhlenbeck";
+				case "OU":
+					return "Ornstein-Uhlenbeck";
+				default:
+					console.log(this.fit.proctype);
+					return "Not Fitted";
+			}
+		}
 	}
 };
 </script>
@@ -134,6 +151,19 @@ export default {
 	flex-direction: column;
 	justify-content: space-between;
 	padding: 0 12px 0 24px;
+	font-size: 13px;
+	.proctype {
+		margin: 0 0 12px;
+		label {
+			text-transform: uppercase;
+			font-size: 12px;
+			color: #e0e0e0;
+		}
+		> div {
+			font-size: 14px;
+			color: #fff176;
+		}
+	}
 	.section {
 		display: flex;
 		flex-direction: column;
