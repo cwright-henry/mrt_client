@@ -150,7 +150,7 @@ export default {
           }
         },
         select: {
-          fill: "white",
+          fill: "#FFEE58",
           stroke: "#000000",
           style: {
             color: "#000"

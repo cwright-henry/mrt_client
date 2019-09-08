@@ -13,7 +13,11 @@
 					<mrt-card :strategy="strat"></mrt-card>
 					<v-divider></v-divider>
 					<v-card-actions class="mrt-cardlist--actions">
-						<div class="mrt--fit lastupdated hidden-sm-and-down">
+						<div class="mrt--fit lastupdated hidden-sm-and-down mr-4">
+							<div class="mrt-no-wrap">Created</div>
+							<div class="mrt-no-wrap">{{strat.created | date}}</div>
+						</div>
+						<div class="mrt--fit lastupdated hidden-sm-and-down mr-4">
 							<div class="mrt-no-wrap">Last Updated</div>
 							<div class="mrt-no-wrap">{{strat.lastUpdate | date}}</div>
 						</div>

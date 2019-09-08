@@ -2,10 +2,11 @@
 	<div class="mrt-card">
 		<div class="mrt-card--details">
 			<div class="mrt-card--graphs">
-				<mrt-serieschart :strategy="strategy"></mrt-serieschart>
+				<mrtDetails :strategy="strategy" />
+				<mrt-serieschart :strategy="strategy" />
 			</div>
 			<div class="mrt-card--info">
-				<mrt-details :fit="strategy.fit" />
+				<mrtFitParameters :fit="strategy.fit" />
 			</div>
 		</div>
 	</div>
@@ -14,6 +15,7 @@
 <script>
 import mrtFitProcess from "@/components/fit/Fit";
 import mrtSerieschart from "./SeriesChart";
+import mrtFitParameters from "./FitParameters";
 import mrtDetails from "./Details";
 
 export default {
@@ -61,6 +63,7 @@ export default {
 	components: {
 		mrtSerieschart,
 		mrtFitProcess,
+		mrtFitParameters,
 		mrtDetails
 	},
 	methods: {
@@ -97,7 +100,7 @@ export default {
 			flex: 1;
 		}
 		.mrt-card--info {
-			width: 350px;
+			width: 330px;
 		}
 	}
 }

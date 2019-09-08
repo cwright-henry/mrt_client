@@ -76,9 +76,9 @@ Vue.filter('date', function (value) {
 });
 
 Vue.filter('date-short', function (value) {
-	if (value)
+	if (value && !isNaN(value))
 		return new Intl.DateTimeFormat(navigator.language, optionsCompact).format(value);
-	return ''
+	return value;
 });
 
 Vue.config.errorHandler = function (err, vm, info) {

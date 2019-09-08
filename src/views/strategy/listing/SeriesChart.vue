@@ -10,38 +10,32 @@
 <script>
 import { mean } from "@/utils";
 
-const getPlotBand = (from, to) => {
+const PLOT_LINE_COLOR = "#FFEB3B";
+const PLOT_BAND_COLOR = "rgba(237, 237, 37, 0.1)";
+const START_PLOT_LINE = "plot-line-start";
+const END_PLOT_LINE = "plot-line-end";
+const PLOT_BAND = "plot_band";
+const SERIES_COLOR = "#BA68C8";
+
+const getPlotBand = (from, to, id) => {
 	return {
 		from,
 		to,
-		color: "rgba(156, 39, 176, 0.1)",
-		id: "plot-band"
+		color: PLOT_BAND_COLOR,
+		id: id
 	};
 };
 
-const getStartPlotLine = value => {
+const getPlotLine = (value, id) => {
 	return {
 		value,
-		color: "#CE93D8",
-		dashStyle: "Dash",
+		color: "#FFEB3B",
+		dashStyle: "dash",
 		width: 1,
-		id: "plot-line-start",
+		id: id,
 		zIndex: 999
 	};
 };
-
-const getEndPlotLine = value => {
-	return {
-		value,
-		color: "#CE93D8",
-		dashStyle: "Dash",
-		width: 1,
-		id: "plot-line-end",
-		zIndex: 999
-	};
-};
-
-const SERIES_COLOR = "#BA68C8";
 
 const options = vm => {
 	return {
@@ -188,7 +182,7 @@ export default {
 		},
 		height: {
 			type: Number,
-			default: 420
+			default: 380
 		},
 		backgroundColor: {
 			type: String,
@@ -208,7 +202,6 @@ export default {
 	 * Is this only called from hot-update
 	 */
 	mounted() {
-		console.log(`Mounting ${this.strategy.name}`);
 		this.update();
 	},
 	methods: {
@@ -222,27 +215,42 @@ export default {
 					chart.addSeries({
 						type: "line",
 						data: this.strategy.ts.data,
-						name: this.strategy.name,
-						threshold: mean(this.strategy.ts.data),
-						clip: false
+						name: this.strategy.name
 					});
 
-					/*	chart.xAxis[0].addPlotLine(
-						getStartPlotLine(this.strategy.fit.start_date)
-					);
-					chart.xAxis[0].addPlotLine(
-						getEndPlotLine(this.strategy.fit.end_date)
-					);
-					chart.xAxis[0].addPlotBand(
-						getPlotBand(
-							this.strategy.fit.start_date,
-							this.strategy.fit.end_date
-						)
-					); */
-
+					this.addLinesAndBands(chart);
 					chart.reflow();
 				});
 			}
+		},
+
+		addLinesAndBands(chart) {
+			chart.xAxis[0].addPlotLine(
+				getPlotLine(this.strategy.fit.start_date, START_PLOT_LINE)
+			);
+			chart.xAxis[0].addPlotLine(
+				getPlotLine(this.strategy.fit.end_date, END_PLOT_LINE)
+			);
+			chart.xAxis[0].addPlotBand(
+				getPlotBand(
+					this.strategy.fit.start_date,
+					this.strategy.fit.end_date,
+					PLOT_BAND
+				)
+			);
+			chart.navigator.xAxis.addPlotLine(
+				getPlotLine(this.strategy.fit.start_date, START_PLOT_LINE)
+			);
+			chart.navigator.xAxis.addPlotLine(
+				getPlotLine(this.strategy.fit.end_date, END_PLOT_LINE)
+			);
+			chart.navigator.xAxis.addPlotBand(
+				getPlotBand(
+					this.strategy.fit.start_date,
+					this.strategy.fit.end_date,
+					PLOT_BAND
+				)
+			);
 		},
 
 		clearSeries() {
@@ -250,9 +258,12 @@ export default {
 			while (chart.series.length > 0) {
 				chart.series[0].remove(false);
 			}
-			chart.xAxis[0].removePlotBand("plot-band");
-			chart.xAxis[0].removePlotLine("plot-line-start");
-			chart.xAxis[0].removePlotLine("plot-line-end");
+			chart.xAxis[0].removePlotBand(PLOT_BAND);
+			chart.xAxis[0].removePlotLine(START_PLOT_LINE);
+			chart.xAxis[0].removePlotLine(END_PLOT_LINE);
+			chart.navigator.xAxis.removePlotBand(PLOT_BAND);
+			chart.navigator.xAxis.removePlotLine(START_PLOT_LINE);
+			chart.navigator.xAxis.removePlotLine(END_PLOT_LINE);
 		}
 	}
 };
