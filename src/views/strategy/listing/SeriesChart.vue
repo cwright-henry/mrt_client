@@ -15,7 +15,7 @@ const PLOT_BAND_COLOR = "rgba(237, 237, 37, 0.1)";
 const START_PLOT_LINE = "plot-line-start";
 const END_PLOT_LINE = "plot-line-end";
 const PLOT_BAND = "plot_band";
-const SERIES_COLOR = "#BA68C8";
+const SERIES_COLOR = "#26A69A";
 
 const getPlotBand = (from, to, id) => {
 	return {
@@ -182,7 +182,7 @@ export default {
 		},
 		height: {
 			type: Number,
-			default: 380
+			default: 350
 		},
 		backgroundColor: {
 			type: String,

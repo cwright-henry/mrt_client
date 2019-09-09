@@ -103,7 +103,7 @@ a {
 	--color-bk-var1: #424242;
 
 	/* Navigation Link Colors */
-	--nav-link--color: #9c27b0;
+	--nav-link--color: #2196F3;
 }
 .theme--dark.application {
 	background-color: #121212;

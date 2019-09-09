@@ -136,7 +136,7 @@ export default {
   // scroll charts
   rangeSelector: {
     buttonTheme: {
-      fill: "#9C27B0",
+      fill: "#26A69A",
       stroke: "#000000",
       style: {
         color: "#fff"

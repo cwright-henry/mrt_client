@@ -147,7 +147,7 @@ export default {
 <style lang="less" scoped>
 .mrt-search-fit {
 	font-weight: 300;
-	height: 450px;
+	height: 425px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -182,7 +182,7 @@ export default {
 		}
 		> div {
 			font-size: 16px;
-			color: #fff176;
+			color: #ffeb3b;
 		}
 	}
 	.section {

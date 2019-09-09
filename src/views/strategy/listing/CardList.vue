@@ -6,19 +6,29 @@
 					<v-toolbar dense flat>
 						<v-toolbar-title class="mrt--header-color">{{strat.name}}</v-toolbar-title>
 						<v-spacer></v-spacer>
-						<v-btn class="mrt-nav--link-icon" flat icon>
-							<v-icon @click.self.passive="remove(strat._id)">delete</v-icon>
-						</v-btn>
+						<v-menu :close-on-content-click="false" :nudge-width="200" offset-x>
+							<template v-slot:activator="{ on }">
+								<v-btn class="mrt-nav--link-icon" flat icon v-on="on">
+									<v-icon>delete</v-icon>
+								</v-btn>
+							</template>
+							<v-card>
+								<div
+									class="mrt-delete--item"
+									@click.self.passive="remove(strat._id)"
+								>Delete {{strat.name}} from Library</div>
+							</v-card>
+						</v-menu>
 					</v-toolbar>
 					<mrt-card :strategy="strat"></mrt-card>
 					<v-divider></v-divider>
 					<v-card-actions class="mrt-cardlist--actions">
-						<div class="mrt--fit lastupdated hidden-sm-and-down mr-4">
-							<div class="mrt-no-wrap">Created</div>
+						<div class="mrt--fit hidden-sm-and-down mr-5">
+							<div class="mrt-no-wrap label">Created</div>
 							<div class="mrt-no-wrap">{{strat.created | date}}</div>
 						</div>
-						<div class="mrt--fit lastupdated hidden-sm-and-down mr-4">
-							<div class="mrt-no-wrap">Last Updated</div>
+						<div class="mrt--fit hidden-sm-and-down">
+							<div class="mrt-no-wrap label">Last Updated</div>
 							<div class="mrt-no-wrap">{{strat.lastUpdate | date}}</div>
 						</div>
 						<v-spacer></v-spacer>
@@ -47,6 +57,11 @@ const ANIMATION_OUT = "rollOut";
 
 export default {
 	name: "CardList",
+	data() {
+		return {
+			menu: false
+		};
+	},
 	computed: {
 		...mapState("strategies", ["strategies", "loading"]),
 		...mapState("fit", ["strategy", "isLoadingStrategy"]),
@@ -106,18 +121,9 @@ export default {
 </script>
 
 <style lang="less">
-.mrt-no-wrap {
-	white-space: nowrap;
-}
 .mrt--header-color {
 	color: #fff;
 	font-weight: 300;
-}
-.mrt--fit {
-	&.lastupdated {
-		color: #e3f2fd;
-		font-size: 11px;
-	}
 }
 ul {
 	list-style: none;
@@ -128,10 +134,34 @@ ul {
 		width: 100%;
 	}
 }
+.mrt-delete--item {
+	padding: 16px;
+	background-color: #1976d2;
+	cursor: pointer;
+	transition: all 0.125s ease-in;
+	&:hover {
+		background-color: #0d47a1;
+	}
+}
 .mrt-cardlist--actions {
-	margin: 0 16px;
+	margin: 0 12px;
 	.v-btn + .v-btn {
 		margin: 0 0 0 24px;
+	}
+	.mrt--fit {
+		color: #fff;
+		font-size: 11px;
+	}
+	.mrt-no-wrap {
+		white-space: nowrap;
+		font-size: 12px;
+		line-height: 1.4;
+		font-weight: 300;
+		&.label {
+			color: #e0e0e0;
+			text-transform: uppercase;
+			font-size: 10px;
+		}
 	}
 }
 .mrt-card {

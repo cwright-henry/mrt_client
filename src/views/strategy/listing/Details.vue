@@ -46,7 +46,7 @@ export default {
 			if (this.strategy.fit) {
 				return this.strategy.fit;
 			}
-			return { start_date: "...", end_date: "n/a" };
+			return {};
 		},
 		tsStartDate() {
 			if (this.strategy.ts) {
