@@ -103,7 +103,7 @@ a {
 	--color-bk-var1: #424242;
 
 	/* Navigation Link Colors */
-	--nav-link--color: #2196F3;
+	--nav-link--color: #2196f3;
 }
 .theme--dark.application {
 	background-color: #121212;
@@ -116,7 +116,7 @@ a {
 	background-color: rgba(255, 255, 255, 0.16);
 }
 .theme--dark.v-card {
-	background-color: rgba(255, 255, 255, 0.08);
+	background-color: #252525;
 	color: #fff;
 }
 

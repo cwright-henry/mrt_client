@@ -77,7 +77,7 @@ export default {
 	}
 	.router-link-active {
 		.mrt-menu--item {
-			color: var(--nav-link--color);
+			color: #64b5f6;
 			i {
 				color: var(--nav-link--color);
 			}
