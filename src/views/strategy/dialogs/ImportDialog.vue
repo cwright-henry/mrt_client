@@ -6,7 +6,7 @@
 		style="z-index:-1"
 	>
 		<v-card>
-			<v-toolbar dense color="#827717">
+			<v-toolbar dense color="#484848">
 				<v-btn icon>
 					<v-icon>cloud_upload</v-icon>
 				</v-btn>
@@ -32,7 +32,7 @@
 								offset-x
 								transition="slide-y-transition"
 							>
-								<v-btn slot="activator" small color="#0091EA" fab dark>
+								<v-btn slot="activator" small color="#0091EA" fab>
 									<v-icon>more_vert</v-icon>
 								</v-btn>
 								<mrtImportOptions :isOpen="imporMenu" :importDefault="importInput" @change="setImportType" />
@@ -172,13 +172,14 @@
 							@keyup.native.enter="upload"
 							label="Save As..."
 							:error-messages="errorMessages"
+							background-color="#424242"
 							box
 							ref="namefield"
 							required
 						></v-text-field>
 						<div>
-							<v-switch color="#0091EA" hide-details label="Plus One" v-model="plusOne"></v-switch>
-							<v-btn color="primary" :loading="uploading" :disabled="importDisabled" @click="upload">Import</v-btn>
+							<v-switch color="#ffeb3b" hide-details label="Plus One" v-model="plusOne"></v-switch>
+							<v-btn color="#2196F3" :loading="uploading" :disabled="importDisabled" @click="upload">Import</v-btn>
 						</div>
 					</div>
 				</div>
@@ -229,13 +230,13 @@ export default {
 			aggregator: "diff",
 
 			// Menu One Series
-			importInput: "LibrarySearch",
+			importInput: "CSVSearch",
 			imporMenu: false,
 
 			// Menu Two Series
-			importInputA: "LibrarySearch",
+			importInputA: "CSVSearch",
 			imporMenuA: false,
-			importInputB: "LibrarySearch",
+			importInputB: "CSVSearch",
 			imporMenuB: false,
 
 			// LSE data
@@ -513,13 +514,13 @@ export default {
 			this.aggregator = "diff";
 
 			// Menu One Series
-			this.importInput = "LibrarySearch";
+			this.importInput = "CSVSearch";
 			this.imporMenu = false;
 
 			// Menu Two Series
-			this.importInputA = "LibrarySearch";
+			this.importInputA = "CSVSearch";
 			this.imporMenuA = false;
-			this.importInputB = "LibrarySearch";
+			this.importInputB = "CSVSearch";
 			this.imporMenuB = false;
 
 			// LSE data
@@ -540,7 +541,7 @@ export default {
 	padding: 16px 32px 0 16px;
 }
 .mrt-import {
-	background-color: #455a64;
+	background-color: #252525;
 	.mrt-import-dynammic {
 		position: relative;
 		overflow: hidden;
@@ -600,7 +601,7 @@ export default {
 			width: 50%;
 			padding: 12px;
 			border: solid #546e7a;
-			background-color: #455a64;
+			background-color: #252525;
 			will-change: transform;
 			transition: all 0.3s cubic-bezier(0.4, 0, 1, 1);
 		}
@@ -626,7 +627,7 @@ export default {
 		margin: 0 0 0 0;
 		border: solid #757575;
 		border-width: 1px 0px 1px 0px;
-		background-color: #455a64;
+		background-color: #252525;
 		.controls {
 			display: flex;
 			justify-content: space-between;
@@ -681,7 +682,7 @@ export default {
 		margin: 4px 0 0 0;
 		text-align: center;
 		padding: 12px 16px 8px 16px;
-		background-color: #455a64;
+		background-color: #252525;
 		> div {
 			display: flex;
 			align-items: center;

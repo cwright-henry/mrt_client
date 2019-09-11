@@ -5,7 +5,8 @@
 			:loading="parsing"
 			:label="label"
 			:disabled="parsing"
-			color="blue lighten-2"
+			color="#fff"
+			background-color="#424242"
 			v-model="fileName"
 			hide-details
 			box

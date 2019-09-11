@@ -4,6 +4,7 @@
 
 <script>
 import { mean } from "@/utils";
+const SERIES_COLOR = "#26A69A";
 
 const options = vm => {
 	return {
@@ -52,8 +53,8 @@ const options = vm => {
 				lineWidth: 0.5
 			},
 			line: {
-				color: "#00B0FF",
-				lineWidth: 0.5
+				color: SERIES_COLOR,
+				lineWidth: 1
 			}
 		}
 	};
@@ -98,7 +99,7 @@ export default {
 			this.clearSeries();
 			const chart = this.$refs.linechart.chart;
 			chart.addSeries({
-				type: "area",
+				type: "line",
 				data: data,
 				name: this.name,
 				threshold: mean(data)

@@ -3,7 +3,7 @@
 		<p>Import Options</p>
 		<v-radio-group v-model="type">
 			<v-radio
-				color="yellow"
+				color="#ffeb3b"
 				:value="item.value"
 				:label="item.title"
 				v-for="item in importTypes"
@@ -22,7 +22,7 @@ export default {
 		},
 		importDefault: {
 			type: String,
-			default: "LibrarySearch"
+			default: "CSVSearch"
 		}
 	},
 	data() {

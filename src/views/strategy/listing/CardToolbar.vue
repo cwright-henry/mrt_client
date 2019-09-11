@@ -25,7 +25,7 @@
 			</template>
 			<div class="mrt-ctb--action">
 				<h1 class="text-truncate mb-2">Delete {{strategy.name}}</h1>
-				<p>This action will permentently remove {{strategy.name}} and any references to it from the MRT system.</p>
+				<p>This action will permentently remove {{strategy.name}} from the MRT system.</p>
 				<div class="text-xs-right mr-1">
 					<v-btn color="#2196F3" left small @click="remove(strategy._id)">Remove</v-btn>
 				</div>
@@ -75,9 +75,10 @@ export default {
 	padding: 16px;
 	font-weight: 300;
 	background-color: #2e2e2e;
-	max-width: 400px;
+	max-width: 350px;
 	h1 {
-		font-size: 22px;
+		font-size: 18px;
+		font-weight: 400;
 		font-weight: inherit;
 	}
 }

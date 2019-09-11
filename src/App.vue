@@ -98,8 +98,8 @@ a {
 	--color-btn-secondary: #4fc3f7;
 
 	/* Background colors */
-	--color-bk-primary: #212121;
-	--color-bk-secondary: #303030;
+	--color-bk-primary1: #212121;
+	--color-bk-secondary1: #303030;
 	--color-bk-var1: #424242;
 
 	/* Navigation Link Colors */
