@@ -2,14 +2,6 @@
 	<v-toolbar dense flat class="mrt-ctb">
 		<v-toolbar-title class="mrt-ctb--name">{{strategy.name}}</v-toolbar-title>
 		<v-spacer></v-spacer>
-		<v-tooltip bottom>
-			<template v-slot:activator="{ on }">
-				<v-btn class="mrt-ctb--link-icon mr-3" icon v-on="on">
-					<v-icon>update</v-icon>
-				</v-btn>
-			</template>
-			<span>Update timeseries</span>
-		</v-tooltip>
 		<v-menu
 			origin="top right"
 			transition="scale-transition"
@@ -64,7 +56,7 @@ export default {
 .mrt-ctb {
 	.mrt-ctb--name {
 		color: #ffffff;
-		font-weight: 300;
+		font-weight: 400;
 	}
 	.mrt-ctb--link-icon {
 		color: #64b5f6;

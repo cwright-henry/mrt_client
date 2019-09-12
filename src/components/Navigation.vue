@@ -77,13 +77,13 @@ export default {
 	}
 	.router-link-active {
 		.mrt-menu--item {
-			color: #64b5f6;
+			color: #2196F3;
 			i {
-				color: var(--nav-link--color);
+				color: #2196F3
 			}
 		}
 		.v-badge__badge {
-			background-color: var(--nav-link--color) !important;
+			background-color: #2196F3 !important;
 			color: #fff;
 		}
 	}

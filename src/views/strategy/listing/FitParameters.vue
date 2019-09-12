@@ -1,91 +1,91 @@
 <template>
-	<div class="mrt-search-fit">
-		<div class="proctype">
+	<div class="mrt-sfp">
+		<div class="mrt-sfp--proctype">
 			<label>Fit Process</label>
-			<div>{{fitProcess}}</div>
+			<div :class="{'mrt-sfp--notfitted': !isFitted}">{{fitProcess}}</div>
 		</div>
-		<div class="section">
-			<div class="header">
+		<div class="mrt-sfp--section">
+			<div class="mrt-sfp--header">
 				<label>Parameters</label>
-				<div class="selection">Selection</div>
-				<div class="full">Full</div>
+				<div class="mrt-sfp--selection">Selection</div>
+				<div class="mrt-sfp--full">Full</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>Kappa</label>
-				<div class="selection">{{fit.kappa | number}}</div>
-				<div class="full">{{fit.kappa_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.kappa | number}}</div>
+				<div class="mrt-sfp--full">{{fit.kappa_full | number}}</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>Sigma</label>
-				<div class="selection">{{fit.sigma | number}}</div>
-				<div class="full">{{fit.sigma_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.sigma | number}}</div>
+				<div class="mrt-sfp--full">{{fit.sigma_full | number}}</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>Theta</label>
-				<div class="selection">{{fit.theta | number}}</div>
-				<div class="full">{{fit.theta_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.theta | number}}</div>
+				<div class="mrt-sfp--full">{{fit.theta_full | number}}</div>
 			</div>
-			<div class="item" v-if="fit.proctype === 'hypOU'">
+			<div class="mrt-sfp--item" v-if="fit.proctype === 'hypOU'">
 				<label>Beta</label>
-				<div class="selection">{{fit.nbeta | number}}</div>
-				<div class="full">{{fit.nbeta_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.nbeta | number}}</div>
+				<div class="mrt-sfp--full">{{fit.nbeta_full | number}}</div>
 			</div>
 		</div>
-		<div class="section">
-			<div class="header">
+		<div class="mrt-sfp--section">
+			<div class="mrt-sfp--header">
 				<label>Goodness of Fit</label>
-				<div class="selection">Selection</div>
-				<div class="full">Full</div>
+				<div class="mrt-sfp--selection">Selection</div>
+				<div class="mrt-sfp--full">Full</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>ADF Stat</label>
-				<div class="selection">{{fit.adf_stat | number}}</div>
-				<div class="full">{{fit.adf_stat_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.adf_stat | number}}</div>
+				<div class="mrt-sfp--full">{{fit.adf_stat_full | number}}</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>ADF Sig Level</label>
-				<div class="selection">{{fit.sig_lev}}</div>
-				<div class="full">{{fit.sig_lev_full}}</div>
+				<div class="mrt-sfp--selection">{{fit.sig_lev}}</div>
+				<div class="mrt-sfp--full">{{fit.sig_lev_full}}</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>P value</label>
-				<div class="selection">{{fit.p_val | number}}</div>
-				<div class="full">{{fit.p_val_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.p_val | number}}</div>
+				<div class="mrt-sfp--full">{{fit.p_val_full | number}}</div>
 			</div>
 		</div>
-		<div class="section">
-			<div class="header">
+		<div class="mrt-sfp--section">
+			<div class="mrt-sfp--header">
 				<label>Residuals</label>
-				<div class="selection">Selection</div>
-				<div class="full">Full</div>
+				<div class="mrt-sfp--selection">Selection</div>
+				<div class="mrt-sfp--full">Full</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>
 					R
 					<sup>2</sup>
 				</label>
-				<div class="selection">{{fit.R2 | number}}</div>
-				<div class="full">{{fit.R2_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.R2 | number}}</div>
+				<div class="mrt-sfp--full">{{fit.R2_full | number}}</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>Mean</label>
-				<div class="selection">{{fit.resid_mean | number}}</div>
-				<div class="full">{{fit.resid_mean_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.resid_mean | number}}</div>
+				<div class="mrt-sfp--full">{{fit.resid_mean_full | number}}</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>Std</label>
-				<div class="selection">{{fit.resid_std | number}}</div>
-				<div class="full">{{fit.resid_std_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.resid_std | number}}</div>
+				<div class="mrt-sfp--full">{{fit.resid_std_full | number}}</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>Skew</label>
-				<div class="selection">{{fit.resid_skew | number}}</div>
-				<div class="full">{{fit.resid_skew_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.resid_skew | number}}</div>
+				<div class="mrt-sfp--full">{{fit.resid_skew_full | number}}</div>
 			</div>
-			<div class="item">
+			<div class="mrt-sfp--item">
 				<label>Kurt</label>
-				<div class="selection">{{fit.resid_kurt | number}}</div>
-				<div class="full">{{fit.resid_kurt_full | number}}</div>
+				<div class="mrt-sfp--selection">{{fit.resid_kurt | number}}</div>
+				<div class="mrt-sfp--full">{{fit.resid_kurt_full | number}}</div>
 			</div>
 		</div>
 	</div>
@@ -139,13 +139,17 @@ export default {
 				default:
 					return "Not Fitted";
 			}
+		},
+		isFitted() {
+			return this.fit.proctype === "hypOU" || this.fit.proctype === "OU";
 		}
 	}
 };
 </script>
 
 <style lang="less" scoped>
-.mrt-search-fit {
+/* MRT strategy-fit */
+.mrt-sfp {
 	font-weight: 300;
 	height: 425px;
 	display: flex;
@@ -156,25 +160,8 @@ export default {
 	background-color: rgba(255, 255, 255, 0.04);
 	padding: 8px 12px;
 	border-radius: 4px;
-	.selection-dates {
-		margin: 0 0 12px 0;
-		> label {
-			text-transform: uppercase;
-			font-size: 12px;
-			color: #e0e0e0;
-		}
-		.dates {
-			display: flex;
-			> label {
-				color: #e0e0e0;
-			}
-			> div:first-child {
-				margin: 0 24px 0 0;
-			}
-		}
-	}
-	.proctype {
-		margin: 0 0 8px;
+	.mrt-sfp--proctype {
+		margin: 0 0 16px;
 		label {
 			text-transform: uppercase;
 			font-size: 12px;
@@ -182,35 +169,49 @@ export default {
 		}
 		> div {
 			font-size: 16px;
-			color: #ffeb3b;
+			font-weight: 400;
+			color: #ce93d8;
+			&.mrt-sfp--notfitted {
+				color: #f44336;
+			}
 		}
 	}
-	.section {
+	.mrt-sfp--section {
 		display: flex;
 		flex-direction: column;
 		width: 100%;
 		margin: 0 0 16px 0;
-		.header,
-		.item {
+		.mrt-sfp--header,
+		.mrt-sfp--item {
 			display: flex;
 			width: 100%;
+			label,
+			.mrt-sfp--selection,
+			.mrt-sfp--full {
+				font-weight: 400;
+			}
 		}
-		.header {
+		.mrt-sfp--header {
 			text-transform: uppercase;
 			font-size: 12px;
 			color: #e0e0e0;
 			border-bottom: 1px solid #424242;
 			padding: 0 0 2px;
 			margin: 0 0 4px;
+			label,
+			.mrt-sfp--selection,
+			.mrt-sfp--full {
+				font-weight: 300;
+			}
 		}
 		label {
 			flex: 1;
 		}
-		.selection {
+		.mrt-sfp--selection {
 			width: 100px;
 			text-align: right;
 		}
-		.full {
+		.mrt-sfp--full {
 			width: 100px;
 			text-align: right;
 		}

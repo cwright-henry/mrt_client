@@ -1,8 +1,8 @@
 <template>
-	<div class="mrt-details">
-		<div class="selection">
+	<div class="mrt-sf">
+		<div class="mrt-sf--selection">
 			<label>Full</label>
-			<div class="dates">
+			<div class="mrt-sf--dates">
 				<div>
 					<label>Start Date</label>
 					<div>{{tsStartDate | date-short}}</div>
@@ -13,9 +13,9 @@
 				</div>
 			</div>
 		</div>
-		<div class="selection">
+		<div class="mrt-sf--selection">
 			<label>Selection</label>
-			<div class="dates">
+			<div class="mrt-sf--dates">
 				<div>
 					<label>Start Date</label>
 					<div>{{fit.start_date | date-short}}</div>
@@ -72,7 +72,7 @@ export default {
 </script>
 
 <style lang="less">
-.mrt-details {
+.mrt-sf {
 	font-weight: 300;
 	display: flex;
 	flex-direction: row;
@@ -80,7 +80,7 @@ export default {
 	font-size: 13px;
 	line-height: 1.4;
 	margin: 0 0 12px;
-	.selection {
+	.mrt-sf--selection {
 		background-color: rgba(255, 255, 255, 0.04);
 		padding: 8px 12px;
 		border-radius: 4px;
@@ -96,9 +96,10 @@ export default {
 			margin: 0 0 4px;
 			display: inherit;
 		}
-		.dates {
+		.mrt-sf--dates {
 			display: flex;
 			flex-direction: column;
+			font-weight: 400;
 			> div {
 				display: flex;
 				> label {

@@ -12,7 +12,7 @@
 		<v-btn
 			:loading="strategy._id === currentStrategy._id && isLoading"
 			small
-			color="#2196F3"
+			color="#1E88E5"
 			:to="`/library/${strategy._id}/scenario`"
 		>Scenario Analysis</v-btn>
 	</v-card-actions>
@@ -44,12 +44,12 @@ export default {
 	.mrt-cla--info {
 		font-size: 12px;
 		line-height: 1.4;
-		font-weight: 300;
 		color: #fffffff;
 		label {
 			color: #e0e0e0;
 			text-transform: uppercase;
 			font-size: 10px;
+			font-weight: 300;
 		}
 	}
 }

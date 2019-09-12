@@ -12,33 +12,32 @@
 		item-text="name"
 		item-value="id"
 		hide-details
-		label="Search your library"
+		label="Search Your Library"
 		box
 		multiple
-		color='#0091EA'>
+		color="#0091EA"
+	>
 		<template slot="no-data">
 			<v-list-tile>
 				<v-list-tile-title>
-					Search through your library and pick <strong>Scenario's</strong> to analyse.
+					Search through your library and pick
+					<strong>Scenario's</strong> to analyse.
 				</v-list-tile-title>
 			</v-list-tile>
 		</template>
-		<template
-			slot="selection"
-			slot-scope="{item, selected }">
+		<template slot="selection" slot-scope="{item, selected }">
 			<v-chip
 				:selected="selected"
 				@input="remove(item.id)"
 				close
 				color="blue-grey"
-				class="white--text">
+				class="white--text"
+			>
 				<v-icon left color="#AEEA00">check_circle</v-icon>
 				<span v-text="item.name"></span>
 			</v-chip>
 		</template>
-		<template
-			slot="item"
-			slot-scope="{ item }">
+		<template slot="item" slot-scope="{ item }">
 			<v-icon left class="mr-1" color="#AEEA00">insert_chart</v-icon>
 			<v-list-tile-content>
 				<v-list-tile-title v-text="item.name"></v-list-tile-title>
@@ -49,15 +48,15 @@
 </template>
 
 <script>
-import ApiController from '@/services/ApiController'
+import ApiController from "@/services/ApiController";
 
 export default {
 	data() {
 		return {
 			loading: false,
-			search: '',
+			search: "",
 			items: []
-		}
+		};
 	},
 	computed: {
 		/**
@@ -68,47 +67,49 @@ export default {
 				return this.$store.state.strategies.overrides;
 			},
 			set(overrides) {
-				this.$store.commit('strategies/setOverrides', overrides);
-				this.$store.dispatch('strategies/load')
+				this.$store.commit("strategies/setOverrides", overrides);
+				this.$store.dispatch("strategies/load");
 			}
 		}
 	},
 	watch: {
-		search (val) {
-			val && this.querySelections(val)
+		search(val) {
+			val && this.querySelections(val);
 		}
 	},
 	methods: {
 		remove(id) {
-			this.$store.commit('strategies/setOverrides', this.select.filter(e => e !== id));
-			this.$store.dispatch('strategies/load')
+			this.$store.commit(
+				"strategies/setOverrides",
+				this.select.filter(e => e !== id)
+			);
+			this.$store.dispatch("strategies/load");
 		},
 
-		async querySelections (v) {
-			if(v !== '') {
-				this.loading = true
-				const results = await ApiController.search(v)
+		async querySelections(v) {
+			if (v !== "") {
+				this.loading = true;
+				const results = await ApiController.search(v);
 				this.items = [];
-				results.docs.map((doc) => {
+				results.docs.map(doc => {
 					this.items.push({
 						name: doc.name,
 						id: doc._id,
 						lastModified: doc.lastUpdate
-					})
+					});
 				});
-				this.loading = false
-			}
-			else {
+				this.loading = false;
+			} else {
 				this.items = [];
 			}
 		}
 	}
-}
+};
 </script>
 
 <style>
 .mrt-autocomplete {
-	background-color: rgba(255, 255, 255, .16);
-	border-radius:3px;
+	background-color: rgba(255, 255, 255, 0.16);
+	border-radius: 3px;
 }
 </style>

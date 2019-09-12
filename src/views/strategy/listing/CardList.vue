@@ -1,7 +1,7 @@
 <template>
-	<div style="margin-top:16px;">
+	<div class="mrt-cl">
 		<transition-group tag="ul" @enter="enter" @leave="leave" @before-leave="beforeLeave" :css="false">
-			<li v-for="strat in strategies" :key="strat._id" class="mb-3 mt-3 mrt-card">
+			<li v-for="strat in strategies" :key="strat._id" class="mb-3 mt-3 mrt-cl--card">
 				<v-card>
 					<mrt-card-toolbar :strategy="strat"></mrt-card-toolbar>
 					<mrt-card :strategy="strat"></mrt-card>
@@ -84,16 +84,19 @@ export default {
 </script>
 
 <style lang="less">
-ul {
-	list-style: none;
-	padding: 0;
-	display: flex;
-	flex-wrap: wrap;
-	li {
-		width: 100%;
+.mrt-cl {
+	margin-top: 16px;
+	ul {
+		list-style: none;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		li {
+			width: 100%;
+		}
 	}
-}
-.mrt-card {
-	transition: all 1s;
+	.mrt-cl--card {
+		transition: all 1s;
+	}
 }
 </style>
