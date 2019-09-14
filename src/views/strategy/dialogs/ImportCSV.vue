@@ -6,7 +6,7 @@
 			:label="label"
 			:disabled="parsing"
 			color="#fff"
-			background-color="#424242"
+			background-color="#323232"
 			v-model="fileName"
 			hide-details
 			box

@@ -16,7 +16,7 @@
 		hide-no-data
 		label="Search your library"
 		color="blue lighten-2"
-		background-color="#424242"
+		background-color="#323232"
 		box
 	>
 		<template slot="item" slot-scope="{ item }">

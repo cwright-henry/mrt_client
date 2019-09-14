@@ -69,6 +69,13 @@ Vue.filter('number', function (value) {
 	return ''
 });
 
+Vue.filter('number-round', function (value) {
+	if (value !== null && !isNaN(value)) {
+		return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: 0, minimumFractionDigits: 0 }).format(value);
+	}
+	return ''
+});
+
 Vue.filter('date', function (value) {
 	if (value)
 		return new Intl.DateTimeFormat(navigator.language, options).format(value);

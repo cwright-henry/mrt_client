@@ -161,11 +161,11 @@ export default {
 	padding: 8px 12px;
 	border-radius: 4px;
 	.mrt-sfp--proctype {
-		margin: 0 0 16px;
+		margin: 0 0 12px 0;
 		label {
 			text-transform: uppercase;
 			font-size: 12px;
-			color: #e0e0e0;
+			color: #f3e5f5;
 		}
 		> div {
 			font-size: 16px;
@@ -194,7 +194,7 @@ export default {
 		.mrt-sfp--header {
 			text-transform: uppercase;
 			font-size: 12px;
-			color: #e0e0e0;
+			color: #f3e5f5;
 			border-bottom: 1px solid #424242;
 			padding: 0 0 2px;
 			margin: 0 0 4px;

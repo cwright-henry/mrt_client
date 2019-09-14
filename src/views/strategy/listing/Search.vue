@@ -86,7 +86,7 @@ export default {
 
 <style>
 .mrt-autocomplete {
-	background-color: rgba(255, 255, 255, 0.16);
+	background-color: #323232;
 	border-radius: 3px;
 }
 </style>

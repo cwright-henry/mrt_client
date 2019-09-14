@@ -1,7 +1,10 @@
 <template>
 	<div class="mrt-sf">
 		<div class="mrt-sf--selection">
-			<label>Full</label>
+			<label>
+				Full
+				<span>{{fullDays | number-round}} Entries</span>
+			</label>
 			<div class="mrt-sf--dates">
 				<div>
 					<label>Start Date</label>
@@ -14,7 +17,10 @@
 			</div>
 		</div>
 		<div class="mrt-sf--selection">
-			<label>Selection</label>
+			<label>
+				Selection
+				<span v-if="selectionDays">{{selectionDays | number-round}} Entries</span>
+			</label>
 			<div class="mrt-sf--dates">
 				<div>
 					<label>Start Date</label>
@@ -30,6 +36,8 @@
 </template>
 
 <script>
+import { dataPointsBetween } from "@/utils";
+
 export default {
 	props: {
 		strategy: {
@@ -66,6 +74,25 @@ export default {
 					this.strategy.ts.data.length - 1
 				][1];
 			}
+		},
+		fullDays() {
+			if (this.strategy.ts) {
+				return this.strategy.ts.data.length;
+			}
+		},
+		selectionDays() {
+			if (
+				this.strategy.ts &&
+				this.strategy.fit &&
+				this.strategy.fit.start_date
+			) {
+				return dataPointsBetween(
+					this.strategy.ts.data,
+					this.strategy.fit.start_date,
+					this.strategy.fit.end_date
+				);
+			}
+			return null;
 		}
 	}
 };
@@ -90,11 +117,18 @@ export default {
 		> label {
 			text-transform: uppercase;
 			font-size: 12px;
-			color: #e0e0e0;
+			color: #f3e5f5;
 			border-bottom: 1px solid #424242;
 			padding: 0 0 2px;
 			margin: 0 0 4px;
 			display: inherit;
+			display: flex;
+			justify-content: space-between;
+			span {
+				font-size: 12px;
+				color: #fff;
+				text-transform: none;
+			}
 		}
 		.mrt-sf--dates {
 			display: flex;

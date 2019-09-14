@@ -172,7 +172,7 @@
 							@keyup.native.enter="upload"
 							label="Save As..."
 							:error-messages="errorMessages"
-							background-color="#424242"
+							background-color="#323232"
 							box
 							ref="namefield"
 							required

@@ -46,9 +46,16 @@ const tsExtremes = (arr) => {
 }
 
 const closestNeighbour = (arr, value) => {
-	return arr.reduce(function (prev, curr) {
+	return arr.reduce((prev, curr) => {
 		return (Math.abs(curr[0] - value) < Math.abs(prev[0] - value) ? curr : prev);
 	});
+}
+
+const dataPointsBetween = (arr, start, end) => {
+	const startPoint = closestNeighbour(arr, start)
+	const endPoint = closestNeighbour(arr, end)
+
+	return arr.indexOf(endPoint) - arr.indexOf(startPoint);
 }
 
 const trimData = (arr, startDate, endDate) => {
@@ -188,5 +195,6 @@ export {
 	stats,
 	getPlotBand,
 	getPlotLine,
-	getAtIndex
+	getAtIndex,
+	dataPointsBetween
 }
