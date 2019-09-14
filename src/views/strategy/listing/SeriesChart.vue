@@ -102,11 +102,19 @@ const options = vm => {
 				const series = this.points[0];
 				const residual = this.points[1];
 
-				return `<span style="font-size: 11px;>${date}</span><br/>
+				if (series && residual) {
+					return `<span style="font-size: 11px;>${date}</span><br/>
 						<span style="color:${series.series.color}">${series.series.name}</span>
 						<span>${series.y.toFixed(2)}</span><br/>
 						<span style="color:${residual.series.color}">Residual</span>
 						<span>${residual.y.toFixed(2)}</span>`;
+				}
+				else {
+					return `<span style="font-size: 11px;>${date}</span><br/>
+						<span style="color:${series.series.color}">${series.series.name}</span>
+						<span>${series.y.toFixed(2)}</span>`
+				}
+
 			}
 		},
 		navigator: {
