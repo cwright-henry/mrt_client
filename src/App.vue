@@ -121,7 +121,7 @@ a {
 }
 
 .theme--dark .v-stepper__header {
-	background-color: #212121;
+	background-color: #484848;
 	color: #fff;
 }
 

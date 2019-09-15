@@ -20,14 +20,21 @@ import fullscreen from 'vue-fullscreen'
 Vue.use(fullscreen)
 
 stockInit(Highcharts)
-boost(Highcharts)
 dragPanes(Highcharts)
+boost(Highcharts)
 
 Highcharts.createElement('link', {
 	href: 'https://fonts.googleapis.com/css?family=Unica+One',
 	rel: 'stylesheet',
 	type: 'text/css'
 }, null, document.getElementsByTagName('head')[0]);
+
+
+Highcharts.setOptions({
+	global: {
+		useUTC: true
+	}
+});
 
 Vue.config.productionTip = false
 Vue.use(HighchartsVue)

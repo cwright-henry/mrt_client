@@ -11,10 +11,12 @@
 						box
 						hide-details
 						flat
+						color="#90CAF9"
+						background-color="#323232"
 						label="Fit Process"
 					></v-select>
 					<div class="auto-fit">
-						<v-switch v-model="autoFit" color="#9C27B0" hide-details label="Auto Fit"></v-switch>
+						<v-switch v-model="autoFit" color="#2196F3" hide-details label="Auto Fit"></v-switch>
 					</div>
 				</div>
 				<div class="graph">

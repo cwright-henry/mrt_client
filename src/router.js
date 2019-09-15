@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/Login'
-import Mrt from '@/views/Mrt'
+import Mrt from '@/views/application/Mrt'
 import store from './store'
 
 // List Strategies

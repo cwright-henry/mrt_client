@@ -2,17 +2,26 @@
 	<div class="mrt-analysis">
 		<div class="mrt-fit--details">
 			<div class="selection">
-				<v-text-field v-model="name" label="Name" box hide-details ref="namefield" required></v-text-field>
+				<v-text-field
+					v-model="name"
+					label="Name"
+					color="#90CAF9"
+					background-color="#323232"
+					box
+					hide-details
+					ref="namefield"
+					required
+				></v-text-field>
 			</div>
 			<div class="mrt-fit--actions">
 				<div>
-					<v-btn small fab color="#9C27B0" :loading="isSavingFit" @click="save">
+					<v-btn small fab color="#2196F3" :loading="isSavingFit" @click="save">
 						<v-icon>cloud_upload</v-icon>
 					</v-btn>
 					<label>Save Scenario</label>
 				</div>
 				<div>
-					<v-btn small fab color="#9C27B0" @click="toggle">
+					<v-btn small fab color="#2196F3" @click="toggle">
 						<v-icon>fullscreen</v-icon>
 					</v-btn>
 					<label>Full Screen</label>
@@ -23,11 +32,11 @@
 		<fullscreen :fullscreen.sync="fullscreen" ref="fullscreen">
 			<v-stepper v-model="activeTab">
 				<v-stepper-header>
-					<v-stepper-step editable color="#9C27B0" step="1">Fit Process</v-stepper-step>
+					<v-stepper-step editable color="#FFEE58" step="1">Fit Process</v-stepper-step>
 					<v-divider></v-divider>
-					<v-stepper-step editable color="#9C27B0" step="2">Run Simulations</v-stepper-step>
+					<v-stepper-step editable color="#FFEE58" step="2">Run Simulations</v-stepper-step>
 					<v-divider></v-divider>
-					<v-stepper-step editable color="#9C27B0" step="3">Stop Loss / Take Profit</v-stepper-step>
+					<v-stepper-step editable color="#FFEE58" step="3">Stop Loss / Take Profit</v-stepper-step>
 				</v-stepper-header>
 
 				<v-stepper-items>
@@ -140,10 +149,13 @@ export default {
 
 <style lang="less">
 .mrt-analysis {
+	.v-stepper__step__step {
+		color: #121212 !important;
+	}
 }
 
-.mrt-text-field {
-	background-color: #37474f;
+.mrt-text-field1 {
+	background-color: #fff;
 	.v-input__slot {
 		margin-bottom: 0px !important;
 	}
@@ -217,7 +229,7 @@ export default {
 		border: solid #607d8b;
 		border-width: 0;
 		padding: 16px;
-		background-color: #303030;
+		background-color: #252525;
 		margin: 0px 0;
 		h3 {
 			text-transform: uppercase;

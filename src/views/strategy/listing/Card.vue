@@ -1,13 +1,11 @@
 <template>
 	<div class="mrt-card">
-		<div class="mrt-card--details">
-			<div class="mrt-card--graphs">
-				<mrtDetails :strategy="strategy" />
-				<mrt-serieschart :strategy="strategy" />
-			</div>
-			<div class="mrt-card--info">
-				<mrtFitParameters :fit="strategy.fit" />
-			</div>
+		<div class="mrt-card--graphs">
+			<mrtDetails :strategy="strategy" />
+			<mrt-serieschart :strategy="strategy" />
+		</div>
+		<div class="mrt-card--info">
+			<mrtFitParameters :fit="strategy.fit" />
 		</div>
 	</div>
 </template>
@@ -89,19 +87,15 @@ export default {
 <style scoped lang="less">
 .mrt-card {
 	display: flex;
-	flex-direction: column;
-	flex-wrap: wrap;
 	padding: 16px;
 	min-height: 340px;
+	width: 100%;
 
-	.mrt-card--details {
-		display: flex;
-		.mrt-card--graphs {
-			flex: 1;
-		}
-		.mrt-card--info {
-			width: 330px;
-		}
+	.mrt-card--graphs {
+		width: calc(100% - 330px);
+	}
+	.mrt-card--info {
+		width: 330px;
 	}
 }
 @media screen and (max-width: 600px) {

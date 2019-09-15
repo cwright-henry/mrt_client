@@ -13,7 +13,8 @@
 		label="Search Your Library"
 		box
 		multiple
-		color="#2196F3"
+		color="#90CAF9"
+		background-color="#323232"
 	>
 		<template slot="no-data">
 			<v-list-tile>
@@ -40,7 +41,6 @@
 </template>
 
 <script>
-import ApiController from "@/services/ApiController";
 
 export default {
 	data() {
@@ -83,10 +83,3 @@ export default {
 	}
 };
 </script>
-
-<style>
-.mrt-autocomplete {
-	background-color: #323232;
-	border-radius: 3px;
-}
-</style>

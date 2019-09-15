@@ -11,9 +11,9 @@
 </template>
 
 <script>
-import mrtToolbar from "@/components/Toolbar";
-import mrtNavigation from "@/components/Navigation";
-import mrtFooter from "@/components/Footer";
+import mrtToolbar from "@/views/application/Toolbar";
+import mrtNavigation from "@/views/application/Navigation";
+import mrtFooter from "@/views/application/Footer";
 
 export default {
 	name: "Mrt",

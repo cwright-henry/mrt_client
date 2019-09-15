@@ -120,7 +120,7 @@ export default {
 					this.clearSeries();
 					this.updateRange();
 					chart.addSeries({
-						type: "scatter",
+						type: "column",
 						color: "#00B0FF",
 						marker: {
 							radius: 1.5

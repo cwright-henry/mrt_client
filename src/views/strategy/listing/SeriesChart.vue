@@ -108,13 +108,11 @@ const options = vm => {
 						<span>${series.y.toFixed(2)}</span><br/>
 						<span style="color:${residual.series.color}">Residual</span>
 						<span>${residual.y.toFixed(2)}</span>`;
-				}
-				else {
+				} else {
 					return `<span style="font-size: 11px;>${date}</span><br/>
 						<span style="color:${series.series.color}">${series.series.name}</span>
-						<span>${series.y.toFixed(2)}</span>`
+						<span>${series.y.toFixed(2)}</span>`;
 				}
-
 			}
 		},
 		navigator: {
