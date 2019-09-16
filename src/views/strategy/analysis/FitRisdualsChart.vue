@@ -17,7 +17,7 @@ const getPlotBand = (from, to) => {
 const getPlotLine = (value, type) => {
 	return {
 		value,
-		color: "#BA68C8",
+		color: "#FFEB3B",
 		width: 0.5,
 		label: {
 			align: "center",
@@ -63,6 +63,9 @@ const options = vm => {
 		plotOptions: {
 			scatter: {
 				clip: false
+			},
+			line: {
+				lineWidth: 1
 			}
 		},
 		series: []
@@ -88,6 +91,10 @@ export default {
 		backgroundColor: {
 			type: String,
 			default: "rgba(0, 0, 0, 0)"
+		},
+		aggregator: {
+			type: String,
+			default: "selected"
 		}
 	},
 	data() {
@@ -96,7 +103,7 @@ export default {
 		};
 	},
 	computed: {
-		...mapState("fit", ["startDate", "endDate"])
+		...mapState("fit", ["startDate", "endDate", "originalResids"])
 	},
 	watch: {
 		startDate() {
@@ -107,6 +114,9 @@ export default {
 		},
 		ts() {
 			this.update();
+		},
+		aggregator() {
+			this.update();
 		}
 	},
 	mounted() {
@@ -116,21 +126,47 @@ export default {
 		update() {
 			const chart = this.$refs.residuals.chart;
 			if (this.name) {
-				setTimeout(() => {
+				this.$nextTick(() => {
 					this.clearSeries();
 					this.updateRange();
-					chart.addSeries({
-						type: "column",
-						color: "#00B0FF",
-						marker: {
-							radius: 1.5
-						},
-						data: this.ts,
-						name: this.name,
-						clip: false
-					});
+					switch (this.aggregator) {
+						case "selected":
+							chart.addSeries({
+								type: "line",
+								color: "#2196F3",
+								data: this.ts,
+								name: this.name,
+								clip: false
+							});
+							break;
+						case "full":
+							chart.addSeries({
+								type: "line",
+								color: "#FF9800",
+								data: this.originalResids,
+								name: this.name,
+								clip: false
+							});
+							break;
+						case "diff":
+							chart.addSeries({
+								type: "area",
+								color: "#FF9800",
+								data: this.originalResids,
+								name: this.name,
+								clip: false
+							});
+							chart.addSeries({
+								type: "area",
+								color: "#2196F3",
+								data: this.ts,
+								name: this.name,
+								clip: false
+							});
+							break;
+					}
 					chart.reflow();
-				}, 1000);
+				});
 			}
 		},
 

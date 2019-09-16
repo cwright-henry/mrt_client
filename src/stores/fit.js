@@ -1,11 +1,11 @@
 import ApiController from '@/services/ApiController'
 import moment from 'moment'
-import {closestNeighbour, tsExtremes, seedGen, getMinMax, mean} from '@/utils'
+import { closestNeighbour, tsExtremes, seedGen, getMinMax, mean } from '@/utils'
 
 
 const DEFAULT_ACTIVE_TAB = '1';
 const DEFAULT_PROCTYPE = 'OU';
-const DEFAULT_SIM_HORIZON = {value: '-1', text: 'Align'};
+const DEFAULT_SIM_HORIZON = { value: '-1', text: 'Align' };
 const DEFAULT_ANIMATION_TIME = 2;
 
 export default {
@@ -19,6 +19,9 @@ export default {
 			},
 			fit: {}
 		},
+
+		// Original Fit resid's
+		originalResids: null,
 
 		// Active Tab
 		activeTab: DEFAULT_ACTIVE_TAB,
@@ -72,25 +75,25 @@ export default {
 
 		// Slider value on SLTP [value, date]
 		userValue: null,
-    userDate: null,
-    
-    // opt values
-    optSLValue: null,
-    optTPValue: null,
-    optIRValue: null,
-    optHorizonValue: null,
-    optTradPLValue: null
-  },
-  
-  getters: {
+		userDate: null,
+
+		// opt values
+		optSLValue: null,
+		optTPValue: null,
+		optIRValue: null,
+		optHorizonValue: null,
+		optTradPLValue: null
+	},
+
+	getters: {
 		findEIR: state => (sl, tp) => {
 			return state.EIR[sl][tp]
-    },
+		},
 
-    findET: state => (sl, tp) => {
+		findET: state => (sl, tp) => {
 			return state.ET[sl][tp]
-    }
-  },
+		}
+	},
 
 	mutations: {
 		isLoadingStrategy(state, status) {
@@ -172,6 +175,10 @@ export default {
 			state.endDate = date;
 		},
 
+		setOriginalResids(state, data) {
+			state.originalResids = data;
+		},
+
 		setStrategy(state, strategy) {
 			state.strategy = strategy;
 
@@ -188,11 +195,14 @@ export default {
 			state.activeTab = DEFAULT_ACTIVE_TAB;
 
 			// Proctype
-			state.proctype = state.strategy.fit.proctype === 'NONE' ?  DEFAULT_PROCTYPE : state.strategy.fit.proctype;
+			state.proctype = state.strategy.fit.proctype === 'NONE' ? DEFAULT_PROCTYPE : state.strategy.fit.proctype;
 
 			// Dates on graph
 			state.startDate = state.strategy.fit.proctype === 'NONE' ? extremes.min : state.strategy.fit.start_date;
 			state.endDate = state.strategy.fit.proctype === 'NONE' ? extremes.max : state.strategy.fit.end_date;
+
+			// Original Resids
+			state.originalResids = state.strategy.fit.resid;
 
 			// Process Parameters
 			state.userKappa = null;
@@ -202,7 +212,7 @@ export default {
 			state.range = minMax[1] - minMax[0];
 			state.avg = avg;
 
-      // Sims
+			// Sims
 			state.selectedSim = null;
 			state.simStart.value = extremes.maxValue;
 			state.simStart.date = extremes.max;
@@ -224,14 +234,14 @@ export default {
 
 			// User data
 			state.userValue = extremes.maxValue;
-      state.userDate = extremes.max;
-      
-      // Opt Values
-      state.optSLValue = null;
-      state.optTPValue = null;
-      state.optIRValue = null;
-      state.optHorizonValue = null;
-      state.optTradPLValue = null;
+			state.userDate = extremes.max;
+
+			// Opt Values
+			state.optSLValue = null;
+			state.optTPValue = null;
+			state.optIRValue = null;
+			state.optHorizonValue = null;
+			state.optTradPLValue = null;
 		},
 
 		setStrategyName(state, name) {
@@ -253,7 +263,7 @@ export default {
 
 		setNextSim(state) {
 			let currentindex = state.sims.findIndex(elm => elm.id === state.selectedSim)
-			if(currentindex < state.sims.length - 1) {
+			if (currentindex < state.sims.length - 1) {
 				state.selectedSim = state.sims[currentindex + 1].id
 			}
 			else {
@@ -261,15 +271,15 @@ export default {
 			}
 		},
 
-    // Freeze the object so that Vue does not try to attach listeners
+		// Freeze the object so that Vue does not try to attach listeners
 		setSltpData(state, data) {
-      state.opt = Object.freeze({
-        SL: Object.freeze(data.opt.SL),
-        TP: Object.freeze(data.opt.TP),
-        Ext: Object.freeze(data.opt.Ext),
-        maxVal: Object.freeze(data.opt.maxVal),
-        tradePL: Object.freeze(data.opt.tradePL)
-      });
+			state.opt = Object.freeze({
+				SL: Object.freeze(data.opt.SL),
+				TP: Object.freeze(data.opt.TP),
+				Ext: Object.freeze(data.opt.Ext),
+				maxVal: Object.freeze(data.opt.maxVal),
+				tradePL: Object.freeze(data.opt.tradePL)
+			});
 			state.ET = Object.freeze(data.ET)
 			state.ER = Object.freeze(data.ER)
 			state.EIR = Object.freeze(data.EIR)
@@ -279,39 +289,39 @@ export default {
 
 		isLoadingSLTP(state, status) {
 			state.isLoadingSLTP = status;
-    },
-    
-    setOptSLValue(state, value) {
-      state.optSLValue = value;
-    },
+		},
 
-    setOptTPValue(state, value) {
-      state.optTPValue = value;
-    },
+		setOptSLValue(state, value) {
+			state.optSLValue = value;
+		},
 
-    setOptIRValue(state, value) {
-      state.optIRValue = value;
-    },
+		setOptTPValue(state, value) {
+			state.optTPValue = value;
+		},
 
-    setOptHorizonValue(state, value) {
-      state.optHorizonValue = value;
-    },
+		setOptIRValue(state, value) {
+			state.optIRValue = value;
+		},
 
-    setOptTradPLValue(state, value) {
-      state.optTradPLValue = value;
-    }
+		setOptHorizonValue(state, value) {
+			state.optHorizonValue = value;
+		},
+
+		setOptTradPLValue(state, value) {
+			state.optTradPLValue = value;
+		}
 	},
-	
+
 	actions: {
-		async loadStrategy({commit, state}, params) {
+		async loadStrategy({ commit, state }, params) {
 			commit('isLoadingStrategy', true)
 
 			try {
-				if(params.id !== state.strategy._id) {
+				if (params.id !== state.strategy._id) {
 					const strategy = await ApiController.loadStrategy(params.id);
 					commit('setStrategy', strategy)
 
-					if(strategy.fit.proctype === 'NONE') {
+					if (strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
 							proctype: state.proctype,
@@ -319,8 +329,9 @@ export default {
 							start_date: state.startDate,
 							end_date: state.endDate
 						});
-						
+
 						commit('updateFit', fit)
+						commit('setOriginalResids', fit.resid)
 					}
 				}
 			}
@@ -330,13 +341,13 @@ export default {
 			}
 		},
 
-		async setStrategy({commit, state}, strategy) {
+		async setStrategy({ commit, state }, strategy) {
 			commit('isLoadingStrategy', true)
 			try {
-				if(strategy._id !== state.strategy._id) {
+				if (strategy._id !== state.strategy._id) {
 					commit('setStrategy', strategy)
 
-					if(strategy.fit.proctype === 'NONE') {
+					if (strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
 							proctype: state.proctype,
@@ -345,6 +356,7 @@ export default {
 							end_date: state.endDate
 						});
 						commit('updateFit', fit)
+						commit('setOriginalResids', fit.resid)
 					}
 				}
 			}
@@ -354,7 +366,7 @@ export default {
 			}
 		},
 
-		async fit({commit, state}) {
+		async fit({ commit, state }) {
 			commit('isFittingTS', true)
 			try {
 				const payload = {
@@ -364,16 +376,16 @@ export default {
 					end_date: state.endDate
 				}
 
-				if(state.userKappa !== null) {
+				if (state.userKappa !== null) {
 					payload.kappa = state.userKappa;
 				}
-				if(state.userSigma !== null) {
+				if (state.userSigma !== null) {
 					payload.sigma = state.userSigma;
 				}
-				if(state.userTheta !== null) {
+				if (state.userTheta !== null) {
 					payload.theta = state.userTheta;
 				}
-				if(state.userBeta !== null) {
+				if (state.userBeta !== null) {
 					payload.nbeta = state.userBeta;
 				}
 
@@ -385,19 +397,19 @@ export default {
 			}
 		},
 
-		async save({commit, state}) {
+		async save({ commit, state }) {
 			commit('isSavingFit', true)
 			try {
-				if(state.userKappa !== null) {
+				if (state.userKappa !== null) {
 					state.strategy.fit.kappa = state.userKappa;
 				}
-				if(state.userSigma !== null) {
+				if (state.userSigma !== null) {
 					state.strategy.fit.sigma = state.userSigma;
 				}
-				if(state.userTheta !== null) {
+				if (state.userTheta !== null) {
 					state.strategy.fit.theta = state.userTheta;
 				}
-				if(state.proctype !== state.strategy.fit.proctype) {
+				if (state.proctype !== state.strategy.fit.proctype) {
 					state.strategy.fit.proctype = state.proctype;
 				}
 				return await ApiController.saveOUFit({
@@ -411,7 +423,7 @@ export default {
 			}
 		},
 
-		async loadSims({commit, state}) {
+		async loadSims({ commit, state }) {
 			commit('isLoadingSims', true)
 			try {
 
@@ -428,13 +440,13 @@ export default {
 				}
 
 				/* Special case to match end of series */
-				if(payload.nsteps === '-1') {
+				if (payload.nsteps === '-1') {
 					const point = closestNeighbour(state.strategy.ts.data, payload.x_0_date)
 					const index = state.strategy.ts.data.findIndex(elm => elm[0] === point[0])
-					let diff = state.strategy.ts.data.length - index ;						// Mark is giving one more than asked for
-					for(let i = index, len = state.strategy.ts.data.length; i < len; i++) {	// If weekends exists skip these when asking for sims
-						if(moment.utc(state.strategy.ts.data[i][0]).day() === 6 ||			// Ignore Saturday
-								moment.utc(state.strategy.ts.data[i][0]).day() === 0) {		// Ignore Sunday
+					let diff = state.strategy.ts.data.length - index;						// Mark is giving one more than asked for
+					for (let i = index, len = state.strategy.ts.data.length; i < len; i++) {	// If weekends exists skip these when asking for sims
+						if (moment.utc(state.strategy.ts.data[i][0]).day() === 6 ||			// Ignore Saturday
+							moment.utc(state.strategy.ts.data[i][0]).day() === 0) {		// Ignore Sunday
 							diff--;
 						}
 					}
@@ -442,7 +454,7 @@ export default {
 				}
 
 				const sims = await ApiController.scenarios(payload);
-				
+
 				commit('setSims', sims)
 			}
 			finally {
@@ -450,27 +462,27 @@ export default {
 			}
 		},
 
-		async loadSltp({commit, state}) {
+		async loadSltp({ commit, state }) {
 			commit('isLoadingSLTP', true)
 			try {
 				const payload = {
 					proctype: state.strategy.fit.proctype,
-					kappa: state.strategy.fit.kappa, 
+					kappa: state.strategy.fit.kappa,
 					sigma: state.strategy.fit.sigma,
 					theta: state.strategy.fit.theta,
 					carry: 0.1,
-					x_0: state.userValue, 
+					x_0: state.userValue,
 					trans_oneway_stdev: 0.05
 				}
 				const data = await ApiController.sltp(payload);
 
 				commit('setSltpData', {
-					opt : {
-            SL: data['opt']['opt SL'],
-            TP: data['opt']['opt TP'],
-            Ext: data['opt']['E[x_0] NBC'],
-            maxVal: data['opt']['max val'],
-            tradePL: data['opt']['trad P/L ratio']
+					opt: {
+						SL: data['opt']['opt SL'],
+						TP: data['opt']['opt TP'],
+						Ext: data['opt']['E[x_0] NBC'],
+						maxVal: data['opt']['max val'],
+						tradePL: data['opt']['trad P/L ratio']
 					},
 					ER: data['ER'],
 					ET: data['ET'],

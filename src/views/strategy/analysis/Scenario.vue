@@ -1,7 +1,7 @@
 <template>
-	<div class="mrt-analysis">
-		<div class="mrt-fit--details">
-			<div class="selection">
+	<div class="mrt-scenario">
+		<div class="mrt-scenario--details">
+			<div class="mrt-scenario--details-name">
 				<v-text-field
 					v-model="name"
 					label="Name"
@@ -13,7 +13,7 @@
 					required
 				></v-text-field>
 			</div>
-			<div class="mrt-fit--actions">
+			<div class="mrt-scenario--details-action">
 				<div>
 					<v-btn small fab color="#2196F3" :loading="isSavingFit" @click="save">
 						<v-icon>cloud_upload</v-icon>
@@ -148,13 +148,37 @@ export default {
 </script>
 
 <style lang="less">
-.mrt-analysis {
+.mrt-scenario {
 	.v-stepper__step__step {
 		color: #121212 !important;
 	}
+	.mrt-scenario--details {
+		display: flex;
+		justify-content: space-between;
+		margin: 0 0 24px;
+		.mrt-scenario--details-name {
+			width: 400px;
+		}
+		.mrt-scenario--details-action {
+			display: flex;
+			margin: 0 16px 0 0;
+			> div {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin: 0 0 0 36px;
+			}
+			label {
+				color: #e0e0e0;
+				font-weight: 300;
+				font-size: 12px;
+				line-height: 1.3;
+			}
+		}
+	}
 }
 
-.mrt-text-field1 {
+.mrt-text-field {
 	background-color: #fff;
 	.v-input__slot {
 		margin-bottom: 0px !important;
@@ -189,82 +213,7 @@ export default {
 		}
 	}
 }
-.mrt-fit--actions {
-	display: flex;
-	> div {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding: 0 16px;
-		label {
-			font-size: 11px;
-			font-weight: 300;
-			color: #fff;
-		}
-	}
-}
 
-.mrt-fit,
-.mrt-analysis {
-	will-change: transform;
-	.auto-fit {
-		display: flex;
-		justify-content: flex-end;
-		> div {
-			flex: inherit;
-			margin-top: -4px;
-		}
-	}
-	.panel-2 {
-		display: flex;
-		margin: 0px 0;
-		.panel {
-			margin: 0;
-		}
-		.panel:nth-child(1) {
-			margin-right: 0px;
-		}
-	}
-	.panel {
-		border: solid #607d8b;
-		border-width: 0;
-		padding: 16px;
-		background-color: #252525;
-		margin: 0px 0;
-		h3 {
-			text-transform: uppercase;
-			font-weight: 300;
-			margin: 8px 0 16px 0;
-			color: #ffffff;
-		}
-	}
-	.strategy {
-		width: calc(100% - 300px);
-		.graph {
-			background-color: var(--bg-color);
-		}
-	}
-	.strategy-result {
-		width: 300px;
-		> div {
-			height: 100%;
-			display: flex;
-			flex-direction: column;
-			justify-content: stretch;
-		}
-	}
-	.residuals {
-		.graphs {
-			display: flex;
-			.residual-graph {
-				width: calc(100% - 300px);
-			}
-			.histogram-graph {
-				width: 100px;
-			}
-		}
-	}
-}
 
 @media screen and (max-width: 600px) {
 }

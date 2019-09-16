@@ -1,14 +1,12 @@
 <template>
-	<div>
-		<div class="fittings parameters">
-			<h1>Parameters</h1>
-			<div class="underline"></div>
-			<div class="header">
-				<label></label>
+	<div class="mrt-senfit">
+		<div class="mrt-senfit--params">
+			<div class="mrt-senfit--params-header">
+				<label>Parameters</label>
 				<div>Selection</div>
 				<div>Full</div>
 			</div>
-			<div class="kappa">
+			<div class="mrt-senfit--params-row">
 				<label class="input-param">
 					<span>Kappa</span>
 					<v-menu
@@ -50,7 +48,7 @@
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.kappa_full | number}}</div>
 			</div>
-			<div class="sigma">
+			<div class="mrt-senfit--params-row">
 				<label class="input-param">
 					<span>Sigma</span>
 					<v-menu
@@ -92,7 +90,7 @@
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.sigma_full | number}}</div>
 			</div>
-			<div class="theta">
+			<div class="mrt-senfit--params-row">
 				<label class="input-param">
 					<span>Theta</span>
 					<v-menu
@@ -134,7 +132,7 @@
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.theta_full | number}}</div>
 			</div>
-			<div class="beta" v-if="proctype === 'hypOU'">
+			<div class="mrt-senfit--params-row" v-if="proctype === 'hypOU'">
 				<label class="input-param">
 					<span>Beta</span>
 					<v-menu
@@ -176,29 +174,27 @@
 				<div v-else>{{strategy.fit.nbeta_full | number}}</div>
 			</div>
 		</div>
-		<div class="fittings goodness">
-			<h1>Goodness of Fit</h1>
-			<div class="underline"></div>
-			<div class="header">
-				<label></label>
+		<div class="mrt-senfit--params">
+			<div class="mrt-senfit--params-header">
+				<label>Goodness of Fit</label>
 				<div>Selection</div>
 				<div>Full</div>
 			</div>
-			<div class="stat">
+			<div class="mrt-senfit--params-row">
 				<label>ADF Stat</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.adf_stat | number}}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.adf_stat_full | number}}</div>
 			</div>
-			<div class="sig-level">
+			<div class="mrt-senfit--params-row">
 				<label>ADF Sig Level</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.sig_lev}}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.sig_lev_full}}</div>
 			</div>
-			<div class="p-value">
+			<div class="mrt-senfit--params-row">
 				<label>P value</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.p_val | number}}</div>
@@ -206,15 +202,13 @@
 				<div v-else>{{strategy.fit.p_val_full | number}}</div>
 			</div>
 		</div>
-		<div class="fittings residuals">
-			<h1>Residuals</h1>
-			<div class="underline"></div>
-			<div class="header">
-				<label></label>
+		<div class="mrt-senfit--params">
+			<div class="mrt-senfit--params-header">
+				<label>Residuals</label>
 				<div>Selection</div>
 				<div>Full</div>
 			</div>
-			<div class="r2">
+			<div class="mrt-senfit--params-row">
 				<label>
 					R
 					<sup>2</sup>
@@ -224,28 +218,28 @@
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.R2_full | number }}</div>
 			</div>
-			<div class="mean">
+			<div class="mrt-senfit--params-row">
 				<label>Mean</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_mean | number }}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.resid_mean_full | number }}</div>
 			</div>
-			<div class="std">
+			<div class="mrt-senfit--params-row">
 				<label>Std</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_std | number }}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.resid_std_full | number }}</div>
 			</div>
-			<div class="skew">
+			<div class="mrt-senfit--params-row">
 				<label>Skew</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_skew | number }}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.resid_skew_full | number }}</div>
 			</div>
-			<div class="kurt">
+			<div class="mrt-senfit--params-row">
 				<label>Kurt</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_kurt | number }}</div>
@@ -481,18 +475,14 @@ export default {
 </script>
 
 <style lang="less">
-.mrt-analysis {
-	.fittings {
+.mrt-senfit {
+	background-color: rgba(255, 255, 255, 0.04);
+	padding: 8px 12px;
+	border-radius: 4px;
+	.mrt-senfit--params {
 		height: 100%;
 		padding: 12px 0px;
 		border-radius: 2px;
-		h1 {
-			font-weight: 300;
-			font-size: 14px;
-			margin: 0 0 2px 0;
-			color: #fff;
-			text-transform: uppercase;
-		}
 		> div {
 			display: flex;
 			margin: 0 0 4px 0;
@@ -523,114 +513,15 @@ export default {
 			> div {
 				flex: 1;
 				text-align: right;
-				&:nth-child(3) {
-					font-size: 13px;
-					color: var(--light-gray);
-				}
 			}
-			&.header {
-				padding: 2px 8px;
-				margin: 0 -8px 0px -8px;
-				border: none;
-				&:nth-child(2) {
-					color: #aeea00;
-				}
-			}
-		}
-		&.parameters {
-			.underline {
-				background: linear-gradient(0.25turn, #eeeeee, #6a1b9a 50%);
-				height: 1px;
-				padding: 0;
-				margin: 0 0 8px 0;
-			}
-			.kappa label span {
-				border: solid #6a1b9a;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-			.sigma label span {
-				border: solid #8e24aa;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-			.theta label span {
-				border: solid #ab47bc;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-			.beta label span {
-				border: solid #ce93d8;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-		}
-		&.goodness {
-			.underline {
-				background: linear-gradient(0.25turn, #eeeeee, #6a1b9a 50%);
-				height: 1px;
-				padding: 0;
-				margin: 0 0 8px 0;
-			}
-			.stat label {
-				border: solid #6a1b9a;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-			.sig-level label {
-				border: solid #ab47bc;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-			.p-value label {
-				border: solid #ce93d8;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-		}
-		&.residuals {
-			.underline {
-				background: linear-gradient(0.25turn, #eeeeee, #6a1b9a 50%);
-				height: 1px;
-				padding: 0;
-				margin: 0 0 8px 0;
-			}
-			.r2 label {
-				border: solid #4a148c;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-			.std label {
-				border: solid #7b1fa2;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-			.mean label {
-				border: solid #9c27b0;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-			.skew label {
-				border: solid #ba68c8;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
-			}
-			.kurt label {
-				border: solid #e1bee7;
-				border-width: 0 0 0 2px;
-				padding: 0 0 0 8px;
-				line-height: 1.2;
+			&.mrt-senfit--params-header {
+				text-transform: uppercase;
+				font-size: 12px;
+				color: #f3e5f5;
+				border-bottom: 1px solid #424242;
+				padding: 0 0 2px;
+				margin: 0 0 4px;
+				font-weight: 300;
 			}
 		}
 	}

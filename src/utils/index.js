@@ -71,6 +71,31 @@ const trimData = (arr, startDate, endDate) => {
 	return arr;
 }
 
+const diff = (tsA, tsB) => {
+	const bucketsA = {};
+	const bucketsB = {};
+	const diff = []
+
+	for (let i = 0; i < tsA.length; i++) {
+		bucketsA[tsA[i][0]] = tsA[i][1];
+	}
+
+	for (let i = 0; i < tsB.length; i++) {
+		bucketsB[tsB[i][0]] = tsB[i][1];
+	}
+
+	for (let p in bucketsA) {
+		if (bucketsB[p]) {
+			diff.push([
+				parseInt(p),
+				bucketsA[p] - bucketsB[p]
+			]);
+		}
+	}
+
+	return diff;
+}
+
 const seedGen = () => {
 	return parseInt(Math.random().toString().slice(2, 11))
 }
@@ -196,5 +221,6 @@ export {
 	getPlotBand,
 	getPlotLine,
 	getAtIndex,
-	dataPointsBetween
+	dataPointsBetween,
+	diff
 }

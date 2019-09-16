@@ -10,6 +10,7 @@
 <script>
 import { mapState } from "vuex";
 import { mean } from "@/utils";
+const SERIES_COLOR = "#26A69A";
 
 const options = vm => {
 	return {
@@ -20,6 +21,11 @@ const options = vm => {
 		rangeSelector: {
 			selected: 6,
 			buttons: [
+				{
+					type: "month",
+					count: 6,
+					text: "6m"
+				},
 				{
 					type: "year",
 					count: 1,
@@ -86,16 +92,21 @@ const options = vm => {
 		},
 		navigator: {
 			maskFill: "rgba(255, 152, 0, 0.05)",
-			outlineColor: "#BA68C8",
 			outlineWidth: 0.5,
-			handles: {
-				borderColor: "#BA68C8",
-				lineWidth: 0.5
-			},
 			series: {
-				type: "spline",
-				color: "#00B0FF",
-				lineWidth: 1
+				fillColor: SERIES_COLOR,
+				color: "#FFF",
+				lineWidth: 0.5,
+				marker: {
+					enabled: false
+				}
+			},
+			xAxis: {
+				labels: {
+					style: {
+						color: "#fff"
+					}
+				}
 			}
 		},
 		yAxis: {
@@ -122,13 +133,8 @@ const options = vm => {
 					}
 				}
 			},
-			area: {
-				fillColor: "#1976D2",
-				color: "#FFFFFF",
-				lineWidth: 0.5
-			},
 			line: {
-				color: "#00B0FF",
+				color: SERIES_COLOR,
 				lineWidth: 1
 			}
 		}
@@ -177,7 +183,7 @@ export default {
 				setTimeout(() => {
 					this.clearSeries();
 					chart.addSeries({
-						type: "area",
+						type: "line",
 						data: this.strategy.ts.data,
 						name: this.strategy.name,
 						threshold: mean(this.strategy.ts.data)

@@ -290,7 +290,6 @@ export default {
 						data: this.strategy.ts.data,
 						name: this.strategy.name
 					});
-
 					if (this.strategy.fit && this.strategy.fit.resid) {
 						chart.addSeries({
 							type: "column",
