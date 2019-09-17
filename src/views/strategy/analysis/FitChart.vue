@@ -16,7 +16,8 @@ const options = vm => {
 	return {
 		chart: {
 			height: vm._props.height,
-			backgroundColor: vm._props.backgroundColor
+			backgroundColor: vm._props.backgroundColor,
+			spacingRight: 30
 		},
 		rangeSelector: {
 			selected: 6,
@@ -113,7 +114,7 @@ const options = vm => {
 			title: {
 				text: null
 			},
-			offset: 30,
+			offset: 20,
 			tickWidth: 0
 		},
 		legend: {

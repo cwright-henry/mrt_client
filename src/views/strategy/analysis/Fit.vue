@@ -10,7 +10,7 @@
 					box
 					hide-details
 					flat
-					color="#90CAF9"
+					color="#ce93d8"
 					background-color="#323232"
 					label="Fit Process"
 				></v-select>
@@ -147,6 +147,8 @@ export default {
 
 <style lang="less">
 .mrt-senfit {
+	background-color: #252525;
+	padding: 16px;
 	.mrt-senfit--controls {
 		display: flex;
 		justify-content: space-between;
@@ -157,21 +159,20 @@ export default {
 		display: flex;
 		.mrt-senfit--data-graph {
 			width: calc(100% - 330px);
-			background-color: #404040;
-			margin: 0 16px 0 0;
 			border-radius: 4px;
 		}
 		.mrt-senfit--data-params {
 			width: 330px;
+			background-color: #2e2e2e;
 		}
 	}
 	.mrt-senfit--residuals {
-		background-color: #424242;
+		background-color: #323232;
 		margin: 16px 0 8px 0;
 		border-radius: 4px;
 		h3 {
 			font-weight: 300;
-			font-size: 22px;
+			font-size: 18px;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;

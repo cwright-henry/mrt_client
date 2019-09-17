@@ -33,7 +33,8 @@ const options = vm => {
 	return {
 		chart: {
 			height: vm._props.height,
-			backgroundColor: vm._props.backgroundColor
+			backgroundColor: vm._props.backgroundColor,
+			zoomType: "x"
 		},
 		title: {
 			text: null
@@ -62,7 +63,10 @@ const options = vm => {
 		},
 		plotOptions: {
 			scatter: {
-				clip: false
+				clip: false,
+				marker: {
+					radius: 2
+				}
 			},
 			line: {
 				lineWidth: 1
@@ -132,7 +136,7 @@ export default {
 					switch (this.aggregator) {
 						case "selected":
 							chart.addSeries({
-								type: "line",
+								type: "scatter",
 								color: "#2196F3",
 								data: this.ts,
 								name: this.name,
@@ -141,8 +145,8 @@ export default {
 							break;
 						case "full":
 							chart.addSeries({
-								type: "line",
-								color: "#FF9800",
+								type: "scatter",
+								color: "yellow",
 								data: this.originalResids,
 								name: this.name,
 								clip: false
@@ -150,14 +154,14 @@ export default {
 							break;
 						case "diff":
 							chart.addSeries({
-								type: "area",
-								color: "#FF9800",
+								type: "scatter",
+								color: "yellow",
 								data: this.originalResids,
 								name: this.name,
 								clip: false
 							});
 							chart.addSeries({
-								type: "area",
+								type: "scatter",
 								color: "#2196F3",
 								data: this.ts,
 								name: this.name,

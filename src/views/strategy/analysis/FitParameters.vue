@@ -1,12 +1,12 @@
 <template>
-	<div class="mrt-senfit">
-		<div class="mrt-senfit--params">
-			<div class="mrt-senfit--params-header">
+	<div class="mrt-fitparams">
+		<div class="mrt-fitparams--section">
+			<div class="mrt-fitparams--section__header">
 				<label>Parameters</label>
 				<div>Selection</div>
 				<div>Full</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Kappa</span>
 					<v-menu
@@ -48,7 +48,7 @@
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.kappa_full | number}}</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Sigma</span>
 					<v-menu
@@ -90,7 +90,7 @@
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.sigma_full | number}}</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Theta</span>
 					<v-menu
@@ -132,7 +132,7 @@
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.theta_full | number}}</div>
 			</div>
-			<div class="mrt-senfit--params-row" v-if="proctype === 'hypOU'">
+			<div class="mrt-fitparams--section__row" v-if="proctype === 'hypOU'">
 				<label class="input-param">
 					<span>Beta</span>
 					<v-menu
@@ -174,27 +174,27 @@
 				<div v-else>{{strategy.fit.nbeta_full | number}}</div>
 			</div>
 		</div>
-		<div class="mrt-senfit--params">
-			<div class="mrt-senfit--params-header">
+		<div class="mrt-fitparams--section">
+			<div class="mrt-fitparams--section__header">
 				<label>Goodness of Fit</label>
 				<div>Selection</div>
 				<div>Full</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label>ADF Stat</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.adf_stat | number}}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.adf_stat_full | number}}</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label>ADF Sig Level</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.sig_lev}}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.sig_lev_full}}</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label>P value</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.p_val | number}}</div>
@@ -202,13 +202,13 @@
 				<div v-else>{{strategy.fit.p_val_full | number}}</div>
 			</div>
 		</div>
-		<div class="mrt-senfit--params">
-			<div class="mrt-senfit--params-header">
+		<div class="mrt-fitparams--section">
+			<div class="mrt-fitparams--section__header">
 				<label>Residuals</label>
 				<div>Selection</div>
 				<div>Full</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label>
 					R
 					<sup>2</sup>
@@ -218,28 +218,28 @@
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.R2_full | number }}</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label>Mean</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_mean | number }}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.resid_mean_full | number }}</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label>Std</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_std | number }}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.resid_std_full | number }}</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label>Skew</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_skew | number }}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.resid_skew_full | number }}</div>
 			</div>
-			<div class="mrt-senfit--params-row">
+			<div class="mrt-fitparams--section__row">
 				<label>Kurt</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_kurt | number }}</div>
@@ -475,53 +475,59 @@ export default {
 </script>
 
 <style lang="less">
-.mrt-senfit {
-	background-color: rgba(255, 255, 255, 0.04);
+.mrt-fitparams {
+	background-color: #2e2e2e;
 	padding: 8px 12px;
 	border-radius: 4px;
-	.mrt-senfit--params {
-		height: 100%;
-		padding: 12px 0px;
-		border-radius: 2px;
-		> div {
-			display: flex;
-			margin: 0 0 4px 0;
-			padding: 0 0 2px 4px;
-			align-items: baseline;
-			label {
-				width: 120px;
-				color: #fff;
-				font-size: 13px;
-				&.input-param {
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					cursor: pointer;
-					.v-icon {
-						font-size: 14px !important;
-						border-radius: 50%;
-						background-color: #9c27b0;
-						height: 24px;
-						width: 24px;
-						&.on {
-							background-color: #ffea00;
-							color: #212121;
-						}
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	height: 100%;
+	.mrt-fitparams--section {
+		label {
+			width: 120px;
+			color: #fff;
+			font-size: 13px;
+			&.input-param {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				cursor: pointer;
+				.v-icon {
+					font-size: 14px !important;
+					border-radius: 50%;
+					background-color: #9c27b0;
+					height: 24px;
+					width: 24px;
+					&.on {
+						background-color: #ffea00;
+						color: #212121;
 					}
 				}
 			}
+		}
+		.mrt-fitparams--section__header {
+			text-transform: uppercase;
+			font-size: 12px;
+			color: #f3e5f5;
+			border-bottom: 1px solid #424242;
+			padding: 0 0 2px;
+			margin: 0 0 4px;
+			font-weight: 300;
+			display: flex;
 			> div {
 				flex: 1;
 				text-align: right;
 			}
-			&.mrt-senfit--params-header {
-				text-transform: uppercase;
-				font-size: 12px;
-				color: #f3e5f5;
-				border-bottom: 1px solid #424242;
-				padding: 0 0 2px;
-				margin: 0 0 4px;
-				font-weight: 300;
+		}
+		.mrt-fitparams--section__row {
+			display: flex;
+			margin: 0 0 4px 0;
+			padding: 0 0 2px 4px;
+			align-items: baseline;
+			> div {
+				flex: 1;
+				text-align: right;
 			}
 		}
 	}
