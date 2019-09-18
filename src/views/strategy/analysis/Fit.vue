@@ -35,7 +35,7 @@
 					<div class="mrt-senfit--residuals-graphs__header-legend">
 						<div>
 							<div class="mrt-circle selected"></div>
-							<div>Selected</div>
+							<div>Selection</div>
 						</div>
 						<div>
 							<div class="mrt-circle full"></div>
@@ -43,7 +43,7 @@
 						</div>
 					</div>
 					<div>
-						<v-switch v-model="aggregator" color="#2196F3" hide-details label="Full vs Selected"></v-switch>
+						<v-switch v-model="aggregator" color="#2196F3" hide-details label="Full / Selection"></v-switch>
 					</div>
 				</div>
 				<div>
@@ -209,7 +209,7 @@ export default {
 					margin: 0 5px 0 0;
 					border-radius: 50%;
 					&.full {
-						background-color: #FFEB3B;
+						background-color: #ffeb3b;
 					}
 				}
 			}

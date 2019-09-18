@@ -52,7 +52,7 @@ const options = vm => {
 				if (this.series.chart.series[1]) {
 					if (this.series.name == "full") {
 						ret +=
-							"Selected" +
+							"Selection" +
 							": " +
 							vm.$options.seriesData[this.x][1] +
 							"<br/>";
@@ -157,7 +157,7 @@ export default {
 						type: "scatter",
 						color: "#2196F3",
 						data: this.ts,
-						name: "selected",
+						name: "selection",
 						index: 2
 					});
 					if (this.aggregator) {
@@ -165,7 +165,7 @@ export default {
 							type: "scatter",
 							color: "#FDD835",
 							data: this.originalResids,
-							name: "selected",
+							name: "full",
 							index: 1
 						});
 					}
