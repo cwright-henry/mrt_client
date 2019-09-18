@@ -29,27 +29,33 @@
 		</div>
 
 		<div class="mrt-senfit--residuals">
-			<h3>
-				Residuals
-				<div class="radios">
-					<v-radio-group v-model="aggregator" :column="false" :height="20">
-						<v-radio color="#FFEB3B" value="selected" label="Selected"></v-radio>
-						<v-radio color="#FFEB3B" value="full" label="Full"></v-radio>
-						<v-radio color="#FFEB3B" value="diff" label="Both"></v-radio>
-					</v-radio-group>
-				</div>
-			</h3>
 			<div class="mrt-senfit--residuals-graphs">
-				<div class="mrt-senfit--residuals-graphs__residuals">
+				<div class="mrt-senfit--residuals-graphs__header">
+					<h3>Residuals</h3>
+					<div class="mrt-senfit--residuals-graphs__header-legend">
+						<div>
+							<div class="mrt-circle selected"></div>
+							<div>Selected</div>
+						</div>
+						<div>
+							<div class="mrt-circle full"></div>
+							<div>Full</div>
+						</div>
+					</div>
+					<div>
+						<v-switch v-model="aggregator" color="#2196F3" hide-details label="Full vs Selected"></v-switch>
+					</div>
+				</div>
+				<div>
 					<mrt-risdualschart :ts="strategy.fit.resid" :aggregator="aggregator" :name="strategy.name"></mrt-risdualschart>
 				</div>
-				<div class="mrt-senfit--residuals-graphs__histogram">
-					<mrt-histogramchart
-						:ts="strategy.fit.resid"
-						:mean="strategy.fit.resid_mean"
-						:std="strategy.fit.resid_std"
-					></mrt-histogramchart>
-				</div>
+			</div>
+			<div class="mrt-senfit--residuals-graphs__histogram">
+				<mrt-histogramchart
+					:ts="strategy.fit.resid"
+					:mean="strategy.fit.resid_mean"
+					:std="strategy.fit.resid_std"
+				></mrt-histogramchart>
 			</div>
 		</div>
 	</div>
@@ -67,7 +73,7 @@ export default {
 	data() {
 		return {
 			autoFit: true,
-			aggregator: "selected",
+			aggregator: false,
 			proctypes: [
 				{ value: "OU", text: "Ornstein-Uhlenbeck" },
 				{
@@ -167,25 +173,51 @@ export default {
 		}
 	}
 	.mrt-senfit--residuals {
-		background-color: #323232;
-		margin: 16px 0 8px 0;
-		border-radius: 4px;
-		h3 {
-			font-weight: 300;
-			font-size: 18px;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			margin: 0 0 0 8px;
-		}
+		margin: 24px 0 0 0;
+		display: flex;
 		.mrt-senfit--residuals-graphs {
 			display: flex;
-			.mrt-senfit--residuals-graphs__residuals {
-				width: calc(100% - 330px);
+			flex-direction: column;
+			width: calc(100% - 330px);
+			.mrt-senfit--residuals-graphs__header {
+				display: flex;
+				justify-content: space-between;
+				margin: 0 32px 0 8px;
+				align-items: baseline;
+				font-weight: 300;
+				h3 {
+					font-weight: 300;
+					font-size: 16px;
+					color: #e0e0e0;
+					margin: 0 0 0 8px;
+					text-transform: uppercase;
+				}
 			}
-			.mrt-senfit--residuals-graphs__histogram {
-				width: 330px;
+			.mrt-senfit--residuals-graphs__header-legend {
+				display: flex;
+				> div {
+					display: flex;
+					align-items: center;
+				}
+				> div:nth-child(1) {
+					margin: 0 32px 0 0;
+				}
+				.mrt-circle {
+					width: 16px;
+					height: 16px;
+					background-color: #2196f3;
+					margin: 0 5px 0 0;
+					border-radius: 50%;
+					&.full {
+						background-color: #FFEB3B;
+					}
+				}
 			}
+		}
+		.mrt-senfit--residuals-graphs__histogram {
+			width: 330px;
+			background-color: #323232;
+			border-radius: 4px;
 		}
 	}
 }

@@ -19,11 +19,7 @@ const getPlotLine = (value, type) => {
 		value,
 		color: "#FFEB3B",
 		width: 0.5,
-		label: {
-			align: "center",
-			useHTML: true,
-			text: `<span class="residual-axis-label ${type}"></span>`
-		},
+		dashStyle: "dash",
 		id: `${type}-plotline`,
 		zIndex: 999
 	};
@@ -34,7 +30,9 @@ const options = vm => {
 		chart: {
 			height: vm._props.height,
 			backgroundColor: vm._props.backgroundColor,
-			zoomType: "x"
+			zoomType: "x",
+			spacingRight: 30,
+			animation: false
 		},
 		title: {
 			text: null
@@ -46,7 +44,28 @@ const options = vm => {
 			enabled: false
 		},
 		tooltip: {
-			enabled: true
+			enabled: true,
+			shared: true,
+			pointFormatter: function() {
+				var ret = this.series.name + ": " + this.y.toFixed(3) + "<br/>";
+
+				if (this.series.chart.series[1]) {
+					if (this.series.name == "full") {
+						ret +=
+							"Selected" +
+							": " +
+							vm.$options.seriesData[this.x][1] +
+							"<br/>";
+					} else {
+						ret +=
+							"Full" +
+							": " +
+							vm.$options.seriesData[this.x][0] +
+							"<br/>";
+					}
+				}
+				return ret;
+			}
 		},
 		xAxis: {
 			title: {
@@ -59,17 +78,16 @@ const options = vm => {
 			title: {
 				text: ""
 			},
-			opposite: true
+			opposite: true,
+			offset: 0
 		},
 		plotOptions: {
 			scatter: {
 				clip: false,
 				marker: {
-					radius: 2
+					radius: 2,
+					symbol: "circle"
 				}
-			},
-			line: {
-				lineWidth: 1
 			}
 		},
 		series: []
@@ -97,8 +115,8 @@ export default {
 			default: "rgba(0, 0, 0, 0)"
 		},
 		aggregator: {
-			type: String,
-			default: "selected"
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -106,6 +124,7 @@ export default {
 			options: options(this)
 		};
 	},
+	seriesData: {},
 	computed: {
 		...mapState("fit", ["startDate", "endDate", "originalResids"])
 	},
@@ -133,44 +152,34 @@ export default {
 				this.$nextTick(() => {
 					this.clearSeries();
 					this.updateRange();
-					switch (this.aggregator) {
-						case "selected":
-							chart.addSeries({
-								type: "scatter",
-								color: "#2196F3",
-								data: this.ts,
-								name: this.name,
-								clip: false
-							});
-							break;
-						case "full":
-							chart.addSeries({
-								type: "scatter",
-								color: "yellow",
-								data: this.originalResids,
-								name: this.name,
-								clip: false
-							});
-							break;
-						case "diff":
-							chart.addSeries({
-								type: "scatter",
-								color: "yellow",
-								data: this.originalResids,
-								name: this.name,
-								clip: false
-							});
-							chart.addSeries({
-								type: "scatter",
-								color: "#2196F3",
-								data: this.ts,
-								name: this.name,
-								clip: false
-							});
-							break;
+					this.fillBuckets(this.originalResids, this.ts);
+					chart.addSeries({
+						type: "scatter",
+						color: "#2196F3",
+						data: this.ts,
+						name: "selected",
+						index: 2
+					});
+					if (this.aggregator) {
+						chart.addSeries({
+							type: "scatter",
+							color: "#FDD835",
+							data: this.originalResids,
+							name: "selected",
+							index: 1
+						});
 					}
 					chart.reflow();
 				});
+			}
+		},
+
+		fillBuckets(full, selected) {
+			for (let i = 0; i < full.length; i++) {
+				this.$options.seriesData[full[i][0]] = [
+					full[i][1].toFixed(3),
+					selected[i][1].toFixed(3)
+				];
 			}
 		},
 
