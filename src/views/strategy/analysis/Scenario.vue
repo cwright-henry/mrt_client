@@ -178,26 +178,6 @@ export default {
 	}
 }
 
-.mrt-text-field {
-	background-color: #fff;
-	.v-input__slot {
-		margin-bottom: 0px !important;
-	}
-	.v-text-field__details {
-		display: none;
-		margin-bottom: 0px !important;
-	}
-	.error--text {
-		.v-text-field__details {
-			display: block;
-			margin-bottom: 8px !important;
-		}
-		.v-input__slot {
-			margin-bottom: 8px !important;
-		}
-	}
-}
-
 .fullscreen {
 }
 
@@ -213,7 +193,6 @@ export default {
 		}
 	}
 }
-
 
 @media screen and (max-width: 600px) {
 }

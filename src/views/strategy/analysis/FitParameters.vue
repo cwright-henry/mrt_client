@@ -9,20 +9,25 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Kappa</span>
+					<v-icon
+						:class="userKappa !== null ? 'on' : 'off'"
+					>{{userKappa !== null ? 'lock' : 'lock_open'}}</v-icon>
+				</label>
+				<div v-if="isFittingTS">...</div>
+				<div v-else>
 					<v-menu
-						bottom
+						left
 						v-model="kappaMenu"
 						offset-y
 						:close-on-content-click="false"
-						origin="center center"
+						origin="top right"
 						transition="scale-transition"
 					>
-						<v-icon
-							slot="activator"
-							class="elevation-3"
+						<span
+							class="mrt-fitparams--section__row-dyna"
 							:class="userKappa !== null ? 'on' : 'off'"
-							size="16"
-						>{{userKappa !== null ? 'lock' : 'lock_open'}}</v-icon>
+							slot="activator"
+						>{{strategy.fit.kappa | number}}</span>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="kappa"
@@ -31,7 +36,8 @@
 								:disabled="isFittingTS"
 								:error-messages="kappaErrors"
 								label="kappa"
-								color="#4FC3F7"
+								color="#FFEB3B"
+								background-color="#484848"
 								box
 								clearable
 								maxlength="10"
@@ -42,29 +48,32 @@
 							></v-text-field>
 						</div>
 					</v-menu>
-				</label>
-				<div v-if="isFittingTS">...</div>
-				<div v-else>{{strategy.fit.kappa | number}}</div>
+				</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.kappa_full | number}}</div>
 			</div>
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Sigma</span>
+					<v-icon
+						:class="userSigma !== null ? 'on' : 'off'"
+					>{{userSigma !== null ? 'lock' : 'lock_open'}}</v-icon>
+				</label>
+				<div v-if="isFittingTS">...</div>
+				<div v-else>
 					<v-menu
-						bottom
+						left
 						v-model="sigmaMenu"
 						offset-y
 						:close-on-content-click="false"
-						origin="center center"
+						origin="top right"
 						transition="scale-transition"
 					>
-						<v-icon
-							slot="activator"
-							class="elevation-3"
+						<span
+							class="mrt-fitparams--section__row-dyna"
 							:class="userSigma !== null ? 'on' : 'off'"
-							size="16"
-						>{{userSigma !== null ? 'lock' : 'lock_open'}}</v-icon>
+							slot="activator"
+						>{{strategy.fit.sigma | number}}</span>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="sigma"
@@ -73,7 +82,8 @@
 								:disabled="isFittingTS"
 								:error-messages="sigmaErrors"
 								label="sigma"
-								color="#03A9F4"
+								color="#4FC3F7"
+								background-color="#484848"
 								box
 								clearable
 								maxlength="10"
@@ -84,29 +94,32 @@
 							></v-text-field>
 						</div>
 					</v-menu>
-				</label>
-				<div v-if="isFittingTS">...</div>
-				<div v-else>{{strategy.fit.sigma | number}}</div>
+				</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.sigma_full | number}}</div>
 			</div>
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Theta</span>
+					<v-icon
+						:class="userTheta !== null ? 'on' : 'off'"
+					>{{userTheta !== null ? 'lock' : 'lock_open'}}</v-icon>
+				</label>
+				<div v-if="isFittingTS">...</div>
+				<div v-else>
 					<v-menu
-						bottom
+						left
 						v-model="thetaMenu"
 						offset-y
 						:close-on-content-click="false"
-						origin="center center"
+						origin="top right"
 						transition="scale-transition"
 					>
-						<v-icon
-							slot="activator"
-							class="elevation-3"
+						<span
+							class="mrt-fitparams--section__row-dyna"
 							:class="userTheta !== null ? 'on' : 'off'"
-							size="16"
-						>{{userTheta !== null ? 'lock' : 'lock_open'}}</v-icon>
+							slot="activator"
+						>{{strategy.fit.theta | number}}</span>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="theta"
@@ -115,7 +128,8 @@
 								:disabled="isFittingTS"
 								:error-messages="thetaErrors"
 								label="theta"
-								color="#03A9F4"
+								color="#4FC3F7"
+								background-color="#484848"
 								box
 								clearable
 								maxlength="10"
@@ -126,29 +140,30 @@
 							></v-text-field>
 						</div>
 					</v-menu>
-				</label>
-				<div v-if="isFittingTS">...</div>
-				<div v-else>{{strategy.fit.theta | number}}</div>
+				</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.theta_full | number}}</div>
 			</div>
 			<div class="mrt-fitparams--section__row" v-if="proctype === 'hypOU'">
 				<label class="input-param">
 					<span>Beta</span>
+					<v-icon :class="userBeta !== null ? 'on' : 'off'">{{userBeta !== null ? 'lock' : 'lock_open'}}</v-icon>
+				</label>
+				<div v-if="isFittingTS">...</div>
+				<div v-else>
 					<v-menu
-						bottom
+						left
 						v-model="betaMenu"
 						offset-y
 						:close-on-content-click="false"
-						origin="center center"
+						origin="top right"
 						transition="scale-transition"
 					>
-						<v-icon
-							slot="activator"
-							class="elevation-3"
+						<span
+							class="mrt-fitparams--section__row-dyna"
 							:class="userBeta !== null ? 'on' : 'off'"
-							size="16"
-						>{{userBeta !== null ? 'lock' : 'lock_open'}}</v-icon>
+							slot="activator"
+						>{{strategy.fit.nbeta | number}}</span>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="beta"
@@ -157,6 +172,8 @@
 								:disabled="isFittingTS"
 								:error-messages="betaErrors"
 								label="Beta"
+								color="#4FC3F7"
+								background-color="#484848"
 								box
 								clearable
 								maxlength="1"
@@ -167,9 +184,7 @@
 							></v-text-field>
 						</div>
 					</v-menu>
-				</label>
-				<div v-if="isFittingTS">...</div>
-				<div v-else>{{strategy.fit.nbeta | number}}</div>
+				</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.nbeta_full | number}}</div>
 			</div>
@@ -475,6 +490,26 @@ export default {
 </script>
 
 <style lang="less">
+.mrt-text-field {
+	.v-input__slot {
+		margin-bottom: 0px !important;
+	}
+	.v-text-field__details {
+		display: none;
+		margin-bottom: 0px !important;
+	}
+	.error--text {
+		background-color: #484848;
+		color: #ff7043;
+		.v-text-field__details {
+			display: block;
+			margin-bottom: 8px !important;
+		}
+		.v-input__slot {
+			margin-bottom: 8px !important;
+		}
+	}
+}
 .mrt-fitparams {
 	background-color: #2e2e2e;
 	padding: 8px 12px;
@@ -492,16 +527,12 @@ export default {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				cursor: pointer;
 				.v-icon {
-					font-size: 14px !important;
-					border-radius: 50%;
-					background-color: #9c27b0;
-					height: 24px;
-					width: 24px;
+					font-size: 18px !important;
+					color: #e0e0e0;
+					margin: 0 8px 0 0;
 					&.on {
-						background-color: #ffea00;
-						color: #212121;
+						color: #2196f3;
 					}
 				}
 			}
@@ -524,10 +555,22 @@ export default {
 			display: flex;
 			margin: 0 0 4px 0;
 			padding: 0 0 2px 4px;
-			align-items: baseline;
+			align-items: center;
 			> div {
 				flex: 1;
 				text-align: right;
+			}
+			.mrt-fitparams--section__row-dyna {
+				background-color: #fff;
+				color: #121212;
+				padding: 1px 4px 1px 4px;
+				border-radius: 3px;
+				min-width: 100px;
+				display: inline-block;
+				cursor: pointer;
+				&.on {
+					background-color: #bbdefb;
+				}
 			}
 		}
 	}
