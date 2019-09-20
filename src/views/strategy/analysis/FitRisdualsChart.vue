@@ -140,6 +140,9 @@ export default {
 		},
 		aggregator() {
 			this.update();
+		},
+		originalResids() {
+			this.update();
 		}
 	},
 	mounted() {
@@ -148,18 +151,19 @@ export default {
 	methods: {
 		update() {
 			const chart = this.$refs.residuals.chart;
-			if (this.name) {
+			//
+			//	This is gettiing called multiple times due
+			//	setting originalResids and the strategy ts in independent commit in the store!!
+			//
+			if (
+				this.originalResids &&
+				this.ts &&
+				this.originalResids.length === this.ts.length
+			) {
 				this.$nextTick(() => {
 					this.clearSeries();
 					this.updateRange();
 					this.fillBuckets(this.originalResids, this.ts);
-					chart.addSeries({
-						type: "scatter",
-						color: "#2196F3",
-						data: this.ts,
-						name: "selection",
-						index: 2
-					});
 					if (this.aggregator) {
 						chart.addSeries({
 							type: "scatter",
@@ -169,6 +173,13 @@ export default {
 							index: 1
 						});
 					}
+					chart.addSeries({
+						type: "scatter",
+						color: "#2196F3",
+						data: this.ts,
+						name: "selection",
+						index: 2
+					});
 					chart.reflow();
 				});
 			}
@@ -204,19 +215,4 @@ export default {
 	}
 };
 </script>
-
-<style>
-.residuals-axis-label {
-	width: 0px;
-	height: 0px;
-	border-radius: 50%;
-	display: inline-block;
-	overflow: hidden;
-	cursor: ew-resize;
-	background-color: #ba68c8;
-	position: relative;
-	top: 6px;
-	left: 158px;
-}
-</style>
 

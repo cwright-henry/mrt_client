@@ -22,6 +22,8 @@ export default {
 
 		// Original Fit resid's
 		originalResids: null,
+		originalStartDate: null,
+		originalEndDate: null,
 
 		// Active Tab
 		activeTab: DEFAULT_ACTIVE_TAB,
@@ -202,13 +204,14 @@ export default {
 			state.endDate = state.strategy.fit.proctype === 'NONE' ? extremes.max : state.strategy.fit.end_date;
 
 			// Original Resids
-			state.originalResids = state.strategy.fit.resid;
+			state.originalStartDate = extremes.min;
+			state.originalEndDate = extremes.max;
 
 			// Process Parameters
-			state.userKappa = null;
-			state.userSigma = null;
-			state.userTheta = null;
-			state.userBeta = null;
+			state.userKappa = state.strategy.fit.userKappa === undefined ? null : state.strategy.fit.userKappa;
+			state.userSigma = state.strategy.fit.userSigma === undefined ? null : state.strategy.fit.userSigma;
+			state.userTheta = state.strategy.fit.userTheta === undefined ? null : state.strategy.fit.userTheta;
+			state.userBeta = state.strategy.fit.usernBeta === undefined ? null : state.strategy.fit.usernBeta;
 			state.range = minMax[1] - minMax[0];
 			state.avg = avg;
 
@@ -321,8 +324,16 @@ export default {
 					const strategy = await ApiController.loadStrategy(params.id);
 					commit('setStrategy', strategy)
 
+					commit('isFittingTS', true)
+					const originalResids = await ApiController.fit({
+						proctype: state.proctype,
+						strategyId: state.strategy._id,
+						start_date: state.originalStartDate,
+						end_date: state.originalEndDate
+					});
+					commit('setOriginalResids', originalResids.resid)
+
 					if (strategy.fit.proctype === 'NONE') {
-						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
 							proctype: state.proctype,
 							strategyId: state.strategy._id,
@@ -331,7 +342,6 @@ export default {
 						});
 
 						commit('updateFit', fit)
-						commit('setOriginalResids', fit.resid)
 					}
 				}
 			}
@@ -347,6 +357,15 @@ export default {
 				if (strategy._id !== state.strategy._id) {
 					commit('setStrategy', strategy)
 
+					commit('isFittingTS', true)
+					const originalResids = await ApiController.fit({
+						proctype: state.proctype,
+						strategyId: state.strategy._id,
+						start_date: state.originalStartDate,
+						end_date: state.originalEndDate
+					});
+					commit('setOriginalResids', originalResids.resid)
+
 					if (strategy.fit.proctype === 'NONE') {
 						commit('isFittingTS', true)
 						const fit = await ApiController.fit({
@@ -364,6 +383,18 @@ export default {
 				commit('isFittingTS', false)
 				commit('isLoadingStrategy', false)
 			}
+		},
+		async setProcType({ commit, dispatch, state }, proctype) {
+			commit('isFittingTS', true)
+			const originalResids = await ApiController.fit({
+				proctype,
+				strategyId: state.strategy._id,
+				start_date: state.originalStartDate,
+				end_date: state.originalEndDate
+			});
+			commit('setOriginalResids', originalResids.resid)
+			commit('setProctype', proctype)
+			dispatch('fit')
 		},
 
 		async fit({ commit, state }) {
@@ -401,13 +432,16 @@ export default {
 			commit('isSavingFit', true)
 			try {
 				if (state.userKappa !== null) {
-					state.strategy.fit.kappa = state.userKappa;
+					state.strategy.fit.userKappa = state.userKappa;
 				}
 				if (state.userSigma !== null) {
-					state.strategy.fit.sigma = state.userSigma;
+					state.strategy.fit.userSigma = state.userSigma;
 				}
 				if (state.userTheta !== null) {
-					state.strategy.fit.theta = state.userTheta;
+					state.strategy.fit.userTheta = state.userTheta;
+				}
+				if (state.userBeta !== null) {
+					state.strategy.fit.usernBeta = state.userBeta;
 				}
 				if (state.proctype !== state.strategy.fit.proctype) {
 					state.strategy.fit.proctype = state.proctype;

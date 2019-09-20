@@ -43,7 +43,7 @@
 						</div>
 					</div>
 					<div>
-						<v-switch v-model="aggregator" color="#2196F3" hide-details label="Full / Selection"></v-switch>
+						<v-switch v-model="aggregator" color="#2196F3" hide-details label="Full vs Selection"></v-switch>
 					</div>
 				</div>
 				<div>
@@ -73,7 +73,7 @@ export default {
 	data() {
 		return {
 			autoFit: true,
-			aggregator: false,
+			aggregator: true,
 			proctypes: [
 				{ value: "OU", text: "Ornstein-Uhlenbeck" },
 				{
@@ -126,8 +126,7 @@ export default {
 			},
 
 			async set(value) {
-				this.$store.commit("fit/setProctype", value);
-				await this.$store.dispatch("fit/fit");
+				await this.$store.dispatch("fit/setProcType", value);
 			}
 		}
 	},

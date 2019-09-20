@@ -13,7 +13,7 @@
 						:class="userKappa !== null ? 'on' : 'off'"
 					>{{userKappa !== null ? 'lock' : 'lock_open'}}</v-icon>
 				</label>
-				<div v-if="isFittingTS">...</div>
+				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
 					<v-menu
 						left
@@ -31,21 +31,24 @@
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="kappa"
-								:append-icon="'refresh'"
 								:loading="isFittingTS"
 								:disabled="isFittingTS"
 								:error-messages="kappaErrors"
-								label="kappa"
-								color="#FFEB3B"
-								background-color="#484848"
-								box
-								clearable
+								label="Kappa"
+								:color="color"
+								:background-color="backrgoundColor"
+								outline
 								maxlength="10"
+								ref="kappaInput"
 								placeholder="Fix Kappa"
 								@keyup.enter="fixKappa"
-								@click:clear="resetKappa"
-								@click:append="fixKappa"
 							></v-text-field>
+							<div class="mrt-text-field--actions" @click="resetKappa">
+								<v-btn flat icon color="white">
+									<v-icon>clear</v-icon>
+								</v-btn>
+								<div class="mrt-text-field--actions__text">Reset</div>
+							</div>
 						</div>
 					</v-menu>
 				</div>
@@ -59,7 +62,7 @@
 						:class="userSigma !== null ? 'on' : 'off'"
 					>{{userSigma !== null ? 'lock' : 'lock_open'}}</v-icon>
 				</label>
-				<div v-if="isFittingTS">...</div>
+				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
 					<v-menu
 						left
@@ -77,21 +80,24 @@
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="sigma"
-								:append-icon="'refresh'"
 								:loading="isFittingTS"
 								:disabled="isFittingTS"
 								:error-messages="sigmaErrors"
-								label="sigma"
-								color="#4FC3F7"
-								background-color="#484848"
-								box
-								clearable
+								label="Sigma"
+								:color="color"
+								:background-color="backrgoundColor"
+								ref="sigmaInput"
+								outline
 								maxlength="10"
 								placeholder="Fix Sigma"
 								@keyup.enter="fixSigma"
-								@click:clear="resetSigma"
-								@click:append="fixSigma"
 							></v-text-field>
+							<div class="mrt-text-field--actions" @click="resetSigma">
+								<v-btn flat icon color="white">
+									<v-icon>clear</v-icon>
+								</v-btn>
+								<div class="mrt-text-field--actions__text">Reset</div>
+							</div>
 						</div>
 					</v-menu>
 				</div>
@@ -105,7 +111,7 @@
 						:class="userTheta !== null ? 'on' : 'off'"
 					>{{userTheta !== null ? 'lock' : 'lock_open'}}</v-icon>
 				</label>
-				<div v-if="isFittingTS">...</div>
+				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
 					<v-menu
 						left
@@ -123,21 +129,24 @@
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="theta"
-								:append-icon="'refresh'"
 								:loading="isFittingTS"
 								:disabled="isFittingTS"
 								:error-messages="thetaErrors"
-								label="theta"
-								color="#4FC3F7"
-								background-color="#484848"
-								box
-								clearable
+								label="Theta"
+								:color="color"
+								:background-color="backrgoundColor"
+								ref="thetaInput"
+								outline
 								maxlength="10"
 								placeholder="Fix Theta"
 								@keyup.enter="fixTheta"
-								@click:clear="resetTheta"
-								@click:append="fixTheta"
 							></v-text-field>
+							<div class="mrt-text-field--actions" @click="resetTheta">
+								<v-btn flat icon color="white">
+									<v-icon>clear</v-icon>
+								</v-btn>
+								<div class="mrt-text-field--actions__text">Reset</div>
+							</div>
 						</div>
 					</v-menu>
 				</div>
@@ -149,7 +158,7 @@
 					<span>Beta</span>
 					<v-icon :class="userBeta !== null ? 'on' : 'off'">{{userBeta !== null ? 'lock' : 'lock_open'}}</v-icon>
 				</label>
-				<div v-if="isFittingTS">...</div>
+				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
 					<v-menu
 						left
@@ -167,21 +176,24 @@
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="beta"
-								:append-icon="'refresh'"
 								:loading="isFittingTS"
 								:disabled="isFittingTS"
 								:error-messages="betaErrors"
 								label="Beta"
-								color="#4FC3F7"
-								background-color="#484848"
-								box
-								clearable
+								:color="color"
+								:background-color="backrgoundColor"
+								ref="betaInput"
+								outline
 								maxlength="1"
 								placeholder="Fix Beta"
 								@keyup.enter="fixBeta"
-								@click:clear="resetBeta"
-								@click:append="fixBeta"
 							></v-text-field>
+							<div class="mrt-text-field--actions" @click="resetBeta">
+								<v-btn flat icon color="white">
+									<v-icon>clear</v-icon>
+								</v-btn>
+								<div class="mrt-text-field--actions__text">Reset</div>
+							</div>
 						</div>
 					</v-menu>
 				</div>
@@ -273,23 +285,63 @@ const isNumber = /^(-)?(\d+)?((\.)?(\d+)?)?$/;
 export default {
 	data() {
 		return {
+			// Menu toggles
 			kappaMenu: false,
 			sigmaMenu: false,
 			thetaMenu: false,
 			betaMenu: false,
+
+			// Values
 			kappa: this.$store.state.fit.userKappa,
 			sigma: this.$store.state.fit.userSigma,
 			theta: this.$store.state.fit.userTheta,
 			beta: this.$store.state.fit.userBeta,
+
+			// Errors
 			kappaErrors: [],
 			sigmaErrors: [],
 			thetaErrors: [],
 			betaErrors: [],
+
+			// Validation
 			tsRange: this.$store.state.fit.range,
-			tsAvg: this.$store.state.fit.avg
+			tsAvg: this.$store.state.fit.avg,
+
+			// Props
+			backrgoundColor: "transparent",
+			color: "#81C784",
+			theme: false
 		};
 	},
 	watch: {
+		kappaMenu(shown) {
+			if (shown) {
+				setTimeout(() => this.focusControl(this.$refs.kappaInput), 100);
+			} else {
+				this.kappa = null;
+			}
+		},
+		sigmaMenu(shown) {
+			if (shown) {
+				setTimeout(() => this.focusControl(this.$refs.sigmaInput), 100);
+			} else {
+				this.sigma = null;
+			}
+		},
+		thetaMenu(shown) {
+			if (shown) {
+				setTimeout(() => this.focusControl(this.$refs.thetaInput), 100);
+			} else {
+				this.theta = null;
+			}
+		},
+		betaMenu(shown) {
+			if (shown) {
+				setTimeout(() => this.focusControl(this.$refs.betaInput), 100);
+			} else {
+				this.beta = null;
+			}
+		},
 		kappa(value) {
 			this.kappaErrors = [];
 			if (value !== "" && value !== null) {
@@ -484,6 +536,14 @@ export default {
 		async fit() {
 			await this.$store.dispatch("fit/fit", {});
 			await this.$store.dispatch("fit/loadSims", {});
+		},
+
+		/**
+		 * Fix for focus when textfield is shown in a menu
+		 * or dialog
+		 */
+		focusControl(control) {
+			control.focus();
 		}
 	}
 };
@@ -491,6 +551,9 @@ export default {
 
 <style lang="less">
 .mrt-text-field {
+	display: flex;
+	align-items: center;
+	background-color: #484848;
 	.v-input__slot {
 		margin-bottom: 0px !important;
 	}
@@ -499,14 +562,23 @@ export default {
 		margin-bottom: 0px !important;
 	}
 	.error--text {
-		background-color: #484848;
-		color: #ff7043;
+		color: #f44336;
 		.v-text-field__details {
 			display: block;
 			margin-bottom: 8px !important;
 		}
 		.v-input__slot {
 			margin-bottom: 8px !important;
+		}
+	}
+	.mrt-text-field--actions {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		.mrt-text-field--actions__text {
+			margin: -8px 0 0 0;
+			font-weight: 400;
+			font-size: 12px;
 		}
 	}
 }
@@ -528,11 +600,11 @@ export default {
 				justify-content: space-between;
 				align-items: center;
 				.v-icon {
-					font-size: 18px !important;
+					font-size: 16px !important;
 					color: #e0e0e0;
 					margin: 0 8px 0 0;
 					&.on {
-						color: #2196f3;
+						color: #81C784;
 					}
 				}
 			}
@@ -561,16 +633,20 @@ export default {
 				text-align: right;
 			}
 			.mrt-fitparams--section__row-dyna {
-				background-color: #fff;
+				background-color: #FFF;
 				color: #121212;
 				padding: 1px 4px 1px 4px;
 				border-radius: 3px;
 				min-width: 100px;
+				height: 24px;
 				display: inline-block;
 				cursor: pointer;
 				&.on {
-					background-color: #bbdefb;
+					background-color: #81C784;
 				}
+			}
+			.mrt-fitparams--section__row-fitting {
+				height: 24px;
 			}
 		}
 	}

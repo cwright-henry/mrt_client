@@ -98,6 +98,9 @@ Vue.filter('date-short', function (value) {
 });
 
 Vue.config.errorHandler = function (err, vm, info) {
+	console.log(err)
+	console.log(vm)
+	console.log(info)
 	EventBus.$emit('api-error', `Vue Error - ${err} - ${info}`);
 }
 
