@@ -108,9 +108,10 @@ export default {
 	line-height: 1.4;
 	margin: 0 0 12px;
 	.mrt-sf--selection {
-		background-color: rgba(255, 255, 255, 0.04);
+		background-color: #2e2e2e;
 		padding: 8px 12px;
 		border-radius: 4px;
+		border: 1px solid #424242;
 		&:not(:first-child) {
 			margin: 0 0 0 36px;
 		}

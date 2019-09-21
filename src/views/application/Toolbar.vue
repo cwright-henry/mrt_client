@@ -63,7 +63,7 @@ export default {
 			margin: 0 0 0 12px;
 			line-height: 1.2;
 			.mrt-toolbar--user-info__company {
-				color: #e0e0e0;
+				color: #FFF59D;
 				font-weight: 300;
 			}
 		}

@@ -51,6 +51,10 @@
 				</div>
 			</div>
 			<div class="mrt-senfit--residuals-graphs__histogram">
+				<h3>
+					Selection Histogram
+					<span>(Capped at 3 STD)</span>
+				</h3>
 				<mrt-histogramchart
 					:ts="strategy.fit.resid"
 					:mean="strategy.fit.resid_mean"
@@ -159,6 +163,9 @@ export default {
 		justify-content: space-between;
 		padding: 8px;
 		margin: 0 0 16px;
+		.v-select__selection {
+			color:#CE93D8;
+		}
 	}
 	.mrt-senfit--data {
 		display: flex;
@@ -202,8 +209,8 @@ export default {
 					margin: 0 32px 0 0;
 				}
 				.mrt-circle {
-					width: 16px;
-					height: 16px;
+					width: 11px;
+					height: 11px;
 					background-color: #2196f3;
 					margin: 0 5px 0 0;
 					border-radius: 50%;
@@ -215,8 +222,18 @@ export default {
 		}
 		.mrt-senfit--residuals-graphs__histogram {
 			width: 330px;
-			background-color: #323232;
-			border-radius: 4px;
+			margin: 20px 0 0 0;
+			h3 {
+				font-weight: 300;
+				font-size: 16px;
+				color: #e0e0e0;
+				margin: 0 0 0 16px;
+				text-transform: uppercase;
+				span {
+					font-size: 11px;
+					margin: 0 0 0 8px;
+				}
+			}
 		}
 	}
 }

@@ -11,22 +11,34 @@
 				<div class="mrt-sfp--full">Full</div>
 			</div>
 			<div class="mrt-sfp--item">
-				<label>Kappa</label>
+				<label class="mrt-sfp--item__dyna">
+					<span>Kappa</span>
+					<v-icon v-if="fit.userKappa != null">lock</v-icon>
+				</label>
 				<div class="mrt-sfp--selection">{{fit.kappa | number}}</div>
 				<div class="mrt-sfp--full">{{fit.kappa_full | number}}</div>
 			</div>
 			<div class="mrt-sfp--item">
-				<label>Sigma</label>
+				<label class="mrt-sfp--item__dyna">
+					<span>Sigma</span>
+					<v-icon v-if="fit.userSigma != null">lock</v-icon>
+				</label>
 				<div class="mrt-sfp--selection">{{fit.sigma | number}}</div>
 				<div class="mrt-sfp--full">{{fit.sigma_full | number}}</div>
 			</div>
 			<div class="mrt-sfp--item">
-				<label>Theta</label>
+				<label class="mrt-sfp--item__dyna">
+					<span>Theta</span>
+					<v-icon v-if="fit.userTheta != null">lock</v-icon>
+				</label>
 				<div class="mrt-sfp--selection">{{fit.theta | number}}</div>
 				<div class="mrt-sfp--full">{{fit.theta_full | number}}</div>
 			</div>
 			<div class="mrt-sfp--item" v-if="fit.proctype === 'hypOU'">
-				<label>Beta</label>
+				<label class="mrt-sfp--item__dyna">
+					<span>Beta</span>
+					<v-icon v-if="fit.usernBeta != null">lock</v-icon>
+				</label>
 				<div class="mrt-sfp--selection">{{fit.nbeta | number}}</div>
 				<div class="mrt-sfp--full">{{fit.nbeta_full | number}}</div>
 			</div>
@@ -157,9 +169,10 @@ export default {
 	justify-content: space-between;
 	padding: 0 12px 0 24px;
 	font-size: 13px;
-	background-color: rgba(255, 255, 255, 0.04);
+	background-color: #2e2e2e;
 	padding: 8px 12px;
 	border-radius: 4px;
+	border: 1px solid #424242;
 	.mrt-sfp--proctype {
 		margin: 0 0 12px 0;
 		label {
@@ -189,6 +202,10 @@ export default {
 			.mrt-sfp--selection,
 			.mrt-sfp--full {
 				font-weight: 400;
+				line-height: 1.5;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
 			}
 		}
 		.mrt-sfp--header {
@@ -206,6 +223,15 @@ export default {
 		}
 		label {
 			flex: 1;
+			&.mrt-sfp--item__dyna {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				i {
+					font-size: 16px;
+					color: #81c784;
+				}
+			}
 		}
 		.mrt-sfp--selection {
 			width: 100px;

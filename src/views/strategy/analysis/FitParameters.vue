@@ -260,14 +260,14 @@
 				<div v-else>{{strategy.fit.resid_std_full | number }}</div>
 			</div>
 			<div class="mrt-fitparams--section__row">
-				<label>Skew</label>
+				<label>Skewness</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_skew | number }}</div>
 				<div v-if="isLoadingTS">...</div>
 				<div v-else>{{strategy.fit.resid_skew_full | number }}</div>
 			</div>
 			<div class="mrt-fitparams--section__row">
-				<label>Kurt</label>
+				<label>Kurtosis</label>
 				<div v-if="isFittingTS">...</div>
 				<div v-else>{{strategy.fit.resid_kurt | number }}</div>
 				<div v-if="isLoadingTS">...</div>
@@ -309,7 +309,7 @@ export default {
 
 			// Props
 			backrgoundColor: "transparent",
-			color: "#81C784",
+			color: "#C8E6C9",
 			theme: false
 		};
 	},
@@ -584,6 +584,7 @@ export default {
 }
 .mrt-fitparams {
 	background-color: #2e2e2e;
+	border: 1px solid #424242;
 	padding: 8px 12px;
 	border-radius: 4px;
 	display: flex;
@@ -604,7 +605,7 @@ export default {
 					color: #e0e0e0;
 					margin: 0 8px 0 0;
 					&.on {
-						color: #81C784;
+						color: #81c784;
 					}
 				}
 			}
@@ -625,7 +626,7 @@ export default {
 		}
 		.mrt-fitparams--section__row {
 			display: flex;
-			margin: 0 0 4px 0;
+			margin: 0 0 3px 0;
 			padding: 0 0 2px 4px;
 			align-items: center;
 			> div {
@@ -633,16 +634,19 @@ export default {
 				text-align: right;
 			}
 			.mrt-fitparams--section__row-dyna {
-				background-color: #FFF;
+				background-color: #e0e0e0;
 				color: #121212;
 				padding: 1px 4px 1px 4px;
 				border-radius: 3px;
-				min-width: 100px;
+				width: 100px;
 				height: 24px;
 				display: inline-block;
 				cursor: pointer;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
 				&.on {
-					background-color: #81C784;
+					background-color: #69F0AE;
 				}
 			}
 			.mrt-fitparams--section__row-fitting {

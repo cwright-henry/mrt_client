@@ -54,9 +54,9 @@ const optionsCompact = {
 
 Vue.filter('number', function (value) {
 	if (value !== null && !isNaN(value)) {
-		let precision = 0;
+		let precision = 2;
 
-		let t = Math.abs(value);
+		/*let t = Math.abs(value);
 		if (t < 10) {
 			precision = 3;
 		}
@@ -71,7 +71,7 @@ Vue.filter('number', function (value) {
 		}
 		else {
 			return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format((value / 1000).toFixed(2)) + 'k';
-		}
+		}*/
 
 		return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: precision, minimumFractionDigits: precision }).format(value);
 	}

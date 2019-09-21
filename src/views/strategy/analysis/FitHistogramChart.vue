@@ -27,7 +27,21 @@ const options = vm => {
 			enabled: false
 		},
 		tooltip: {
-			enabled: true
+			enabled: true,
+			shared: true,
+			formatter: function() {
+				const series = this.points[0];
+				const distribution = this.points[1];
+
+				if (series && distribution) {
+					return `<span style="color:${series.series.color}">${series.series.name}</span>
+						<span>${series.y.toFixed(2)}</span><br/>
+						<span style="color:${distribution.series.color}">${distribution.series.name}</span>
+						<span>${distribution.y.toFixed(2)}</span>`;
+				} else {
+					return `Error`
+				}
+			}
 		},
 		xAxis: {
 			title: {
@@ -108,7 +122,7 @@ export default {
 			this.clearSeries();
 
 			if (this.ts) {
-				setTimeout(() => {
+				this.$nextTick(() => {
 					const series = trimData(
 						this.ts,
 						this.startDate,
@@ -117,7 +131,7 @@ export default {
 					const bins = this.createBins(series);
 
 					chart.addSeries({
-						name: "Distribution",
+						name: "Selection",
 						data: bins,
 						color: "#00B0FF"
 					});
@@ -128,7 +142,7 @@ export default {
 						data: gaussionData(0, 1, bins)
 					});
 					chart.reflow();
-				}, 1000);
+				});
 			}
 		},
 
@@ -143,7 +157,10 @@ export default {
 			const data = [];
 
 			for (let i = 0; i < series.length; i++) {
-				data.push(series[i][1]);
+				let v = series[i][1];
+				if (Math.abs(v) <= 3) {
+					data.push(v);
+				}
 			}
 			const hData = []; //the output array
 			let size = data.length; //how many data points

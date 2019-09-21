@@ -135,7 +135,7 @@ export default {
 			this.$store.commit("strategies/updateStrategy", strategy);
 			EventBus.$emit(
 				"api-strategy-save",
-				`${strategy.name} Strategy Saved`
+				`${strategy.name} Scenario Saved`
 			);
 			this.$router.push("/library");
 		},

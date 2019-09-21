@@ -47,18 +47,20 @@ const options = vm => {
 			enabled: true,
 			shared: true,
 			pointFormatter: function() {
-				var ret = this.series.name + ": " + this.y.toFixed(3) + "<br/>";
+				var ret = `<span style="color:${this.series.color}">${
+					this.series.name
+				}</span> : ${this.y.toFixed(3)}<br/>`;
 
 				if (this.series.chart.series[1]) {
 					if (this.series.name == "full") {
 						ret +=
-							"Selection" +
+							"<span style='color:#2196F3'>Selection</span>" +
 							": " +
 							vm.$options.seriesData[this.x][1] +
 							"<br/>";
 					} else {
 						ret +=
-							"Full" +
+							"<span style='color:#FDD835'>Full</span>" +
 							": " +
 							vm.$options.seriesData[this.x][0] +
 							"<br/>";
@@ -77,6 +79,9 @@ const options = vm => {
 		yAxis: {
 			title: {
 				text: ""
+			},
+			labels: {
+				align: "right"
 			},
 			opposite: true,
 			offset: 0
