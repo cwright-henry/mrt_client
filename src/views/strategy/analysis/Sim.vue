@@ -1,105 +1,101 @@
 <template>
 	<div class="simulations">
-		<div class="panel">
-			<div class="sim-navigation">
-				<mrt-fit-process :fit="strategy.fit" />
+		<div class="controls">
+			<mrt-sim-parameters />
+			<div class="actions">
+				<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="getMoreSims">
+					<v-icon>autorenew</v-icon>
+				</v-btn>
+				<label>New Run</label>
+			</div>
+		</div>
+		<div class="simulation-graph">
+			<mrt-simchart ref="simChart" @startdate="loadSimsForDate"></mrt-simchart>
+		</div>
+		<div class="controls">
+			<div class="horizon">
+				<v-select
+					v-model="horizon"
+					:items="horizonTypes"
+					:loading="isLoadingSims"
+					dense
+					box
+					hide-details
+					return-object
+					flat
+					label="Horizon"
+				></v-select>
+			</div>
+			<div class="play">
+				<div class="thumb-slider">
+					<v-slider
+						v-model="animationTime"
+						:thumb-size="28"
+						label="Interval"
+						:min="0.5"
+						:max="8"
+						step="0.5"
+						ticks="always"
+						tick-size="1"
+						thumb-label="always"
+					>
+						<template slot="thumb-label" slot-scope="props">
+							<span>{{ `${props.value}s` }}</span>
+						</template>
+					</v-slider>
+				</div>
 				<div class="mrt-fit--actions">
 					<div>
-						<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="getMoreSims">
-							<v-icon>autorenew</v-icon>
+						<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="autoPlaySims">
+							<v-icon>{{isPlaying ? 'pause' : 'play_arrow'}}</v-icon>
 						</v-btn>
-						<label>New Run</label>
+						<label>{{isPlaying ? 'Stop' : 'Animate'}}</label>
 					</div>
 				</div>
 			</div>
-			<div class="simulation-graph">
-				<mrt-simchart ref="simChart" @startdate="loadSimsForDate"></mrt-simchart>
-			</div>
-			<div class="controls">
-				<div class="horizon">
-					<v-select
-						v-model="horizon"
-						:items="horizonTypes"
-						:loading="isLoadingSims"
-						dense
-						box
-						hide-details
-						return-object
-						flat
-						label="Horizon"
-					></v-select>
-				</div>
-				<div class="play">
-					<div class="thumb-slider">
-						<v-slider
-							v-model="animationTime"
-							:thumb-size="28"
-							label="Interval"
-							:min="0.5"
-							:max="8"
-							step="0.5"
-							ticks="always"
-							tick-size="1"
-							thumb-label="always"
-						>
-							<template slot="thumb-label" slot-scope="props">
-								<span>{{ `${props.value}s` }}</span>
-							</template>
-						</v-slider>
-					</div>
-					<div class="mrt-fit--actions">
-						<div>
-							<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="autoPlaySims">
-								<v-icon>{{isPlaying ? 'pause' : 'play_arrow'}}</v-icon>
-							</v-btn>
-							<label>{{isPlaying ? 'Stop' : 'Animate'}}</label>
-						</div>
-					</div>
-				</div>
-				<div class="updates">
-					<div class="mrt-fit--actions">
-						<div>
-							<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="reset">
-								<v-icon>settings_backup_restore</v-icon>
-							</v-btn>
-							<label>Reset</label>
-						</div>
+			<div class="updates">
+				<div class="mrt-fit--actions">
+					<div>
+						<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="reset">
+							<v-icon>settings_backup_restore</v-icon>
+						</v-btn>
+						<label>Reset</label>
 					</div>
 				</div>
 			</div>
-			<ul class="sparklines-graph">
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[0]"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[1]"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[2]"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[3]"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[4]"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[5]"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[6]"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[7]"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[8]"></mrt-sims-sparkline-chart>
-				</li>
-				<li>
-					<mrt-sims-sparkline-chart :sim="sims[9]"></mrt-sims-sparkline-chart>
-				</li>
-			</ul>
 		</div>
+		<ul class="sparklines-graph">
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[0]"></mrt-sims-sparkline-chart>
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[1]"></mrt-sims-sparkline-chart>
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[2]"></mrt-sims-sparkline-chart>
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[3]"></mrt-sims-sparkline-chart>
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[4]"></mrt-sims-sparkline-chart>
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[5]"></mrt-sims-sparkline-chart>
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[6]"></mrt-sims-sparkline-chart>
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[7]"></mrt-sims-sparkline-chart>
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[8]"></mrt-sims-sparkline-chart>
+			</li>
+			<li>
+				<mrt-sims-sparkline-chart :sim="sims[9]"></mrt-sims-sparkline-chart>
+			</li>
+		</ul>
 	</div>
 </template>
 
@@ -107,6 +103,7 @@
 import mrtFitProcess from "@/components/fit/Fit";
 import mrtSimsSparklineChart from "./SimsSparklineChart";
 import mrtSimchart from "./SimsChart";
+import mrtSimParameters from "./SimParameters";
 import { mapState } from "vuex";
 import { closestNeighbour } from "@/utils";
 
@@ -131,7 +128,8 @@ export default {
 	components: {
 		mrtSimchart,
 		mrtSimsSparklineChart,
-		mrtFitProcess
+		mrtFitProcess,
+		mrtSimParameters
 	},
 	computed: {
 		...mapState("fit", [
@@ -207,7 +205,27 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+.simulations {
+	background-color: #252525;
+	padding: 16px;
+	.controls {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		.actions {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			label {
+				text-transform: uppercase;
+				color: #e0e0e0;
+				font-size: 11px;
+				font-weight: 300;
+			}
+		}
+	}
+}
 .mrt-analysis {
 	.simulations {
 		.sim-navigation {

@@ -1,6 +1,7 @@
-import ApiController from '@/services/ApiController'
 import moment from 'moment'
+import ApiController from '@/services/ApiController'
 import { closestNeighbour, tsExtremes, seedGen, getMinMax, mean } from '@/utils'
+import { PROCTYPES } from './proctypes'
 
 
 const DEFAULT_ACTIVE_TAB = '1';
@@ -30,6 +31,7 @@ export default {
 
 		// proctype
 		proctype: DEFAULT_PROCTYPE,
+		proctypes: PROCTYPES,
 
 		// Notifications
 		isLoadingStrategy: false,
@@ -94,6 +96,38 @@ export default {
 
 		findET: state => (sl, tp) => {
 			return state.ET[sl][tp]
+		},
+
+		findProctype: state => () => {
+			return PROCTYPES.find(x => x.value === state.proctype)
+		},
+
+		kappa: state => () => {
+			if (state.userKappa != null) {
+				return state.userKappa;
+			}
+			return state.strategy.fit.kappa;
+		},
+
+		theta: state => () => {
+			if (state.userTheta != null) {
+				return state.userTheta;
+			}
+			return state.strategy.fit.theta;
+		},
+
+		sigma: state => () => {
+			if (state.userSigma != null) {
+				return state.userSigma;
+			}
+			return state.strategy.fit.sigma;
+		},
+
+		beta: state => () => {
+			if (state.usernBeta != null) {
+				return state.usernBeta;
+			}
+			return state.strategy.fit.nbeta;
 		}
 	},
 

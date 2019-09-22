@@ -159,7 +159,13 @@ export default {
 		}
 	},
 	computed: {
-		...mapState("fit", ["strategy", "startDate", "endDate", "isLoadingTS"])
+		...mapState("fit", [
+			"strategy",
+			"startDate",
+			"endDate",
+			"isLoadingTS",
+			"activeTab"
+		])
 	},
 	watch: {
 		strategy() {
@@ -169,6 +175,10 @@ export default {
 			if (isLoading) {
 				this.clearSeries();
 			}
+		},
+		activeTab() {
+			const chart = this.$refs.fitchart.chart;
+			chart.reflow();
 		}
 	},
 	mounted() {

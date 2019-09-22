@@ -90,12 +90,12 @@
 				<div class="mrt-sfp--full">{{fit.resid_std_full | number}}</div>
 			</div>
 			<div class="mrt-sfp--item">
-				<label>Skew</label>
+				<label>Skewness</label>
 				<div class="mrt-sfp--selection">{{fit.resid_skew | number}}</div>
 				<div class="mrt-sfp--full">{{fit.resid_skew_full | number}}</div>
 			</div>
 			<div class="mrt-sfp--item">
-				<label>Kurt</label>
+				<label>Kurtosis</label>
 				<div class="mrt-sfp--selection">{{fit.resid_kurt | number}}</div>
 				<div class="mrt-sfp--full">{{fit.resid_kurt_full | number}}</div>
 			</div>

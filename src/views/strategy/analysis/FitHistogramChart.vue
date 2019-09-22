@@ -34,12 +34,16 @@ const options = vm => {
 				const distribution = this.points[1];
 
 				if (series && distribution) {
-					return `<span style="color:${series.series.color}">${series.series.name}</span>
+					return `<span style="color:${series.series.color}">${
+						series.series.name
+					}</span>
 						<span>${series.y.toFixed(2)}</span><br/>
-						<span style="color:${distribution.series.color}">${distribution.series.name}</span>
+						<span style="color:${distribution.series.color}">${
+						distribution.series.name
+					}</span>
 						<span>${distribution.y.toFixed(2)}</span>`;
 				} else {
-					return `Error`
+					return `Error`;
 				}
 			}
 		},
@@ -106,11 +110,15 @@ export default {
 		};
 	},
 	computed: {
-		...mapState("fit", ["startDate", "endDate"])
+		...mapState("fit", ["startDate", "endDate", "activeTab"])
 	},
 	watch: {
 		ts() {
 			this.update();
+		},
+		activeTab() {
+			const chart = this.$refs.histogram.chart;
+			chart.reflow();
 		}
 	},
 	mounted() {

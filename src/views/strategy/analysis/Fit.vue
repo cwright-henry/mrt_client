@@ -77,30 +77,7 @@ export default {
 	data() {
 		return {
 			autoFit: true,
-			aggregator: true,
-			proctypes: [
-				{ value: "OU", text: "Ornstein-Uhlenbeck" },
-				{
-					value: "BMD",
-					text: "Brownian Motion with Drift",
-					disabled: true
-				},
-				{
-					value: "GBMD",
-					text: "Geometric Brownian Motion with Drift",
-					disabled: true
-				},
-				{
-					value: "hypOU",
-					text: "Hyperbolic Ornstein-Uhlenbeck",
-					disabled: false
-				},
-				{
-					value: "CEV",
-					text: "Constant Elasticity of Variance",
-					disabled: true
-				}
-			]
+			aggregator: true
 		};
 	},
 	watch: {
@@ -121,7 +98,8 @@ export default {
 			"strategy",
 			"isFittingTS",
 			"isLoadingTS",
-			"isSavingFit"
+			"isSavingFit",
+			"proctypes"
 		]),
 		...mapGetters("strategies", ["findStrategy"]),
 		proctype: {
@@ -164,7 +142,7 @@ export default {
 		padding: 8px;
 		margin: 0 0 16px;
 		.v-select__selection {
-			color:#CE93D8;
+			color: #ce93d8;
 		}
 	}
 	.mrt-senfit--data {

@@ -131,7 +131,12 @@ export default {
 	},
 	seriesData: {},
 	computed: {
-		...mapState("fit", ["startDate", "endDate", "originalResids"])
+		...mapState("fit", [
+			"startDate",
+			"endDate",
+			"originalResids",
+			"activeTab"
+		])
 	},
 	watch: {
 		startDate() {
@@ -148,6 +153,10 @@ export default {
 		},
 		originalResids() {
 			this.update();
+		},
+		activeTab() {
+			const chart = this.$refs.residuals.chart;
+			chart.reflow();
 		}
 	},
 	mounted() {
