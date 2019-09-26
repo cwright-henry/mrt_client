@@ -4,7 +4,9 @@ const moveTypes = ['mousemove', 'touchmove']
 const endTypes = ['mouseup', 'touchend']
 
 /**
- * Carefull here - noticed that container is sometimes undefined
+ * Carefull here - noticed that 'container' is sometimes undefined - this happens
+ * when we try to draw into an uninitialized container when the event firing reactive system
+ * has not be properly setup.
  * 
  * @param {*} container 
  * @param {*} types 
@@ -31,10 +33,10 @@ const removeListeners = (container, types, fn) => {
 const getPlotLine = (value, type) => {
 	return {
 		value,
-		color: '#AEEA00',
+		color: '#FFEB3B',
 		width: 1,
 		label: {
-			align: 'center',
+			align: 'top',
 			useHTML: true,
 			text: `<span class="axis-label ${type}"></span>`
 		},
@@ -87,6 +89,10 @@ export default class {
 	updatePlotLine(value, type) {
 		this.chart.xAxis[0].removePlotLine(`${type}-plotline`);
 		this.chart.xAxis[0].addPlotLine(getPlotLine(value, type))
+		let line = document.querySelector('.axis-label.pos')
+		addListeners(line, startTypes, () => {
+			this.move()
+		})
 	}
 
 	move() {
@@ -96,16 +102,15 @@ export default class {
 			if (this.pos >= this.min && this.pos < this.max) {
 				this.updatePlotLine(this.pos, 'pos')
 			}
+			this.chart.options.zoomType = '';
+			this.chart.pointer.zoomX = false;
 		}
 		const stop = () => {
 			removeListeners(this.container, moveTypes, step)
 			removeListeners(this.container, endTypes, stop)
-			let line = document.querySelector('.axis-label.pos')
-			addListeners(line, startTypes, () => {
-				this.move()
-			})
-
 			this.vm.$emit('startdate', this.pos)
+			this.chart.options.zoomType = 'x';
+			this.chart.pointer.zoomX = true;
 		}
 
 		addListeners(this.container, moveTypes, step)

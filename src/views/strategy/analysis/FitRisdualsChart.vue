@@ -1,15 +1,20 @@
 <template>
-	<highcharts :options="options" :ts="ts" :name="name" ref="residuals"></highcharts>
+	<highcharts :options="options" :ts="ts" :name="name" ref="mrtchart"></highcharts>
 </template>
 
 <script>
 import { mapState } from "vuex";
 
+const FULL_COLOR = "#FDD835";
+const SELECTION_COLOR = "#2196F3";
+const PLOTLINE_COLOR = "#FFEB3B";
+const PLOTBAND_COLOR = "rgba(255,255,0,0.02)";
+
 const getPlotBand = (from, to) => {
 	return {
 		from,
 		to,
-		color: "rgba(255,255,0,0.02)",
+		color: PLOTBAND_COLOR,
 		id: "plot-band"
 	};
 };
@@ -17,7 +22,7 @@ const getPlotBand = (from, to) => {
 const getPlotLine = (value, type) => {
 	return {
 		value,
-		color: "#FFEB3B",
+		color: PLOTLINE_COLOR,
 		width: 0.5,
 		dashStyle: "dash",
 		id: `${type}-plotline`,
@@ -52,7 +57,7 @@ const options = vm => {
 				}</span> : ${this.y.toFixed(3)}<br/>`;
 
 				if (this.series.chart.series[1]) {
-					if (this.series.name == "full") {
+					if (this.series.name == "Full") {
 						ret +=
 							"<span style='color:#2196F3'>Selection</span>" +
 							": " +
@@ -118,10 +123,6 @@ export default {
 		backgroundColor: {
 			type: String,
 			default: "rgba(0, 0, 0, 0)"
-		},
-		aggregator: {
-			type: Boolean,
-			default: false
 		}
 	},
 	data() {
@@ -135,7 +136,8 @@ export default {
 			"startDate",
 			"endDate",
 			"originalResids",
-			"activeTab"
+			"activeTab",
+			"showFull"
 		])
 	},
 	watch: {
@@ -148,14 +150,14 @@ export default {
 		ts() {
 			this.update();
 		},
-		aggregator() {
-			this.update();
+		showFull() {
+			this.toggleFull();
 		},
 		originalResids() {
 			this.update();
 		},
 		activeTab() {
-			const chart = this.$refs.residuals.chart;
+			const chart = this.$refs.mrtchart.chart;
 			chart.reflow();
 		}
 	},
@@ -164,7 +166,7 @@ export default {
 	},
 	methods: {
 		update() {
-			const chart = this.$refs.residuals.chart;
+			const chart = this.$refs.mrtchart.chart;
 			//
 			//	This is gettiing called multiple times due
 			//	setting originalResids and the strategy ts in independent commit in the store!!
@@ -178,24 +180,34 @@ export default {
 					this.clearSeries();
 					this.updateRange();
 					this.fillBuckets(this.originalResids, this.ts);
-					if (this.aggregator) {
-						chart.addSeries({
-							type: "scatter",
-							color: "#FDD835",
-							data: this.originalResids,
-							name: "full",
-							index: 1
-						});
-					}
 					chart.addSeries({
 						type: "scatter",
-						color: "#2196F3",
+						color: FULL_COLOR,
+						data: this.originalResids,
+						name: "Full",
+						id: "full",
+						visible: this.showFull
+					});
+
+					chart.addSeries({
+						type: "scatter",
+						color: SELECTION_COLOR,
 						data: this.ts,
-						name: "selection",
-						index: 2
+						name: "Selection",
+						id: "selection"
 					});
 					chart.reflow();
 				});
+			}
+		},
+
+		toggleFull() {
+			const chart = this.$refs.mrtchart.chart;
+			const series = chart.get("full");
+			if (this.showFull) {
+				series.show();
+			} else {
+				series.hide();
 			}
 		},
 
@@ -209,7 +221,7 @@ export default {
 		},
 
 		updateRange() {
-			const chart = this.$refs.residuals.chart;
+			const chart = this.$refs.mrtchart.chart;
 			chart.xAxis[0].removePlotLine(`min-plotline`);
 			chart.xAxis[0].removePlotLine(`max-plotline`);
 			chart.xAxis[0].removePlotBand("plot-band");
@@ -221,7 +233,7 @@ export default {
 		},
 
 		clearSeries() {
-			const chart = this.$refs.residuals.chart;
+			const chart = this.$refs.mrtchart.chart;
 			while (chart.series.length > 0) {
 				chart.series[0].remove(false);
 			}

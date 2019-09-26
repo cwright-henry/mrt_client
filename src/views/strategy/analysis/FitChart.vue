@@ -191,19 +191,18 @@ export default {
 		update() {
 			const chart = this.$refs.fitchart.chart;
 			if (this.strategy.name) {
-				setTimeout(() => {
+				this.$nextTick(() => {
 					this.clearSeries();
 					chart.addSeries({
 						type: "line",
 						data: this.strategy.ts.data,
-						name: this.strategy.name,
-						threshold: mean(this.strategy.ts.data)
+						name: this.strategy.name
 					});
 
 					//chart.rangeSelector.clickButton(5, true);
 					chart.xAxis[0].setExtremes(this.startDate, this.endDate);
 					chart.reflow();
-				}, 0);
+				});
 			}
 		},
 

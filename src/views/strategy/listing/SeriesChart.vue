@@ -175,8 +175,9 @@ const options = vm => {
 		},
 		plotOptions: {
 			series: {
+				// Data gets grouped when there is a large number of data points
 				dataGrouping: {
-					enabled: false /* By default highstocks groups data into weeks */
+					enabled: false /* Should we disable this approximation as it may appear to the user that data is missing from the graph */
 				},
 				states: {
 					hover: {

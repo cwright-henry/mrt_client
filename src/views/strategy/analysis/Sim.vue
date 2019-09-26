@@ -6,7 +6,7 @@
 				<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="getMoreSims">
 					<v-icon>autorenew</v-icon>
 				</v-btn>
-				<label>New Run</label>
+				<label>Generate</label>
 			</div>
 		</div>
 		<div class="simulation-graph">
@@ -16,7 +16,7 @@
 			<div class="horizon">
 				<v-select
 					v-model="horizon"
-					:items="horizonTypes"
+					:items="simhorizons"
 					:loading="isLoadingSims"
 					dense
 					box
@@ -111,18 +111,7 @@ export default {
 	data() {
 		return {
 			isPlaying: false,
-			isPlayingTimeout: null,
-			horizonTypes: [
-				{ value: "130", text: "6 months" },
-				{ value: "260", text: "1 year" },
-				{ value: "520", text: "2 years" },
-				{ value: "780", text: "3 years" },
-				{ value: "1300", text: "5 years" },
-				{
-					value: "-1",
-					text: "Align"
-				} /* Special Case to match slider and end of timeseries */
-			]
+			isPlayingTimeout: null
 		};
 	},
 	components: {
@@ -141,6 +130,7 @@ export default {
 			"sims",
 			"selectedSim",
 			"simHorizon",
+			"simhorizons",
 			"simAnimationTime"
 		]),
 		horizon: {
@@ -163,7 +153,6 @@ export default {
 	},
 	methods: {
 		async getMoreSims() {
-			this.$store.commit("fit/genSimSeed");
 			await this.$store.dispatch("fit/loadSims");
 		},
 
@@ -224,6 +213,9 @@ export default {
 				font-weight: 300;
 			}
 		}
+	}
+	.simulation-graph {
+		width: calc(100% - 0px);
 	}
 }
 .mrt-analysis {

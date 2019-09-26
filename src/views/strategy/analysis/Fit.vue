@@ -47,19 +47,15 @@
 					</div>
 				</div>
 				<div>
-					<mrt-risdualschart :ts="strategy.fit.resid" :aggregator="aggregator" :name="strategy.name"></mrt-risdualschart>
+					<mrt-risdualschart :ts="strategy.fit.resid" :name="strategy.name"></mrt-risdualschart>
 				</div>
 			</div>
 			<div class="mrt-senfit--residuals-graphs__histogram">
 				<h3>
-					Selection Histogram
+					Histogram
 					<span>(Capped at 3 STD)</span>
 				</h3>
-				<mrt-histogramchart
-					:ts="strategy.fit.resid"
-					:mean="strategy.fit.resid_mean"
-					:std="strategy.fit.resid_std"
-				></mrt-histogramchart>
+				<mrt-histogramchart />
 			</div>
 		</div>
 	</div>
@@ -76,8 +72,7 @@ export default {
 	name: "MRT_FIT_PROCESS",
 	data() {
 		return {
-			autoFit: true,
-			aggregator: true
+			autoFit: true
 		};
 	},
 	watch: {
@@ -109,6 +104,15 @@ export default {
 
 			async set(value) {
 				await this.$store.dispatch("fit/setProcType", value);
+			}
+		},
+		aggregator: {
+			get() {
+				return this.$store.state.fit.showFull;
+			},
+
+			set(value) {
+				this.$store.commit("fit/setShowFull", value);
 			}
 		}
 	},

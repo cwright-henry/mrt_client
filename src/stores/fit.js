@@ -2,11 +2,12 @@ import moment from 'moment'
 import ApiController from '@/services/ApiController'
 import { closestNeighbour, tsExtremes, seedGen, getMinMax, mean } from '@/utils'
 import { PROCTYPES } from './proctypes'
+import { HORIZON_TYPES } from './horizontypes'
 
 
-const DEFAULT_ACTIVE_TAB = '1';
+const DEFAULT_ACTIVE_TAB = '2';
 const DEFAULT_PROCTYPE = 'OU';
-const DEFAULT_SIM_HORIZON = { value: '-1', text: 'Align' };
+const DEFAULT_SIM_HORIZON = { value: "0", text: "Last Date" };
 const DEFAULT_ANIMATION_TIME = 2;
 
 export default {
@@ -28,6 +29,9 @@ export default {
 
 		// Active Tab
 		activeTab: DEFAULT_ACTIVE_TAB,
+
+		// Show both selection and full
+		showFull: true,
 
 		// proctype
 		proctype: DEFAULT_PROCTYPE,
@@ -56,10 +60,10 @@ export default {
 			value: null,
 			date: null
 		},
+		simSeed: seedGen(),
 		simHorizon: DEFAULT_SIM_HORIZON,
-		simSeed: 123456789,
-		simSliderValue: null,
 		simAnimationTime: DEFAULT_ANIMATION_TIME,
+		simhorizons: HORIZON_TYPES,
 
 		// Min, max of series used for validation -
 		// not sure these derived values should here!!
@@ -199,10 +203,6 @@ export default {
 			state.simAnimationTime = DEFAULT_ANIMATION_TIME;
 		},
 
-		genSimSeed(state) {
-			state.simSeed = seedGen();
-		},
-
 		setStartDate(state, date) {
 			state.startDate = date;
 		},
@@ -213,6 +213,10 @@ export default {
 
 		setOriginalResids(state, data) {
 			state.originalResids = data;
+		},
+
+		setShowFull(state, value) {
+			state.showFull = value
 		},
 
 		setStrategy(state, strategy) {
@@ -229,6 +233,9 @@ export default {
 
 			// Active Tab
 			state.activeTab = DEFAULT_ACTIVE_TAB;
+
+			// SHow Full vs Selection
+			state.showFull = true;
 
 			// Proctype
 			state.proctype = state.strategy.fit.proctype === 'NONE' ? DEFAULT_PROCTYPE : state.strategy.fit.proctype;
@@ -250,12 +257,11 @@ export default {
 			state.avg = avg;
 
 			// Sims
+			const startSim = closestNeighbour(state.strategy.ts.data, state.startDate)
 			state.selectedSim = null;
-			state.simStart.value = extremes.maxValue;
-			state.simStart.date = extremes.max;
+			state.simStart.value = startSim[1];
+			state.simStart.date = startSim[0];
 			state.simHorizon = DEFAULT_SIM_HORIZON;
-			state.simSeed = seedGen();
-			state.simSliderValue = state.endDate;
 			state.simAnimationTime = DEFAULT_ANIMATION_TIME;
 
 			// SLTP
@@ -505,23 +511,22 @@ export default {
 					nbeta: state.userBeta !== null ? state.userBeta : state.strategy.fit.nbeta,
 					x_0: state.simStart.value,
 					x_0_date: state.simStart.date,
-					nsteps: state.simHorizon.value,
+					nsteps: '-1',
 					seed: state.simSeed
 				}
 
-				/* Special case to match end of series */
-				if (payload.nsteps === '-1') {
-					const point = closestNeighbour(state.strategy.ts.data, payload.x_0_date)
-					const index = state.strategy.ts.data.findIndex(elm => elm[0] === point[0])
-					let diff = state.strategy.ts.data.length - index;						// Mark is giving one more than asked for
-					for (let i = index, len = state.strategy.ts.data.length; i < len; i++) {	// If weekends exists skip these when asking for sims
-						if (moment.utc(state.strategy.ts.data[i][0]).day() === 6 ||			// Ignore Saturday
-							moment.utc(state.strategy.ts.data[i][0]).day() === 0) {		// Ignore Sunday
-							diff--;
-						}
+				// Extract Saturday and Sunday when calculating sims
+				const point = closestNeighbour(state.strategy.ts.data, payload.x_0_date)
+				const index = state.strategy.ts.data.findIndex(elm => elm[0] === point[0])
+				let numberOfDays = state.strategy.ts.data.length - index;						// Mark is giving one more than asked for
+				for (let i = index, len = state.strategy.ts.data.length; i < len; i++) {	// If weekends exists skip these when asking for sims
+					if (moment.utc(state.strategy.ts.data[i][0]).day() === 6 ||			// Ignore Saturday
+						moment.utc(state.strategy.ts.data[i][0]).day() === 0) {		// Ignore Sunday
+						numberOfDays--;
 					}
-					payload.nsteps = parseInt(diff)
 				}
+
+				payload.nsteps = numberOfDays + parseInt(state.simHorizon.value)
 
 				const sims = await ApiController.scenarios(payload);
 

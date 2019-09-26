@@ -1,21 +1,48 @@
 <template>
-	<highcharts :options="options" ref="simschart"></highcharts>
+	<div>
+		<highcharts :options="options" ref="simchart"></highcharts>
+	</div>
 </template>
 
 <script>
 import SimSlider from "@/utils/simslider";
-import { getPlotBand, getPlotLine, tsExtremes, mean } from "@/utils";
+import { tsExtremes } from "@/utils";
 import { mapState } from "vuex";
 
 const MIN_PLOTLINE_ID = "SIM_MIN_PLOTLINE";
 const MAX_PLOTLINE_ID = "SIM_MAX_PLOTLINE";
 const PLOTBAND_ID = "SIM_PLOTBAND";
+const SERIES_COLOR = "#26A69A";
+
+const PLOTLINE_COLOR = "#FFEB3B";
+const PLOTBAND_COLOR = "rgba(255,255,0,0.02)";
+
+const getPlotBand = (from, to) => {
+	return {
+		from,
+		to,
+		color: PLOTBAND_COLOR,
+		id: "plot-band"
+	};
+};
+
+const getPlotLine = (value, type) => {
+	return {
+		value,
+		color: PLOTLINE_COLOR,
+		width: 0.5,
+		dashStyle: "dash",
+		id: `${type}-plotline`,
+		zIndex: 999
+	};
+};
 
 const options = vm => {
 	return {
 		chart: {
 			height: vm._props.height,
-			backgroundColor: vm._props.backgroundColor
+			backgroundColor: vm._props.backgroundColor,
+			zoomType: "x"
 		},
 		title: {
 			text: null
@@ -44,22 +71,23 @@ const options = vm => {
 		},
 		plotOptions: {
 			series: {
-				cursor: "pointer",
-				zIndex: 1,
+				dataGrouping: {
+					enabled: false /* By default highstocks groups data into weeks using average over the week for large datasets */
+				},
 				states: {
 					hover: {
 						enabled: false
 					}
-				}
-			},
-			area: {
-				fillColor: "#00B0FF",
-				color: "#FFFFFF",
-				lineWidth: 0.5
+				},
+				enableMouseTracking: false /* This is important else we will get pointer errors - hmmm, also lose acesss to tooltip and click events*/
 			},
 			line: {
-				lineWidth: 0.5,
-				color: "#AEEA00"
+				lineWidth: 1,
+				boostThreshold: 0,
+				color: SERIES_COLOR,
+				marker: {
+					enabled: false
+				}
 			}
 		}
 	};
@@ -69,9 +97,9 @@ export default {
 	data() {
 		return {
 			options: options(this),
-			average: 0,
 			secondaries: [],
-			simSlider: null
+			simSlider: null,
+			graphInitialized: false
 		};
 	},
 	props: {
@@ -88,24 +116,35 @@ export default {
 		...mapState("fit", [
 			"strategy",
 			"sims",
-			"startDate",
-			"endDate",
 			"selectedSim",
-			"isLoadingSims"
+			"isLoadingSims",
+			"activeTab",
+			"startDate",
+			"endDate"
 		])
 	},
 	watch: {
 		"strategy.ts"() {
 			this.update();
 		},
+		startDate(value) {
+			if (value && this.graphInitialized) this.updateRange();
+		},
+		endDate(value) {
+			if (value && this.graphInitialized) this.updateRange();
+		},
 		selectedSim(value) {
 			if (value !== null) {
 				this.drawSim();
 			}
+		},
+		activeTab() {
+			const chart = this.$refs.simchart.chart;
+			chart.reflow();
 		}
 	},
 	mounted() {
-		this.simSlider = new SimSlider(this, this.$refs.simschart.chart);
+		this.simSlider = new SimSlider(this, this.$refs.simchart.chart);
 		this.update();
 	},
 	methods: {
@@ -117,28 +156,43 @@ export default {
 		 * 3. Load the sims for this timeseries
 		 */
 		async update() {
-			const chart = this.$refs.simschart.chart;
+			const chart = this.$refs.simchart.chart;
 			if (this.strategy.ts.data.length) {
-				const existing = chart.get("sim-chart");
-				if (existing) {
-					existing.remove();
-				}
-				this.average = mean(this.strategy.ts.data);
-				chart.addSeries({
-					type: "line",
-					data: this.strategy.ts.data,
-					name: this.strategy.name,
-					threshold: this.average,
-					color: "#2196F3",
-					id: "sim-chart",
-					lineWidth: 0.8
-				});
-				let extremes = tsExtremes(this.strategy.ts.data);
+				this.$nextTick(() => {
+					const existing = chart.get("sim-chart");
+					this.graphInitialized = false;
+					if (existing) {
+						existing.remove();
+					}
 
-				// Must call setPos after series has been added to chart - hmmmm makes sense!!
-				this.simSlider.setPos(extremes.max, extremes.min, extremes.max);
-				chart.reflow();
+					chart.addSeries({
+						type: "line",
+						data: this.strategy.ts.data,
+						name: this.strategy.name,
+						color: SERIES_COLOR,
+						id: "sim-chart"
+					});
+
+					this.updateRange();
+					chart.reflow();
+					this.graphInitialized = true;
+				});
 			}
+		},
+
+		updateRange() {
+			const chart = this.$refs.simchart.chart;
+			chart.xAxis[0].removePlotLine(`min-plotline`);
+			chart.xAxis[0].removePlotLine(`max-plotline`);
+			chart.xAxis[0].removePlotBand("plot-band");
+			chart.xAxis[0].addPlotBand(
+				getPlotBand(this.startDate, this.endDate)
+			);
+			chart.xAxis[0].addPlotLine(getPlotLine(this.startDate, "min"));
+			chart.xAxis[0].addPlotLine(getPlotLine(this.endDate, "max"));
+			let extremes = tsExtremes(this.strategy.ts.data);
+
+			this.simSlider.setPos(this.startDate, extremes.min, extremes.max);
 		},
 
 		resetPos() {
@@ -147,7 +201,7 @@ export default {
 		},
 
 		drawSim() {
-			const chart = this.$refs.simschart.chart;
+			const chart = this.$refs.simchart.chart;
 			const existing = chart.get("sim-sparkline");
 			if (existing) {
 				existing.remove();
@@ -157,7 +211,8 @@ export default {
 					chart.addSeries({
 						type: "line",
 						id: "sim-sparkline",
-						data: this.sims[i].data
+						data: this.sims[i].data,
+						color: "#FFEB3B"
 					});
 					chart.reflow();
 					break;
@@ -212,9 +267,9 @@ export default {
 	display: inline-block;
 	overflow: hidden;
 	cursor: ew-resize;
-	background-color: #aeea00;
+	background-color: #ffeb3b;
 	position: relative;
-	top: 6px;
+	top: 16px;
 	left: 108px;
 }
 </style>

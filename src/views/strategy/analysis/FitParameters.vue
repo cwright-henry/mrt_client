@@ -9,9 +9,7 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Kappa</span>
-					<v-icon
-						:class="userKappa !== null ? 'on' : 'off'"
-					>{{userKappa !== null ? 'lock' : 'lock_open'}}</v-icon>
+					<v-icon v-if="userKappa !== null" class="on">lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -58,9 +56,7 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Sigma</span>
-					<v-icon
-						:class="userSigma !== null ? 'on' : 'off'"
-					>{{userSigma !== null ? 'lock' : 'lock_open'}}</v-icon>
+					<v-icon v-if="userSigma !== null" class="on">lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -107,9 +103,7 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Theta</span>
-					<v-icon
-						:class="userTheta !== null ? 'on' : 'off'"
-					>{{userTheta !== null ? 'lock' : 'lock_open'}}</v-icon>
+					<v-icon v-if="userTheta !== null" class="on">lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -156,7 +150,7 @@
 			<div class="mrt-fitparams--section__row" v-if="proctype === 'hypOU'">
 				<label class="input-param">
 					<span>Beta</span>
-					<v-icon :class="userBeta !== null ? 'on' : 'off'">{{userBeta !== null ? 'lock' : 'lock_open'}}</v-icon>
+					<v-icon v-if="userBeta !== null" class="on">lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -309,7 +303,7 @@ export default {
 
 			// Props
 			backrgoundColor: "transparent",
-			color: "#C8E6C9",
+			color: "#D1C4E9",
 			theme: false
 		};
 	},
@@ -535,7 +529,6 @@ export default {
 
 		async fit() {
 			await this.$store.dispatch("fit/fit", {});
-			await this.$store.dispatch("fit/loadSims", {});
 		},
 
 		/**
@@ -550,6 +543,8 @@ export default {
 </script>
 
 <style lang="less">
+@lock-on: #b39ddb;
+
 .mrt-text-field {
 	display: flex;
 	align-items: center;
@@ -602,10 +597,9 @@ export default {
 				align-items: center;
 				.v-icon {
 					font-size: 16px !important;
-					color: #e0e0e0;
 					margin: 0 8px 0 0;
 					&.on {
-						color: #81c784;
+						color: @lock-on;
 					}
 				}
 			}
@@ -635,9 +629,9 @@ export default {
 			}
 			.mrt-fitparams--section__row-dyna {
 				background-color: #e0e0e0;
-				color: #121212;
 				padding: 1px 4px 1px 4px;
 				border-radius: 3px;
+				color: #121212;
 				width: 100px;
 				height: 24px;
 				display: inline-block;
@@ -646,7 +640,7 @@ export default {
 				text-overflow: ellipsis;
 				overflow: hidden;
 				&.on {
-					background-color: #69F0AE;
+					background-color: @lock-on;
 				}
 			}
 			.mrt-fitparams--section__row-fitting {

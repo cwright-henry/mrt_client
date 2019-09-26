@@ -14,6 +14,7 @@ import HighchartsVue from 'highcharts-vue'
 import stockInit from 'highcharts/modules/stock'
 import boost from 'highcharts/modules/boost'
 import dragPanes from 'highcharts/modules/drag-panes'
+import dragPoints from 'highcharts/modules/draggable-points'
 import theme from './components/charts/theme'
 
 import fullscreen from 'vue-fullscreen'
@@ -22,6 +23,7 @@ Vue.use(fullscreen)
 stockInit(Highcharts)
 dragPanes(Highcharts)
 boost(Highcharts)
+dragPoints(Highcharts)
 
 Highcharts.createElement('link', {
 	href: 'https://fonts.googleapis.com/css?family=Unica+One',

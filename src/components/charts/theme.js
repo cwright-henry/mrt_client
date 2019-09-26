@@ -85,7 +85,7 @@ export default {
       marker: {
         lineColor: "#333"
       },
-      boostThreshold: 50000
+      boostThreshold: 1000
     },
     boxplot: {
       fillColor: "#505053"

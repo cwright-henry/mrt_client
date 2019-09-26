@@ -204,6 +204,72 @@ const getAtIndex = (data, index) => {
 	return data[data.length - 1 - index]
 }
 
+const MAX_BIN_NUMBER = 50;
+
+const createBins = (series) => {
+	const data = [];
+
+	for (let i = 0; i < series.length; i++) {
+		let v = series[i][1];
+		if (Math.abs(v) <= 3) {
+			data.push(v);
+		}
+	}
+	const hData = []; //the output array
+	let size = data.length; //how many data points
+	let bins = Math.round(Math.sqrt(size)); //determine how many bins we need
+	bins = bins > MAX_BIN_NUMBER ? MAX_BIN_NUMBER : bins; //adjust if more than 50 cells
+	let max = Math.max.apply(null, data); //lowest data value
+	let min = Math.min.apply(null, data); //highest data value
+	let range = max - min; //total range of the data
+	let width = range / bins; //size of the bins
+	let bin_bottom; //place holders for the bounds of each bin
+	let bin_top;
+
+	//loop through the number of cells
+	for (let i = 0; i < bins; i++) {
+		//set the upper and lower limits of the current cell
+		bin_bottom = min + i * width;
+		bin_top = bin_bottom + width;
+
+		//check for and set the x value of the bin
+		if (!hData[i]) {
+			hData[i] = new Array();
+			hData[i][0] = bin_bottom + width / 2;
+		}
+
+		//loop through the data to see if it fits in this bin
+		for (let j = 0; j < size; j++) {
+			var x = data[j];
+
+			//adjust if it's the first pass
+			if (i == 0 && j == 0) {
+				bin_bottom -= 1;
+			}
+
+			//if it fits in the bin, add it
+			if (x > bin_bottom && x <= bin_top) {
+				!hData[i][1] ? (hData[i][1] = 1) : hData[i][1]++;
+			}
+		}
+	}
+
+	for (let i = 0; i < hData.length; i++) {
+		if (typeof hData[i][1] == "undefined") {
+			hData[i][1] = 0;
+		}
+
+		hData[i][1] = hData[i][1] / (size * width);
+	}
+	hData.sort((a, b) => {
+		if (a[0] < b[0]) return -1;
+		if (a[0] > b[0]) return 1;
+		return 0;
+	});
+
+	return hData;
+}
+
 export {
 	getErrorCode,
 	sorter,
@@ -222,5 +288,6 @@ export {
 	getPlotLine,
 	getAtIndex,
 	dataPointsBetween,
-	diff
+	diff,
+	createBins
 }
