@@ -41,8 +41,7 @@ const options = vm => {
 	return {
 		chart: {
 			height: vm._props.height,
-			backgroundColor: vm._props.backgroundColor,
-			zoomType: "x"
+			backgroundColor: vm._props.backgroundColor
 		},
 		title: {
 			text: null
@@ -105,7 +104,7 @@ export default {
 	props: {
 		height: {
 			type: Number,
-			default: 280
+			default: 300
 		},
 		backgroundColor: {
 			type: String,
@@ -133,10 +132,8 @@ export default {
 		endDate(value) {
 			if (value && this.graphInitialized) this.updateRange();
 		},
-		selectedSim(value) {
-			if (value !== null) {
-				this.drawSim();
-			}
+		selectedSim() {
+			this.drawSim();
 		},
 		activeTab() {
 			const chart = this.$refs.simchart.chart;
@@ -206,16 +203,18 @@ export default {
 			if (existing) {
 				existing.remove();
 			}
-			for (let i = 0; i < this.sims.length; i++) {
-				if (this.selectedSim == this.sims[i].id) {
-					chart.addSeries({
-						type: "line",
-						id: "sim-sparkline",
-						data: this.sims[i].data,
-						color: "#FFEB3B"
-					});
-					chart.reflow();
-					break;
+			if (this.selectedSim) {
+				for (let i = 0; i < this.sims.length; i++) {
+					if (this.selectedSim == this.sims[i].id) {
+						chart.addSeries({
+							type: "line",
+							id: "sim-sparkline",
+							data: this.sims[i].data,
+							color: "#FFEB3B"
+						});
+						chart.reflow();
+						break;
+					}
 				}
 			}
 		},

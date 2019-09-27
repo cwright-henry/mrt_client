@@ -229,7 +229,7 @@ export default {
 				align-items: center;
 				i {
 					font-size: 16px;
-					color: #b39ddb;
+					color: #FFF9C4;
 				}
 			}
 		}

@@ -1,28 +1,31 @@
 <template>
 	<div class="simulations">
-		<div class="controls">
+		<div class="sim-header">
 			<mrt-sim-parameters />
-			<div class="actions">
+			<div class="sim-action">
 				<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="getMoreSims">
 					<v-icon>autorenew</v-icon>
 				</v-btn>
-				<label>Generate</label>
+				<label>New Simulation</label>
 			</div>
 		</div>
-		<div class="simulation-graph">
+		<div class="sim-graph">
 			<mrt-simchart ref="simChart" @startdate="loadSimsForDate"></mrt-simchart>
 		</div>
-		<div class="controls">
+		<div class="sim-controls">
 			<div class="horizon">
 				<v-select
 					v-model="horizon"
 					:items="simhorizons"
 					:loading="isLoadingSims"
+					:disabled="selectedSim == null"
 					dense
 					box
 					hide-details
 					return-object
 					flat
+					color="#FFF"
+					background-color="#424242"
 					label="Horizon"
 				></v-select>
 			</div>
@@ -31,6 +34,7 @@
 					<v-slider
 						v-model="animationTime"
 						:thumb-size="28"
+						:disabled="selectedSim == null"
 						label="Interval"
 						:min="0.5"
 						:max="8"
@@ -44,23 +48,18 @@
 						</template>
 					</v-slider>
 				</div>
-				<div class="mrt-fit--actions">
-					<div>
-						<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="autoPlaySims">
-							<v-icon>{{isPlaying ? 'pause' : 'play_arrow'}}</v-icon>
-						</v-btn>
-						<label>{{isPlaying ? 'Stop' : 'Animate'}}</label>
-					</div>
-				</div>
-			</div>
-			<div class="updates">
-				<div class="mrt-fit--actions">
-					<div>
-						<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="reset">
-							<v-icon>settings_backup_restore</v-icon>
-						</v-btn>
-						<label>Reset</label>
-					</div>
+				<div class="sim-action">
+					<v-btn
+						small
+						fab
+						color="#0091EA"
+						:disabled="selectedSim == null"
+						:loading="isLoadingSims"
+						@click="autoPlaySims"
+					>
+						<v-icon>{{isPlaying ? 'pause' : 'play_arrow'}}</v-icon>
+					</v-btn>
+					<label>{{isPlaying ? 'Stop' : 'Animate'}}</label>
 				</div>
 			</div>
 		</div>
@@ -151,8 +150,16 @@ export default {
 			}
 		}
 	},
+	watch: {
+		selectedSim(value) {
+			if (value == null) {
+				clearTimeout(this.isPlayingTimeout);
+			}
+		}
+	},
 	methods: {
 		async getMoreSims() {
+			await this.$store.commit("fit/setSimSeed");
 			await this.$store.dispatch("fit/loadSims");
 		},
 
@@ -162,16 +169,6 @@ export default {
 				value: closest[1],
 				date: closest[0]
 			});
-			await this.$store.dispatch("fit/loadSims");
-		},
-
-		async reset() {
-			this.isPlaying = false;
-			clearTimeout(this.isPlayingTimeout);
-			this.$refs.simChart.resetPos();
-			this.$store.commit("fit/resetAnimationTime");
-			this.$store.commit("fit/resetSimHorizon");
-			this.$store.commit("fit/resetSimStart");
 			await this.$store.dispatch("fit/loadSims");
 		},
 
@@ -198,59 +195,47 @@ export default {
 .simulations {
 	background-color: #252525;
 	padding: 16px;
-	.controls {
+	.sim-action {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		label {
+			color: #e0e0e0;
+			font-size: 12px;
+			font-weight: 300;
+		}
+	}
+	.sim-header {
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
-		.actions {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			label {
-				text-transform: uppercase;
-				color: #e0e0e0;
-				font-size: 11px;
-				font-weight: 300;
-			}
-		}
+		align-items: bottom;
 	}
-	.simulation-graph {
+	.sim-graph {
 		width: calc(100% - 0px);
 	}
-}
-.mrt-analysis {
-	.simulations {
-		.sim-navigation {
+	.sim-controls {
+		display: flex;
+		justify-content: space-between;
+		padding: 24px 0 16px;
+		margin: 0 0 16px;
+		.play {
 			display: flex;
-			justify-content: space-between;
-			margin: 0 0 12px;
-		}
-		.simulation-graph {
-			width: calc(100% - 0px);
-		}
-		.controls {
-			display: flex;
-			justify-content: space-between;
-			border-bottom: 1px solid #546e7a;
-			padding: 24px 0 16px;
-			margin: 0 0 16px;
-			.play {
-				display: flex;
-			}
-			.horizon {
-				width: 180px;
-			}
-			.updates {
-				display: flex;
+			.thumb-slider {
+				margin: 0 16px 0 0;
 			}
 		}
-		ul.sparklines-graph {
-			display: flex;
-			justify-content: center;
-			flex-wrap: wrap;
-			li {
-				width: auto;
-			}
+		.horizon {
+			width: 220px;
+		}
+	}
+	ul.sparklines-graph {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		list-style: none;
+		padding: 0;
+		li {
+			width: auto;
 		}
 	}
 }

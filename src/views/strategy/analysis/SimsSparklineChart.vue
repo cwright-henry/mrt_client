@@ -57,7 +57,8 @@ const options = () => {
 			lineWidth: 0,
 			minorGridLineWidth: 1,
 			type: "datetime",
-			plotBands: []
+			plotBands: [],
+			visible: false
 		},
 		yAxis: {
 			endOnTick: false,
@@ -70,7 +71,8 @@ const options = () => {
 			},
 			gridLineColor: "#B0BEC5",
 			gridLineWidth: "0.5px",
-			tickPositions: [0]
+			tickPositions: [0],
+			visible: false
 		},
 		legend: {
 			enabled: false
@@ -80,23 +82,19 @@ const options = () => {
 		},
 		plotOptions: {
 			series: {
+				dataGrouping: {
+					enabled: true /* By default highstocks groups data into weeks using average over the week for large datasets */
+				},
 				states: {
 					hover: {
 						enabled: false
 					}
 				}
 			},
-			area: {
-				fillColor: "#00B0FF",
-				negativeFillColor: "#1E88E5",
-				negativeColor: "#FFFFFF",
-				color: "#FFFFFF",
-				lineWidth: 0.5
-			},
 			spline: {
 				boostThreshold: 1,
 				lineWidth: 0.5,
-				color: "#AEEA00"
+				color: "#ffeb3b"
 			}
 		}
 	};
@@ -127,21 +125,32 @@ export default {
 	computed: {
 		...mapState("fit", ["selectedSim"]),
 		isSelected() {
-			return this.selectedSim === this.sim.id;
+			if (this.selectedSim) {
+				return this.selectedSim === this.sim.id;
+			}
+			return false;
 		}
 	},
 	watch: {
 		"sim.id"() {
 			this.draw();
+		},
+		/**
+		 * If the strategy is reset then clear the card
+		 */
+		selectedSim(value) {
+			if (value == null) {
+				this.clearSeries();
+			}
 		}
 	},
 	methods: {
 		draw() {
+			this.clearSeries();
 			if (this.sim.data.length) {
 				const chart = this.$refs.sparkchart.chart;
 
-				setTimeout(() => {
-					this.clearSeries();
+				this.$nextTick(() => {
 					const statistics = stats(this.sim.data);
 					this.min = statistics.min;
 					this.max = statistics.max;
@@ -149,13 +158,12 @@ export default {
 					this.std = statistics.std;
 					chart.addSeries({
 						type: "spline",
-						data: this.sim.data,
-						threshold: this.mean
+						data: this.sim.data
 					});
 					chart.reflow();
 					this.clicked = false;
 					this.$emit("loaded", this.id);
-				}, 1000);
+				});
 			}
 		},
 
@@ -164,6 +172,10 @@ export default {
 			while (chart.series.length > 0) {
 				chart.series[0].remove(false);
 			}
+			this.min = 0;
+			this.max = 0;
+			this.mean = 0;
+			this.std = 0;
 		},
 
 		toggleSparkLine() {
@@ -176,14 +188,14 @@ export default {
 <style scoped lang="less">
 .mrt-simulation {
 	border-radius: 2px;
-	border: 1px solid #37474f;
+	border: 1px solid #757575;
 	cursor: pointer;
 	margin: 12px 24px;
-	min-width: 280px;
+	min-width: 250px;
 	.stats {
 		display: flex;
 		justify-content: space-between;
-		background-color: #37474f;
+		background-color: #424242;
 		padding: 4px 8px;
 		.stat {
 			display: flex;
@@ -200,12 +212,14 @@ export default {
 	}
 	.graph {
 		padding: 8px;
-		background-color: #546e7a;
 		min-height: 60px;
 	}
 	&.selected {
 		.stats {
-			background-color: #827717;
+			background-color: #ffeb3b;
+			span {
+				color: #121212;
+			}
 		}
 	}
 }

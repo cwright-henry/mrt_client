@@ -5,7 +5,7 @@ import { PROCTYPES } from './proctypes'
 import { HORIZON_TYPES } from './horizontypes'
 
 
-const DEFAULT_ACTIVE_TAB = '2';
+const DEFAULT_ACTIVE_TAB = '1';
 const DEFAULT_PROCTYPE = 'OU';
 const DEFAULT_SIM_HORIZON = { value: "0", text: "Last Date" };
 const DEFAULT_ANIMATION_TIME = 2;
@@ -168,6 +168,10 @@ export default {
 			state.userTheta = theta;
 		},
 
+		setSimSeed(state) {
+			state.simSeed = seedGen()
+		},
+
 		setBeta(state, beta) {
 			state.userBeta = beta;
 		},
@@ -205,6 +209,9 @@ export default {
 
 		setStartDate(state, date) {
 			state.startDate = date;
+			const startSim = closestNeighbour(state.strategy.ts.data, state.startDate)
+			state.simStart.value = startSim[1];
+			state.simStart.date = startSim[0];
 		},
 
 		setEndDate(state, date) {
@@ -300,6 +307,8 @@ export default {
 
 		updateFit(state, fit) {
 			state.strategy.fit = fit;
+			state.selectedSim = null;
+			state.sims = [];
 		},
 
 		setSims(state, sims) {
@@ -511,7 +520,6 @@ export default {
 					nbeta: state.userBeta !== null ? state.userBeta : state.strategy.fit.nbeta,
 					x_0: state.simStart.value,
 					x_0_date: state.simStart.date,
-					nsteps: '-1',
 					seed: state.simSeed
 				}
 

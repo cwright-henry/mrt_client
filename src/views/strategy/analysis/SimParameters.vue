@@ -35,6 +35,18 @@
 						<div>{{beta() | number}}</div>
 					</div>
 				</li>
+				<li class="divider">
+					<label>Date</label>
+					<div>
+						<div>{{simStart.date | date-short}}</div>
+					</div>
+				</li>
+				<li>
+					<label>Value</label>
+					<div>
+						<div>{{simStart.value | number}}</div>
+					</div>
+				</li>
 			</ul>
 		</div>
 	</div>
@@ -45,7 +57,7 @@ import { mapState, mapGetters } from "vuex";
 
 export default {
 	computed: {
-		...mapState("fit", ["userKappa", "userSigma", "userTheta", "userBeta"]),
+		...mapState("fit", ["userKappa", "userSigma", "userTheta", "userBeta", "simStart"]),
 		...mapGetters("fit", [
 			"kappa",
 			"sigma",
@@ -105,7 +117,7 @@ export default {
 					align-items: center;
 					i {
 						font-size: 16px;
-						color: #b39ddb;
+						color: #FFF9C4;
 						margin: 0 5px 0 0;
 					}
 					> div {
@@ -118,6 +130,10 @@ export default {
 			}
 			li:last-child {
 				margin: 0 0 0 0;
+			}
+			li.divider {
+				border-left: 1px solid #757575;
+				padding: 0 0 0 16px;
 			}
 		}
 	}

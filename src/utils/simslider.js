@@ -102,15 +102,11 @@ export default class {
 			if (this.pos >= this.min && this.pos < this.max) {
 				this.updatePlotLine(this.pos, 'pos')
 			}
-			this.chart.options.zoomType = '';
-			this.chart.pointer.zoomX = false;
 		}
 		const stop = () => {
 			removeListeners(this.container, moveTypes, step)
 			removeListeners(this.container, endTypes, stop)
 			this.vm.$emit('startdate', this.pos)
-			this.chart.options.zoomType = 'x';
-			this.chart.pointer.zoomX = true;
 		}
 
 		addListeners(this.container, moveTypes, step)

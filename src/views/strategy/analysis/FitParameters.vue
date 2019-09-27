@@ -303,7 +303,7 @@ export default {
 
 			// Props
 			backrgoundColor: "transparent",
-			color: "#D1C4E9",
+			color: "#FFF9C4",
 			theme: false
 		};
 	},
@@ -543,7 +543,7 @@ export default {
 </script>
 
 <style lang="less">
-@lock-on: #b39ddb;
+@lock-on: #FFF9C4;
 
 .mrt-text-field {
 	display: flex;

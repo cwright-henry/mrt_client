@@ -148,6 +148,9 @@ export default {
 		.v-select__selection {
 			color: #ce93d8;
 		}
+		.mrt-senfit--controls__proctype {
+			max-width: 320px
+		}
 	}
 	.mrt-senfit--data {
 		display: flex;
