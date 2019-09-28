@@ -204,6 +204,12 @@ export default {
 		},
 		"simStart.date"() {
 			this.drawNavSlider();
+		},
+		startDate(value) {
+			if (value && this.graphInitialized) this.updateRange();
+		},
+		endDate(value) {
+			if (value && this.graphInitialized) this.updateRange();
 		}
 	},
 	mounted() {
@@ -283,6 +289,7 @@ export default {
 			// Dont allow slider past last point in the series
 			const extremes = tsExtremes(this.strategy.ts.data);
 			this.simSlider.setPos(this.startDate, extremes.min, extremes.max);
+			chart.xAxis[0].setExtremes(extremes.min, extremes.max);
 		},
 
 		resetPos() {
