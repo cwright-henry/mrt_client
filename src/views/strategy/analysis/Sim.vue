@@ -6,7 +6,7 @@
 				<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="getMoreSims">
 					<v-icon>autorenew</v-icon>
 				</v-btn>
-				<label>New Simulation</label>
+				<label>New Run</label>
 			</div>
 		</div>
 		<div class="sim-graph">

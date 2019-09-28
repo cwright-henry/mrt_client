@@ -1,7 +1,5 @@
 <template>
-	<div>
-		<highcharts :options="options" ref="simchart"></highcharts>
-	</div>
+	<highcharts :constructor-type="'stockChart'" :options="options" ref="simchart"></highcharts>
 </template>
 
 <script>
@@ -9,30 +7,32 @@ import SimSlider from "@/utils/simslider";
 import { tsExtremes } from "@/utils";
 import { mapState } from "vuex";
 
-const MIN_PLOTLINE_ID = "SIM_MIN_PLOTLINE";
-const MAX_PLOTLINE_ID = "SIM_MAX_PLOTLINE";
-const PLOTBAND_ID = "SIM_PLOTBAND";
+const NAV_PLOTLINE_ID = "NAV_PLOTLINE";
+const MIN_PLOTLINE_ID = "MIN_PLOTLINE";
+const MAX_PLOTLINE_ID = "MAX_PLOTLINE";
+const PLOTBAND_ID = "PLOTBAND";
 const SERIES_COLOR = "#26A69A";
 
 const PLOTLINE_COLOR = "#FFEB3B";
 const PLOTBAND_COLOR = "rgba(255,255,0,0.02)";
+const PLOTBAND_COLOR_NAV = "rgba(255,255,0,0.2)";
 
-const getPlotBand = (from, to) => {
+const getPlotBand = (from, to, color = PLOTBAND_COLOR) => {
 	return {
 		from,
 		to,
-		color: PLOTBAND_COLOR,
-		id: "plot-band"
+		color: color,
+		id: PLOTBAND_ID
 	};
 };
 
-const getPlotLine = (value, type) => {
+const getPlotLine = (value, id, width = 0.5, style = "dash") => {
 	return {
 		value,
 		color: PLOTLINE_COLOR,
-		width: 0.5,
-		dashStyle: "dash",
-		id: `${type}-plotline`,
+		width: width,
+		dashStyle: style,
+		id,
 		zIndex: 999
 	};
 };
@@ -41,7 +41,8 @@ const options = vm => {
 	return {
 		chart: {
 			height: vm._props.height,
-			backgroundColor: vm._props.backgroundColor
+			backgroundColor: vm._props.backgroundColor,
+			panning: false
 		},
 		title: {
 			text: null
@@ -49,18 +50,85 @@ const options = vm => {
 		credits: {
 			enabled: false
 		},
+		rangeSelector: {
+			selected: 6,
+			buttons: [
+				{
+					type: "month",
+					count: 6,
+					text: "6m"
+				},
+				{
+					type: "year",
+					count: 1,
+					text: "1y"
+				},
+				{
+					type: "year",
+					count: 2,
+					text: "2y"
+				},
+				{
+					type: "year",
+					count: 3,
+					text: "3y"
+				},
+				{
+					type: "year",
+					count: 4,
+					text: "4y"
+				},
+				{
+					type: "year",
+					count: 5,
+					text: "5y"
+				},
+				{
+					type: "all",
+					text: "All"
+				}
+			]
+		},
 		xAxis: {
 			type: "datetime",
 			title: {
 				text: null
 			},
-			crosshair: false
+			crosshair: false,
+			events: {
+				afterSetExtremes: function() {
+					// Reset position in case slider
+					// is navigated off the graph - re-enable events
+					vm.resetPos();
+				}
+			}
 		},
 		yAxis: {
 			title: {
 				text: null
 			},
-			opposite: true
+			opposite: true,
+			offset: 20,
+			tickWidth: 0
+		},
+		navigator: {
+			maskFill: "rgba(255, 152, 0, 0.05)",
+			outlineWidth: 0.5,
+			series: {
+				fillColor1: SERIES_COLOR,
+				color: SERIES_COLOR,
+				lineWidth: 0.5,
+				marker: {
+					enabled: false
+				}
+			},
+			xAxis: {
+				labels: {
+					style: {
+						color: "#fff"
+					}
+				}
+			}
 		},
 		legend: {
 			enabled: false
@@ -104,7 +172,7 @@ export default {
 	props: {
 		height: {
 			type: Number,
-			default: 300
+			default: 400
 		},
 		backgroundColor: {
 			type: String,
@@ -119,18 +187,13 @@ export default {
 			"isLoadingSims",
 			"activeTab",
 			"startDate",
-			"endDate"
+			"endDate",
+			"simStart"
 		])
 	},
 	watch: {
 		"strategy.ts"() {
 			this.update();
-		},
-		startDate(value) {
-			if (value && this.graphInitialized) this.updateRange();
-		},
-		endDate(value) {
-			if (value && this.graphInitialized) this.updateRange();
 		},
 		selectedSim() {
 			this.drawSim();
@@ -138,10 +201,12 @@ export default {
 		activeTab() {
 			const chart = this.$refs.simchart.chart;
 			chart.reflow();
+		},
+		"simStart.date"() {
+			this.drawNavSlider();
 		}
 	},
 	mounted() {
-		this.simSlider = new SimSlider(this, this.$refs.simchart.chart);
 		this.update();
 	},
 	methods: {
@@ -170,31 +235,73 @@ export default {
 						id: "sim-chart"
 					});
 
-					this.updateRange();
 					chart.reflow();
 					this.graphInitialized = true;
+					if (this.simSlider === null) {
+						this.simSlider = new SimSlider(
+							this,
+							this.$refs.simchart.chart // Chart needs to be created for ref to work
+						);
+					}
+					this.updateRange();
 				});
 			}
 		},
 
 		updateRange() {
 			const chart = this.$refs.simchart.chart;
-			chart.xAxis[0].removePlotLine(`min-plotline`);
-			chart.xAxis[0].removePlotLine(`max-plotline`);
-			chart.xAxis[0].removePlotBand("plot-band");
+
+			// Remove plotbands
+			chart.xAxis[0].removePlotLine(MIN_PLOTLINE_ID);
+			chart.xAxis[0].removePlotLine(MAX_PLOTLINE_ID);
+			chart.xAxis[0].removePlotBand(PLOTBAND_ID);
+			chart.navigator.xAxis.removePlotLine(MIN_PLOTLINE_ID);
+			chart.navigator.xAxis.removePlotLine(MAX_PLOTLINE_ID);
+			chart.navigator.xAxis.removePlotBand(PLOTBAND_ID);
+
+			// Add at new positions to chart and navigator
+			chart.xAxis[0].addPlotLine(
+				getPlotLine(this.startDate, MIN_PLOTLINE_ID)
+			);
+			chart.xAxis[0].addPlotLine(
+				getPlotLine(this.endDate, MAX_PLOTLINE_ID)
+			);
 			chart.xAxis[0].addPlotBand(
 				getPlotBand(this.startDate, this.endDate)
 			);
-			chart.xAxis[0].addPlotLine(getPlotLine(this.startDate, "min"));
-			chart.xAxis[0].addPlotLine(getPlotLine(this.endDate, "max"));
-			let extremes = tsExtremes(this.strategy.ts.data);
 
+			chart.navigator.xAxis.addPlotLine(
+				getPlotLine(this.startDate, MIN_PLOTLINE_ID)
+			);
+			chart.navigator.xAxis.addPlotLine(
+				getPlotLine(this.endDate, MAX_PLOTLINE_ID)
+			);
+			chart.navigator.xAxis.addPlotBand(
+				getPlotBand(this.startDate, this.endDate, PLOTBAND_COLOR_NAV)
+			);
+
+			// Dont allow slider past last point in the series
+			const extremes = tsExtremes(this.strategy.ts.data);
 			this.simSlider.setPos(this.startDate, extremes.min, extremes.max);
 		},
 
 		resetPos() {
-			let extremes = tsExtremes(this.strategy.ts.data);
-			this.simSlider.updatePos(extremes.max);
+			if (this.simSlider) {
+				let extremes = tsExtremes(this.strategy.ts.data);
+				this.simSlider.setPos(
+					this.simStart.date,
+					extremes.min,
+					extremes.max
+				);
+			}
+		},
+
+		drawNavSlider() {
+			const chart = this.$refs.simchart.chart;
+			chart.navigator.xAxis.removePlotLine(NAV_PLOTLINE_ID);
+			chart.navigator.xAxis.addPlotLine(
+				getPlotLine(this.simStart.date, NAV_PLOTLINE_ID, 1, "solid")
+			);
 		},
 
 		drawSim() {
@@ -210,49 +317,22 @@ export default {
 							type: "line",
 							id: "sim-sparkline",
 							data: this.sims[i].data,
-							color: "#FFEB3B"
+							color: PLOTLINE_COLOR,
+							showInNavigator: true
 						});
-						chart.reflow();
+						const currentExtremes = chart.xAxis[0].getExtremes();
+						const seriesExtremes = tsExtremes(
+							this.strategy.ts.data
+						);
+						const simExtremes = tsExtremes(this.sims[i].data);
+						chart.xAxis[0].setExtremes(
+							currentExtremes.min,
+							Math.max(seriesExtremes.max, simExtremes.max)
+						);
 						break;
 					}
 				}
 			}
-		},
-
-		drawMinArea() {
-			const chart = this.$refs.simschart.chart;
-			chart.xAxis[0].removePlotLine(MIN_PLOTLINE_ID);
-			chart.xAxis[0].removePlotBand(PLOTBAND_ID);
-			chart.xAxis[0].addPlotLine(
-				getPlotLine(this.startDate, MIN_PLOTLINE_ID, "sim-chart")
-			);
-			chart.xAxis[0].addPlotBand(
-				getPlotBand(this.startDate, this.endDate, PLOTBAND_ID)
-			);
-		},
-
-		drawMaxArea() {
-			const chart = this.$refs.simschart.chart;
-			chart.xAxis[0].removePlotLine(MAX_PLOTLINE_ID);
-			chart.xAxis[0].removePlotBand(PLOTBAND_ID);
-			chart.xAxis[0].addPlotLine(
-				getPlotLine(this.endDate, MAX_PLOTLINE_ID, "sim-chart")
-			);
-			chart.xAxis[0].addPlotBand(
-				getPlotBand(this.startDate, this.endDate, PLOTBAND_ID)
-			);
-		},
-
-		clearSeries() {
-			const chart = this.$refs.simschart.chart;
-			chart.xAxis[0].removePlotLine(MIN_PLOTLINE_ID);
-			chart.xAxis[0].removePlotLine(MAX_PLOTLINE_ID);
-			chart.xAxis[0].removePlotBand(PLOTBAND_ID);
-
-			while (chart.series.length > 0) {
-				chart.series[0].remove(false);
-			}
-			chart.reflow();
 		}
 	}
 };

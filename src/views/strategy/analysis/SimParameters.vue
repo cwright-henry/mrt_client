@@ -36,13 +36,13 @@
 					</div>
 				</li>
 				<li class="divider">
-					<label>Date</label>
+					<label>Start Date</label>
 					<div>
 						<div>{{simStart.date | date-short}}</div>
 					</div>
 				</li>
 				<li>
-					<label>Value</label>
+					<label>Start Value</label>
 					<div>
 						<div>{{simStart.value | number}}</div>
 					</div>
@@ -57,7 +57,13 @@ import { mapState, mapGetters } from "vuex";
 
 export default {
 	computed: {
-		...mapState("fit", ["userKappa", "userSigma", "userTheta", "userBeta", "simStart"]),
+		...mapState("fit", [
+			"userKappa",
+			"userSigma",
+			"userTheta",
+			"userBeta",
+			"simStart"
+		]),
 		...mapGetters("fit", [
 			"kappa",
 			"sigma",
@@ -117,7 +123,7 @@ export default {
 					align-items: center;
 					i {
 						font-size: 16px;
-						color: #FFF9C4;
+						color: #fff9c4;
 						margin: 0 5px 0 0;
 					}
 					> div {

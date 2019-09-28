@@ -6,28 +6,32 @@ const endTypes = ['mouseup', 'touchend']
 /**
  * Carefull here - noticed that 'container' is sometimes undefined - this happens
  * when we try to draw into an uninitialized container when the event firing reactive system
- * has not be properly setup.
+ * has not be properly setup. Also happens when the container is panned or navigated off the graph
  * 
  * @param {*} container 
  * @param {*} types 
  * @param {*} fn 
  */
 const addListeners = (container, types, fn) => {
-	types.forEach(type => {
-		container.addEventListener(type, fn, {
-			capture: false,
-			passive: true
-		});
-	})
+	if (container) {
+		types.forEach(type => {
+			container.addEventListener(type, fn, {
+				capture: false,
+				passive: true
+			});
+		})
+	}
 }
 
 const removeListeners = (container, types, fn) => {
-	types.forEach(type => {
-		container.removeEventListener(type, fn, {
-			capture: false,
-			passive: true
-		});
-	})
+	if (container) {
+		types.forEach(type => {
+			container.removeEventListener(type, fn, {
+				capture: false,
+				passive: true
+			});
+		})
+	}
 }
 
 const getPlotLine = (value, type) => {
@@ -92,7 +96,7 @@ export default class {
 		let line = document.querySelector('.axis-label.pos')
 		addListeners(line, startTypes, () => {
 			this.move()
-		})
+		});
 	}
 
 	move() {
