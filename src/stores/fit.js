@@ -309,6 +309,7 @@ export default {
 			state.strategy.fit = fit;
 			state.selectedSim = null;
 			state.sims = [];
+			state.simHorizon = DEFAULT_SIM_HORIZON;
 		},
 
 		setSims(state, sims) {
