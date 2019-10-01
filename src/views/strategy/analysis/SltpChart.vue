@@ -283,7 +283,8 @@ export default {
 			"opt",
 			"userDate",
 			"optSLValue",
-			"optTPValue"
+			"optTPValue",
+			"activeTab"
 		])
 	},
 	watch: {
@@ -292,6 +293,10 @@ export default {
 		},
 		opt() {
 			this.drawOptChart();
+		},
+		activeTab() {
+			const chart = this.$refs.sltpchart.chart;
+			chart.reflow();
 		}
 	},
 	mounted() {
