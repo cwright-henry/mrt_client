@@ -127,8 +127,8 @@ export default {
 						margin: 0 5px 0 0;
 					}
 					> div {
-						background-color: #2e2e2e;
-						border: 1px solid #424242;
+						background-color: #424242;
+						border: 1px solid #757575;
 						padding: 1px 8px;
 						border-radius: 4px;
 					}

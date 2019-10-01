@@ -9,7 +9,6 @@
 
 <script>
 import { mapState } from "vuex";
-import { mean } from "@/utils";
 const SERIES_COLOR = "#26A69A";
 
 const options = vm => {

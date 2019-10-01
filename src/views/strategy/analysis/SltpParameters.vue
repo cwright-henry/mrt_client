@@ -1,74 +1,153 @@
 <template>
-	<div class="sltp-parameters">
-		<div>
-			<v-text-field v-model="optSLValue" label="Stop Loss" box readonly maxlength="10" placeholder="-"></v-text-field>
+	<div class="sltp-fittings">
+		<div class="proctype">
+			<label>Fit Process</label>
+			<div>{{findProctype().text}}</div>
 		</div>
-		<div>
-			<v-text-field
-				v-model="optTPValue"
-				label="Take Profit"
-				box
-				readonly
-				maxlength="10"
-				placeholder="-"
-			></v-text-field>
-		</div>
-		<div>
-			<v-text-field
-				v-model="optIRValue"
-				label="Information Ratio"
-				box
-				readonly
-				maxlength="10"
-				placeholder="-"
-			></v-text-field>
-		</div>
-		<div>
-			<v-text-field
-				v-model="optHorizonValue"
-				label="Horizon"
-				box
-				suffix="days"
-				readonly
-				maxlength="10"
-				placeholder="-"
-			></v-text-field>
-		</div>
-		<div>
-			<v-text-field
-				v-model="optTradPLValue"
-				label="Trad PL Ratio"
-				box
-				readonly
-				maxlength="10"
-				placeholder="-"
-			></v-text-field>
+		<div class="parameters">
+			<label>SLTP Parameters</label>
+			<ul>
+				<li>
+					<label>Kappa</label>
+					<div>
+						<v-icon v-if="userKappa != null">lock</v-icon>
+						<div>{{kappa() | number}}</div>
+					</div>
+				</li>
+				<li>
+					<label>Sigma</label>
+					<div>
+						<v-icon v-if="userSigma != null">lock</v-icon>
+						<div>{{sigma() | number}}</div>
+					</div>
+				</li>
+				<li>
+					<label>Theta</label>
+					<div>
+						<v-icon v-if="userTheta != null">lock</v-icon>
+						<div>{{theta() | number}}</div>
+					</div>
+				</li>
+				<li v-if="findProctype().value !== 'OU'">
+					<label>Beta</label>
+					<div>
+						<v-icon v-if="userBeta != null">lock</v-icon>
+						<div>{{beta() | number}}</div>
+					</div>
+				</li>
+				<li>
+					<label>Carry</label>
+					<div>
+						<div>0.1</div>
+					</div>
+				</li>
+				<li>
+					<label>trans_oneway_stdev</label>
+					<div>
+						<div>0.05</div>
+					</div>
+				</li>
+				<li>
+					<label>Start Value (x_0)</label>
+					<div>
+						<div>{{userValue | number}}</div>
+					</div>
+				</li>
+			</ul>
 		</div>
 	</div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
 	computed: {
 		...mapState("fit", [
-			"optSLValue",
-			"optTPValue",
-			"optIRValue",
-			"optHorizonValue",
-			"optTradPLValue"
+			"userKappa",
+			"userSigma",
+			"userTheta",
+			"userBeta",
+			"userValue"
+		]),
+		...mapGetters("fit", [
+			"kappa",
+			"sigma",
+			"theta",
+			"beta",
+			"findProctype"
 		])
 	}
 };
 </script>
 
-<style lang="less">
-.sltp-parameters {
+<style lang="less" scoped>
+.sltp-fittings {
 	display: flex;
-	> div {
-		margin: 0 16px;
-		max-width: 180px;
+	flex-direction: column;
+	.proctype {
+		margin: 0 0 12px;
+		label {
+			text-transform: uppercase;
+			color: #e0e0e0;
+			font-size: 12px;
+			font-weight: 300;
+		}
+		> div {
+			font-size: 16px;
+			font-weight: 400;
+			color: #ce93d8;
+		}
+	}
+	.parameters {
+		display: flex;
+		flex-direction: column;
+		margin: 0 0 12px;
+		> label {
+			text-transform: uppercase;
+			color: #e0e0e0;
+			font-size: 12px;
+			font-weight: 300;
+			margin: 0 0 4px;
+		}
+		ul {
+			display: flex;
+			padding: 0;
+			list-style: none;
+			li {
+				display: flex;
+				align-items: center;
+				margin: 0 24px 0 0;
+				label {
+					color: #e0e0e0;
+					margin: 0 12px 0 0;
+					font-size: 14px;
+				}
+				> div {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					i {
+						font-size: 16px;
+						color: #fff9c4;
+						margin: 0 5px 0 0;
+					}
+					> div {
+						background-color: #424242;
+						border: 1px solid #757575;
+						padding: 1px 8px;
+						border-radius: 4px;
+					}
+				}
+			}
+			li:last-child {
+				margin: 0 0 0 0;
+			}
+			li.divider {
+				border-left: 1px solid #757575;
+				padding: 0 0 0 16px;
+			}
+		}
 	}
 }
 </style>

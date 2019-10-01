@@ -41,7 +41,6 @@ export default {
 	},
 	methods: {
 		remove(id) {
-			console.log(id);
 			const payload = {
 				id: id
 			};

@@ -1,20 +1,17 @@
 <template>
-	<div class="panel sltp">
-		<div class="navigation">
-			<mrt-fit-process :fit="strategy.fit" />
-			<div class="mrt-fit--actions">
-				<div>
-					<v-btn small fab color="#0091EA" :loading="isLoadingSLTP" @click="runSltp">
-						<v-icon>autorenew</v-icon>
-					</v-btn>
-					<label>Generate SLTP</label>
-				</div>
+	<div class="sltp">
+		<div class="sltp-header">
+			<mrt-sltp-parameters />
+			<div class="sltp-action">
+				<v-btn small fab color="#0091EA" :loading="isLoadingSLTP" @click="runSltp">
+					<v-icon>autorenew</v-icon>
+				</v-btn>
+				<label>Generate SLTP</label>
 			</div>
 		</div>
-		<div class="parameters">
-			<mrt-parameters />
+		<div class="sltp-graph">
+			<mrt-sltpchart />
 		</div>
-		<mrt-sltpchart />
 		<ul class="mrt-optimize--surfaces">
 			<li>
 				<mrt-surface-chart id="graphET" @showSurfaceDialog="enableSufaceChart" title="ET" :values="ET"></mrt-surface-chart>
@@ -56,11 +53,10 @@
 </template>
 
 <script>
-import mrtFitProcess from "@/components/fit/Fit";
 import mrtSltpchart from "./SltpChart";
 import mrtSurfaceChart from "./SltpSurfaceChart";
 import mrtSurfaceChartDialog from "./SltpSurfaceChartDialog";
-import mrtParameters from "./SltpParameters";
+import mrtSltpParameters from "./SltpParameters";
 import { mapState, mapGetters } from "vuex";
 
 export default {
@@ -90,10 +86,9 @@ export default {
 	},
 	components: {
 		mrtSltpchart,
-		mrtFitProcess,
 		mrtSurfaceChart,
 		mrtSurfaceChartDialog,
-		mrtParameters
+		mrtSltpParameters
 	},
 	methods: {
 		runSltp() {
@@ -109,18 +104,26 @@ export default {
 </script>
 
 <style lang="less">
-.mrt-analysis {
-	.sltp {
-		.navigation {
-			display: flex;
-			justify-content: space-between;
-			margin: 0 0 12px;
+.sltp {
+	background-color: #252525;
+	padding: 16px;
+	.sltp-action {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		label {
+			color: #e0e0e0;
+			font-size: 12px;
+			font-weight: 300;
 		}
-		.parameters {
-			display: flex;
-			justify-content: center;
-			margin: 0 0 12px;
-		}
+	}
+	.sltp-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: bottom;
+	}
+	.sltp-graph {
+		width: calc(100% - 0px);
 	}
 }
 .mrt-optimize--surfaces {

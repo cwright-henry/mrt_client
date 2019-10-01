@@ -94,18 +94,18 @@ export default {
 <style lang="less">
 .mrt-surface-chart {
 	border-radius: 2px;
-	border: 1px solid #37474f;
+	border: 1px solid #757575;
 	margin: 12px 24px;
 	width: 200px;
 	h1 {
-		background-color: #827717;
+		background-color: #424242;
 		font-weight: 300;
 		padding: 4px 8px;
 		font-size: 18px;
 	}
 	.graph {
 		position: relative;
-		background-color: #546e7a;
+		background-color: transparent;
 		min-height: 0px;
 		cursor: pointer;
 		&:before {

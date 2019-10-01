@@ -357,5 +357,12 @@ export default {
 	position: relative;
 	top: 16px;
 	left: 108px;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s,
+		background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+}
+.axis-label:hover {
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2),
+		0 0 50px rgba(0, 0, 0, 0.12) inset;
 }
 </style>

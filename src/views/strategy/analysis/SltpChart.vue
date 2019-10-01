@@ -3,16 +3,16 @@
 </template>
 
 <script>
-import ChartSlider from "@/utils/dualslider";
 import { mapState } from "vuex";
 import moment from "moment";
 
 const ONE_YEAR = 1000 * 60 * 60 * 24 * 365;
+const SERIES_COLOR = "#26A69A";
 
 const OPT = {
 	MAIN: {
 		id: "main_chart",
-		color: "#2196F3"
+		color: SERIES_COLOR
 	},
 	SL: {
 		id: "opt_sl_line",
@@ -99,8 +99,13 @@ const options = vm => {
 			backgroundColor: vm._props.backgroundColor
 		},
 		rangeSelector: {
-			selected: 3,
+			selected: 6,
 			buttons: [
+				{
+					type: "month",
+					count: 6,
+					text: "6m"
+				},
 				{
 					type: "year",
 					count: 1,
@@ -220,6 +225,14 @@ const options = vm => {
 						year: ["%e %b %Y", "%m/%e/%y %H:%M", "-%H:%M"]
 					}
 				}
+			},
+			line: {
+				lineWidth: 1,
+				boostThreshold: 0,
+				color: SERIES_COLOR,
+				marker: {
+					enabled: false
+				}
 			}
 		},
 		responsive: {
@@ -335,6 +348,7 @@ export default {
 		},
 
 		clearOptChart() {
+			const chart = this.$refs.sltpchart.chart;
 			removeListeners(this.$el, moveTypes, this.toolTipListner);
 			this.clearFromChart(OPT.PLOT_BAND.id);
 			this.clearFromChart(OPT.SL.id);
@@ -390,7 +404,6 @@ export default {
 				zIndex: 20,
 				events: {
 					click: e => {
-						// self.eventBus.trigger('main-chart:fixBands')
 						this.addPlotLines(this.optSLValue, this.optTPValue);
 					}
 				}

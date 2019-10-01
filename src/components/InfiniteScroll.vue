@@ -41,7 +41,7 @@ export default {
 		...mapGetters("user", ["isAuthenticated"])
 	},
 	mounted() {
-		this.observer = new IntersectionObserver(([entry], self) => {
+		this.observer = new IntersectionObserver(([entry]) => {
 			if (entry && entry.isIntersecting) {
 				this.autoMore();
 			}
