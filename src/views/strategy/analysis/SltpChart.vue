@@ -208,7 +208,7 @@ const options = vm => {
 		tooltip: {
 			pointFormat:
 				'<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> <br><br/>',
-			valueDecimals: 3,
+			valueDecimals: 2,
 			shared: true
 		},
 		plotOptions: {

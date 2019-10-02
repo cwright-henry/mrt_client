@@ -208,7 +208,8 @@ export default {
 	.sim-header {
 		display: flex;
 		justify-content: space-between;
-		align-items: bottom;
+		align-items: flex-end;
+		margin: 0 0 12px;
 	}
 	.sim-graph {
 		width: calc(100% - 0px);
