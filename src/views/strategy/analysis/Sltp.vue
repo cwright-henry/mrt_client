@@ -111,6 +111,7 @@ export default {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		justify-content: flex-end;
 		label {
 			color: #e0e0e0;
 			font-size: 12px;
@@ -120,7 +121,7 @@ export default {
 	.sltp-header {
 		display: flex;
 		justify-content: space-between;
-		align-items: bottom;
+		margin: 0 0 24px;
 	}
 	.sltp-graph {
 		width: calc(100% - 0px);
