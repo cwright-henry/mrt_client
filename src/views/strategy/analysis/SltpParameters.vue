@@ -54,11 +54,11 @@
 				<ul>
 					<li>
 						<label>Start Date</label>
-						<div class="input">24 Sep 2019</div>
+						<div class="input"></div>
 					</li>
 					<li>
 						<label>Start Value</label>
-						<div class="readonly">12.68</div>
+						<div class="readonly"></div>
 					</li>
 				</ul>
 			</div>
