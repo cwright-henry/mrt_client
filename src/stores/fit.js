@@ -5,7 +5,7 @@ import { PROCTYPES } from './proctypes'
 import { HORIZON_TYPES } from './horizontypes'
 
 
-const DEFAULT_ACTIVE_TAB = '3';
+const DEFAULT_ACTIVE_TAB = '1';
 const DEFAULT_PROCTYPE = 'OU';
 const DEFAULT_SIM_HORIZON = { value: "0", text: "Last Date" };
 const DEFAULT_ANIMATION_TIME = 2;

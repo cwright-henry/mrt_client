@@ -39,7 +39,38 @@
 					<li>
 						<label>Carry</label>
 						<div>
-							<div class="input">0.1</div>
+							<v-menu
+								left
+								v-model="carryMenu"
+								offset-y
+								:close-on-content-click="false"
+								origin="top right"
+								transition="scale-transition"
+							>
+								<div slot="activator" class="input">{{actualCarry | number}}</div>
+								<div class="mrt-text-field">
+									<v-text-field
+										v-model="carry"
+										:loading="isLoadingSLTP"
+										:disabled="isLoadingSLTP"
+										:error-messages="carryErrors"
+										label="Carry"
+										color="#2196F3"
+										background-color="#424242"
+										outline
+										maxlength="10"
+										ref="carryInput"
+										placeholder="Input Carry"
+										@keyup.enter="setCarry"
+									></v-text-field>
+									<div class="mrt-text-field--actions" @click="resetCarry">
+										<v-btn flat icon color="white">
+											<v-icon>clear</v-icon>
+										</v-btn>
+										<div class="mrt-text-field--actions__text">Reset</div>
+									</div>
+								</div>
+							</v-menu>
 						</div>
 					</li>
 					<li>
@@ -48,7 +79,38 @@
 							<span>(STD)</span>
 						</label>
 						<div>
-							<div class="input">0.05</div>
+							<v-menu
+								left
+								v-model="transactionCostMenu"
+								offset-y
+								:close-on-content-click="false"
+								origin="top right"
+								transition="scale-transition"
+							>
+								<div slot="activator" class="input">{{actualTransactionCost | number}}</div>
+								<div class="mrt-text-field">
+									<v-text-field
+										v-model="transactionCost"
+										:loading="isLoadingSLTP"
+										:disabled="isLoadingSLTP"
+										:error-messages="transactionCostErrors"
+										label="Transcation Cost"
+										color="#2196F3"
+										background-color="#424242"
+										outline
+										maxlength="10"
+										ref="carryInput"
+										placeholder="Input Transaction Cost"
+										@keyup.enter="setTransactionCost"
+									></v-text-field>
+									<div class="mrt-text-field--actions" @click="resetTransactionCost">
+										<v-btn flat icon color="white">
+											<v-icon>clear</v-icon>
+										</v-btn>
+										<div class="mrt-text-field--actions__text">Reset</div>
+									</div>
+								</div>
+							</v-menu>
 						</div>
 					</li>
 				</ul>
@@ -58,13 +120,14 @@
 					<li>
 						<label>Start Date</label>
 						<v-menu
-							ref="menu"
-							v-model="menu"
+							ref="dateMenu"
+							v-model="dateMenu"
 							:close-on-content-click="false"
 							:nudge-right="40"
 							lazy
 							transition="scale-transition"
 							offset-y
+							origin="top left"
 							full-width
 							min-width="290px"
 						>
@@ -74,6 +137,7 @@
 								v-model="date"
 								:allowed-dates="allowedDates"
 								no-title
+								color="#2196F3"
 								:max="maxDate"
 								:min="minDate"
 								@change="save"
@@ -119,6 +183,11 @@ import { mapState, mapGetters } from "vuex";
 import moment from "moment";
 
 /**
+ * Check that user input is a number
+ */
+const isNumber = /^(-)?(\d+)?((\.)?(\d+)?)?$/;
+
+/**
  * Helpers for date picker. Only allow dates to be choosen over the range of the series
  * and exclude dates that are not in the array.
  */
@@ -147,7 +216,17 @@ const maxTSDate = arr => {
 
 export default {
 	data: () => ({
-		menu: false,
+		carryMenu: false,
+		carry: 0.1,
+		carryErrors: [],
+		actualCarry: 0.1,
+
+		transactionCostMenu: false,
+		transactionCost: 0.05,
+		transactionCostErrors: [],
+		actualTransactionCost: 0.05,
+
+		dateMenu: false,
 		date: null
 	}),
 	computed: {
@@ -162,7 +241,8 @@ export default {
 			"optSLValue",
 			"optTPValue",
 			"optHorizonValue",
-			"optTradPLValue"
+			"optTradPLValue",
+			"isLoadingSLTP"
 		]),
 		...mapGetters("fit", [
 			"kappa",
@@ -193,21 +273,61 @@ export default {
 		}
 	},
 	watch: {
-		menu(val) {
+		dateMenu(val) {
 			val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
 		},
 
 		strategy() {
 			this.date = maxTSDate(this.strategy.ts.data);
+		},
+
+		carry(value) {
+			this.carryErrors = [];
+			if (value !== "" && value !== null) {
+				if (!isNumber.test(value)) {
+					this.carryErrors.push("Not a number!");
+					return;
+				}
+			}
+		},
+
+		transactionCost(value) {
+			this.transactionCostErrors = [];
+			if (value !== "" && value !== null) {
+				if (!isNumber.test(value)) {
+					this.transactionCostErrors.push("Not a number!");
+					return;
+				}
+			}
 		}
 	},
 	methods: {
 		save(date) {
-			this.$refs.menu.save(date);
+			this.$refs.dateMenu.save(date);
 		},
 
 		allowedDates(val) {
 			return this.dateMap[val] !== undefined;
+		},
+
+		setCarry() {
+			this.carryMenu = false;
+			this.actualCarry = this.carry;
+		},
+
+		resetCarry() {
+			this.carry = 0.1;
+			this.carryMenu = false;
+		},
+
+		setTransactionCost() {
+			this.transactionCostMenu = false;
+			this.actualTransactionCost = this.transactionCost;
+		},
+
+		resetTransactionCost() {
+			this.transactionCost = 0.05;
+			this.transactionCostMenu = false;
 		}
 	}
 };
