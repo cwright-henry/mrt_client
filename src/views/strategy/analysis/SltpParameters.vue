@@ -43,7 +43,10 @@
 						</div>
 					</li>
 					<li>
-						<label>Transaction Cost (STD)</label>
+						<label>
+							Transaction Cost
+							<span>(STD)</span>
+						</label>
 						<div>
 							<div class="input">0.05</div>
 						</div>
@@ -54,11 +57,32 @@
 				<ul>
 					<li>
 						<label>Start Date</label>
-						<div class="input"></div>
+						<v-menu
+							ref="menu"
+							v-model="menu"
+							:close-on-content-click="false"
+							:nudge-right="40"
+							lazy
+							transition="scale-transition"
+							offset-y
+							full-width
+							min-width="290px"
+						>
+							<div slot="activator" class="input">{{formatedDate}}</div>
+							<v-date-picker
+								ref="picker"
+								v-model="date"
+								:allowed-dates="allowedDates"
+								no-title
+								:max="maxDate"
+								:min="minDate"
+								@change="save"
+							></v-date-picker>
+						</v-menu>
 					</li>
 					<li>
 						<label>Start Value</label>
-						<div class="readonly"></div>
+						<div class="readonly">{{startValue | number}}</div>
 					</li>
 				</ul>
 			</div>
@@ -92,10 +116,43 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import moment from "moment";
+
+/**
+ * Helpers for date picker. Only allow dates to be choosen over the range of the series
+ * and exclude dates that are not in the array.
+ */
+const arrToMap = arr => {
+	const map = {};
+	if (arr) {
+		for (let i = 0; i < arr.length; i++) {
+			const date = moment(arr[i][0]).format("YYYY-MM-DD");
+			map[date] = arr[i]; // Keep the orginal i.e. [timestamp, value]
+		}
+	}
+	return map;
+};
+
+const minTSDate = arr => {
+	return arr.length > 0
+		? moment(arr[0][0]).format("YYYY-MM-DD")
+		: new Date().toISOString().substr(0, 10);
+};
+
+const maxTSDate = arr => {
+	return arr.length > 0
+		? moment(arr[arr.length - 1][0]).format("YYYY-MM-DD")
+		: new Date().toISOString().substr(0, 10);
+};
 
 export default {
+	data: () => ({
+		menu: false,
+		date: null
+	}),
 	computed: {
 		...mapState("fit", [
+			"strategy",
 			"userKappa",
 			"userSigma",
 			"userTheta",
@@ -113,7 +170,45 @@ export default {
 			"theta",
 			"beta",
 			"findProctype"
-		])
+		]),
+
+		minDate() {
+			return minTSDate(this.strategy.ts.data);
+		},
+
+		maxDate() {
+			return maxTSDate(this.strategy.ts.data);
+		},
+
+		dateMap() {
+			return arrToMap(this.strategy.ts.data);
+		},
+
+		startValue() {
+			if (this.dateMap[this.date]) return this.dateMap[this.date][1];
+		},
+
+		formatedDate() {
+			return this.date ? moment(this.date).format("DD MMM YYYY") : "";
+		}
+	},
+	watch: {
+		menu(val) {
+			val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
+		},
+
+		strategy() {
+			this.date = maxTSDate(this.strategy.ts.data);
+		}
+	},
+	methods: {
+		save(date) {
+			this.$refs.menu.save(date);
+		},
+
+		allowedDates(val) {
+			return this.dateMap[val] !== undefined;
+		}
 	}
 };
 </script>
@@ -188,6 +283,10 @@ export default {
 						color: #e0e0e0;
 						margin: 0 12px 0 0;
 						font-size: 14px;
+						span {
+							font-size: 11px;
+							font-weight: 300;
+						}
 					}
 					> div {
 						display: flex;

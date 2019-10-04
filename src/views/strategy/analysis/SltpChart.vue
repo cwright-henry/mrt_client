@@ -214,16 +214,7 @@ const options = vm => {
 		plotOptions: {
 			series: {
 				dataGrouping: {
-					dateTimeLabelFormats: {
-						millisecond: ["%e %b %Y", "%m/%e/%y %H:%M", "-%H:%M"],
-						second: ["%e %b %Y", "%m/%e/%y %H:%M", "-%H:%M"],
-						minute: ["%e %b %Y", "%m/%e/%y %H:%M", "-%H:%M"],
-						hour: ["%e %b %Y", "%m/%e/%y %H:%M", "-%H:%M"],
-						day: ["%e %b %Y", "%m/%e/%y %H:%M", "-%H:%M"],
-						week: ["%e %b %Y", "%m/%e/%y %H:%M", "-%H:%M"],
-						month: ["%e %b %Y", "%m/%e/%y %H:%M", "-%H:%M"],
-						year: ["%e %b %Y", "%m/%e/%y %H:%M", "-%H:%M"]
-					}
+					enabled: false /* By default highstocks groups data into weeks using average over the week for large datasets */
 				}
 			},
 			line: {
