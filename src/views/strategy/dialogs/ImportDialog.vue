@@ -192,7 +192,7 @@
 import ApiController from "@/services/ApiController";
 import LibrarySearch from "./ImportSearch";
 import CSVSearch from "./ImportCSV";
-import mrtLinechart from "@/components/LineChart";
+import mrtLinechart from "./ImportLineChart";
 import mrtImportOptions from "./ImportOptions";
 import { getErrorCode } from "@/utils";
 

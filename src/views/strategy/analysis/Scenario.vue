@@ -15,6 +15,12 @@
 			</div>
 			<div class="mrt-scenario--details-action">
 				<div>
+					<v-btn small outline fab color="#2196F3" :disabled="isSavingFit" @click="home">
+						<v-icon>home</v-icon>
+					</v-btn>
+					<label>Library</label>
+				</div>
+				<div>
 					<v-btn small fab color="#2196F3" :loading="isSavingFit" @click="save">
 						<v-icon>cloud_upload</v-icon>
 					</v-btn>
@@ -133,10 +139,10 @@ export default {
 				id: this.id
 			});
 			this.$store.commit("strategies/updateStrategy", strategy);
-			EventBus.$emit(
-				"api-strategy-save",
-				`${strategy.name} Scenario Saved`
-			);
+			EventBus.$emit("api-strategy-save", `${strategy.name} Saved!`);
+		},
+
+		home() {
 			this.$router.push("/library");
 		},
 

@@ -54,7 +54,10 @@ const options = vm => {
 			},
 			line: {
 				color: SERIES_COLOR,
-				lineWidth: 1
+				lineWidth: 1,
+				marker: {
+					enabled: false
+				}
 			}
 		}
 	};
