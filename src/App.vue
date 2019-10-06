@@ -68,7 +68,7 @@ export default {
 			this.apierror = true;
 			this.text = reason;
 		});
-		EventBus.$on("api-strategy-save", reason => {
+		EventBus.$on("api-save", reason => {
 			this.apisuccess = true;
 			this.text = reason;
 		});

@@ -1,4 +1,4 @@
-import Api from '@/services/ApiController'
+import ApiController from '@/services/ApiController'
 
 /**
  * Token consists of [HEADER].[PAYLOAD].[SIGNATURE]
@@ -14,12 +14,20 @@ import Api from '@/services/ApiController'
  */
 const isValidToken = (token) => {
 	if (!token || token.split('.').length < 3) {
-    return false
-  }
-  const data = JSON.parse(atob(token.split('.')[1]))
-  const exp = new Date(data.exp * 1000) // JS deals with dates in milliseconds since epoch
+		return false
+	}
+	const data = JSON.parse(atob(token.split('.')[1]))
+	const exp = new Date(data.exp * 1000) // JS deals with dates in milliseconds since epoch
 	const now = new Date()
-  return now < exp
+	return now < exp
+}
+
+const getTokenExpiryDate = (token) => {
+	if (!token || token.split('.').length < 3) {
+		return false
+	}
+	const data = JSON.parse(atob(token.split('.')[1]))
+	return new Date(data.exp * 1000).getTime();
 }
 
 const STORAGE_KEY = 'mrt-user-store'
@@ -46,14 +54,14 @@ export default {
 			return `${state.user.firstName} ${state.user.lastName}`
 		},
 
-		email(state) {
-			return state.user.email
+		tokenExpires(state) {
+			return getTokenExpiryDate(state.token);
 		}
 	},
 
 	mutations: {
 		initialize(state) {
-			if(localStorage.getItem(STORAGE_KEY)) {
+			if (localStorage.getItem(STORAGE_KEY)) {
 				let item = JSON.parse(localStorage.getItem(STORAGE_KEY));
 				state.user = item.user;
 				state.token = item.token;
@@ -74,24 +82,26 @@ export default {
 	},
 
 	actions: {
-		async login ({commit}, payload) {
+		async login({ commit }, payload) {
 			try {
 				commit('setLoading', true);
-				const data = await Api.login({email: payload.email, password: payload.password});
+				const data = await ApiController.login({ email: payload.email, password: payload.password });
 				localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 				commit('setUser', data.user);
 				commit('setToken', data.token);
-				commit('setLoading', false);
 			}
-			catch(e) {
+			finally {
 				commit('setLoading', false);
-				throw e;
 			}
 		},
 
-		logout ({commit}) {
+		logout({ commit }) {
 			commit('setToken', null);
 			localStorage.setItem(STORAGE_KEY, '');
+		},
+
+		async updatePassword(_, payload) {
+			return await ApiController.updatePassword(payload)
 		}
 	}
 }

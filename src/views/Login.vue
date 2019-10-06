@@ -38,6 +38,7 @@
 							light
 							class="input-group--focused"
 							color="#2196F3"
+							maxlength="32"
 							@click:append="show = !show"
 						></v-text-field>
 					</div>
@@ -53,7 +54,6 @@
 <script>
 import Logo from "../../public/svg/crowe.svg";
 import { mapState } from "vuex";
-import { getErrorCode } from "@/utils";
 
 export default {
 	name: "MRTLogin",
@@ -80,12 +80,7 @@ export default {
 				});
 				this.$router.push({ path: "/" });
 			} catch (error) {
-				const code = getErrorCode(error);
-				if (code === "INVALID_LOGIN") {
-					this.errorMessages = "Email or password is incorrect";
-				} else {
-					this.errorMessages = "Unknown Error";
-				}
+				this.errorMessages = "Email or password is incorrect";
 				setTimeout(() => {
 					this.errorMessages = null;
 				}, 2500);

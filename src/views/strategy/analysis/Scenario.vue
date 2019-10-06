@@ -139,7 +139,7 @@ export default {
 				id: this.id
 			});
 			this.$store.commit("strategies/updateStrategy", strategy);
-			EventBus.$emit("api-strategy-save", `${strategy.name} Saved!`);
+			EventBus.$emit("api-save", `${strategy.name} Saved!`);
 		},
 
 		home() {

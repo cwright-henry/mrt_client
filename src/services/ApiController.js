@@ -84,5 +84,10 @@ export default {
 				assetClass
 			}
 		}).then(response => response.data)
-	}
+	},
+
+	updatePassword(params) {
+		return Api().post('api/update-password', params)
+			.then(response => response.data)
+	},
 }
