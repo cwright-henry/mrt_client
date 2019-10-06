@@ -543,7 +543,7 @@ export default {
 </script>
 
 <style lang="less">
-@lock-on: #FFF9C4;
+@lock-on: #fff9c4;
 
 .mrt-text-field {
 	display: flex;
@@ -616,6 +616,9 @@ export default {
 			> div {
 				flex: 1;
 				text-align: right;
+			}
+			label {
+				color: #fff9c4;
 			}
 		}
 		.mrt-fitparams--section__row {

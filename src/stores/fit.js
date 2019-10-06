@@ -5,9 +5,9 @@ import { PROCTYPES } from './proctypes'
 import { HORIZON_TYPES } from './horizontypes'
 
 
-const DEFAULT_ACTIVE_TAB = '1';
+const DEFAULT_ACTIVE_TAB = '2';
 const DEFAULT_PROCTYPE = 'OU';
-const DEFAULT_SIM_HORIZON = { value: "0", text: "Last Date" };
+const DEFAULT_SIM_HORIZON = { value: "756", text: "3 years" };
 const DEFAULT_ANIMATION_TIME = 2;
 
 export default {
@@ -181,12 +181,6 @@ export default {
 			state.simStart.date = start.date;
 		},
 
-		resetSimStart(state) {
-			const extremes = tsExtremes(state.strategy.ts.data)
-			state.simStart.value = extremes.maxValue;
-			state.simStart.date = extremes.max;
-		},
-
 		setProctype(state, proctype) {
 			state.proctype = proctype;
 		},
@@ -264,7 +258,7 @@ export default {
 			state.avg = avg;
 
 			// Sims
-			const startSim = closestNeighbour(state.strategy.ts.data, state.startDate)
+			const startSim = closestNeighbour(state.strategy.ts.data, state.endDate)
 			state.selectedSim = null;
 			state.simStart.value = startSim[1];
 			state.simStart.date = startSim[0];

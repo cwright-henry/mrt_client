@@ -89,12 +89,13 @@ export default {
 	flex-direction: column;
 	margin: 0 0 12px;
 	.proctype {
-		margin: 0 0 12px;
+		margin: 0 0 16px;
 		label {
 			text-transform: uppercase;
-			color: #e0e0e0;
+			color: #fff9c4;
 			font-size: 12px;
 			font-weight: 300;
+			display: inline-block;
 		}
 		> div {
 			font-size: 18px;
@@ -105,7 +106,7 @@ export default {
 	.parameters {
 		> label {
 			text-transform: uppercase;
-			color: #e0e0e0;
+			color: #fff9c4;
 			font-size: 12px;
 			font-weight: 300;
 			padding: 0 0 6px;

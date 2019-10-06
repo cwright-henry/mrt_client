@@ -339,7 +339,7 @@ export default {
 		margin: 0 0 12px;
 		label {
 			text-transform: uppercase;
-			color: #e0e0e0;
+			color: #fff9c4;
 			font-size: 12px;
 			font-weight: 300;
 		}
@@ -351,7 +351,7 @@ export default {
 	}
 	> label {
 		text-transform: uppercase;
-		color: #e0e0e0;
+		color: #fff9c4;
 		font-size: 12px;
 		font-weight: 300;
 		margin: 0 0 6px;

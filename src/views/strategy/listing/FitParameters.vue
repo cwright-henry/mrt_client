@@ -220,6 +220,9 @@ export default {
 			.mrt-sfp--full {
 				font-weight: 300;
 			}
+			label {
+				color: #fff9c4;
+			}
 		}
 		label {
 			flex: 1;

@@ -30,7 +30,9 @@
 					<v-flex xs12>
 						<v-card>
 							<v-toolbar dense flat>
-								<v-toolbar-title class="font-weight-light">Reset Password</v-toolbar-title>
+								<v-toolbar-title class="font-weight-light account-password-header">
+									<i class="material-icons">security</i>Reset Password
+								</v-toolbar-title>
 								<v-spacer></v-spacer>
 							</v-toolbar>
 							<v-card-text>
@@ -185,6 +187,14 @@ export default {
 		margin: 0 12px 0 0;
 		display: inline-block;
 		width: 140px;
+	}
+}
+.account-password-header {
+	display: flex;
+	align-items: center;
+	i {
+		margin: 0 5px 0 -3px;
+		font-size: 22px;
 	}
 }
 </style>
