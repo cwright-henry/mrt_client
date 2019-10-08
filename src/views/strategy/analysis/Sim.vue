@@ -120,12 +120,9 @@ export default {
 		mrtSimParameters
 	},
 	computed: {
-		...mapState("fit", [
-			"strategy",
-			"isFittingTS",
-			"isLoadingTS",
+		...mapState("fit", ["strategy"]),
+		...mapState("fit/sims", [
 			"isLoadingSims",
-			"isSavingFit",
 			"sims",
 			"selectedSim",
 			"simHorizon",
@@ -137,8 +134,8 @@ export default {
 				return this.simHorizon;
 			},
 			set(value) {
-				this.$store.commit("fit/setSimHorizon", value);
-				this.$store.dispatch("fit/loadSims");
+				this.$store.commit("fit/sims/setSimHorizon", value);
+				this.$store.dispatch("fit/sims/loadSims");
 			}
 		},
 		animationTime: {
@@ -146,7 +143,7 @@ export default {
 				return this.simAnimationTime;
 			},
 			set(value) {
-				this.$store.commit("fit/setAnimationTime", value);
+				this.$store.commit("fit/sims/setAnimationTime", value);
 			}
 		}
 	},
@@ -159,17 +156,17 @@ export default {
 	},
 	methods: {
 		async getMoreSims() {
-			await this.$store.commit("fit/setSimSeed");
-			await this.$store.dispatch("fit/loadSims");
+			await this.$store.commit("fit/sims/setSimSeed");
+			await this.$store.dispatch("fit/sims/loadSims");
 		},
 
 		async loadSimsForDate(date) {
 			const closest = closestNeighbour(this.strategy.ts.data, date);
-			this.$store.commit("fit/setSimStart", {
+			this.$store.commit("fit/sims/setSimStart", {
 				value: closest[1],
 				date: closest[0]
 			});
-			await this.$store.dispatch("fit/loadSims");
+			await this.$store.dispatch("fit/sims/loadSims");
 		},
 
 		autoPlaySims() {
@@ -182,7 +179,7 @@ export default {
 		},
 
 		autoPlay() {
-			this.$store.commit("fit/setNextSim");
+			this.$store.commit("fit/sims/setNextSim");
 			this.isPlayingTimeout = setTimeout(() => {
 				this.autoPlay();
 			}, this.animationTime * 1000);

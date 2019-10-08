@@ -158,7 +158,6 @@ const options = vm => {
 				crosshair: false,
 				events: {
 					afterSetExtremes: function(e) {
-						console.log(e);
 						// $("#chart_container").trigger("main-chart:setExtremes", e);
 					}
 				},
@@ -269,14 +268,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState("fit", [
-			"strategy",
-			"opt",
-			"userDate",
-			"optSLValue",
-			"optTPValue",
-			"activeTab"
-		])
+		...mapState("fit", ["strategy", "activeTab"]),
+		...mapState("fit/sltp", ["opt", "optSLValue", "optTPValue", "start"])
 	},
 	watch: {
 		strategy() {
@@ -314,30 +307,30 @@ export default {
 		},
 
 		drawOptChart() {
-			let maxHorizon = this.userDate;
+			let maxHorizon = this.start.date;
 
 			if (this.opt.SL) {
-				let data = createSeries(this.userDate, this.opt.SL);
+				let data = createSeries(this.start.date, this.opt.SL);
 				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
 				this.drawOptLine(OPT.SL, data);
 
-				data = createSeries(this.userDate, this.opt.TP);
+				data = createSeries(this.start.date, this.opt.TP);
 				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
 				this.drawOptLine(OPT.TP, data);
 
-				data = createSeries(this.userDate, this.opt.Ext);
+				data = createSeries(this.start.date, this.opt.Ext);
 				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
 				this.drawOptLine(OPT.EXT, data);
 
-				data = createSeries(this.userDate, this.opt.maxVal);
+				data = createSeries(this.start.date, this.opt.maxVal);
 				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
 				this.drawOptLine(OPT.MAX, data);
 
-				data = createSeries(this.userDate, this.opt.tradePL);
+				data = createSeries(this.start.date, this.opt.tradePL);
 				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
 				this.drawOptLine(OPT.TRADE, data);
 
-				this.addPlotBand(this.userDate, maxHorizon);
+				this.addPlotBand(this.start.date, maxHorizon);
 				removeListeners(this.$el, moveTypes, this.toolTipListner);
 				addListeners(this.$el, moveTypes, this.toolTipListner);
 			}
@@ -445,32 +438,47 @@ export default {
 					let str = txt.split(":");
 					switch (str[0]) {
 						case "Opt SL":
-							this.$store.commit("fit/setOptSLValue", str[1]);
+							this.$store.commit(
+								"fit/sltp/setOptSLValue",
+								str[1]
+							);
 							break;
 
 						case "Opt TP":
-							this.$store.commit("fit/setOptTPValue", str[1]);
+							this.$store.commit(
+								"fit/sltp/setOptTPValue",
+								str[1]
+							);
 							break;
 
 						case "Max EIR":
-							this.$store.commit("fit/setOptIRValue", str[1]);
+							this.$store.commit(
+								"fit/sltp/setOptIRValue",
+								str[1]
+							);
 							break;
 
 						case "Trad P/L Ratio":
-							this.$store.commit("fit/setOptTradPLValue", str[1]);
+							this.$store.commit(
+								"fit/sltp/setOptTradPLValue",
+								str[1]
+							);
 							break;
 					}
 				} else {
 					const t = moment(txt, "DD MMM YYYY");
-					var diff = moment(this.userDate).diff(t, "days");
+					var diff = moment(this.start.date).diff(t, "days");
 					if (diff < 0) {
-						this.$store.commit("fit/setOptHorizonValue", -1 * diff);
+						this.$store.commit(
+							"fit/sltp/setOptHorizonValue",
+							-1 * diff
+						);
 					} else {
-						this.$store.commit("fit/setOptSLValue", null);
-						this.$store.commit("fit/setOptTPValue", null);
-						this.$store.commit("fit/setOptIRValue", null);
-						this.$store.commit("fit/setOptTradPLValue", null);
-						this.$store.commit("fit/setOptHorizonValue", null);
+						this.$store.commit("fit/sltp/setOptSLValue", null);
+						this.$store.commit("fit/sltp/setOptTPValue", null);
+						this.$store.commit("fit/sltp/setOptIRValue", null);
+						this.$store.commit("fit/sltp/setOptTradPLValue", null);
+						this.$store.commit("fit/sltp/setOptHorizonValue", null);
 					}
 				}
 			}

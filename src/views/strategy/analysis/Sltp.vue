@@ -73,16 +73,15 @@ export default {
 		};
 	},
 	computed: {
-		...mapState("fit", [
-			"strategy",
+		...mapState("fit", ["strategy"]),
+		...mapState("fit/sltp", [
 			"ER",
 			"ET",
 			"EIR",
 			"EPnl",
 			"pblta",
 			"isLoadingSLTP"
-		]),
-		...mapGetters("strategies", ["findStrategy"])
+		])
 	},
 	components: {
 		mrtSltpchart,
@@ -92,7 +91,7 @@ export default {
 	},
 	methods: {
 		runSltp() {
-			this.$store.dispatch("fit/loadSltp");
+			this.$store.dispatch("fit/sltp/generate");
 		},
 
 		enableSufaceChart(data) {

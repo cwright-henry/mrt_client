@@ -179,7 +179,7 @@ export default {
 		},
 
 		toggleSparkLine() {
-			this.$store.commit("fit/setSelectedSim", this.sim.id);
+			this.$store.commit("fit/sims/setSelectedSim", this.sim.id);
 		}
 	}
 };

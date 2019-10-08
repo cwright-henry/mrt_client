@@ -2,7 +2,7 @@
 	<div class="sim-fittings">
 		<div class="proctype">
 			<label>Fit Process</label>
-			<div>{{findProctype().text}}</div>
+			<div>{{findProctype.text}}</div>
 		</div>
 		<div class="parameters">
 			<label>Sim Parameters</label>
@@ -13,28 +13,28 @@
 							<label>Kappa</label>
 							<div>
 								<v-icon v-if="userKappa != null">lock</v-icon>
-								<div>{{kappa() | number}}</div>
+								<div>{{kappa | number}}</div>
 							</div>
 						</li>
 						<li>
 							<label>Sigma</label>
 							<div>
 								<v-icon v-if="userSigma != null">lock</v-icon>
-								<div>{{sigma() | number}}</div>
+								<div>{{sigma | number}}</div>
 							</div>
 						</li>
 						<li>
 							<label>Theta</label>
 							<div>
 								<v-icon v-if="userTheta != null">lock</v-icon>
-								<div>{{theta() | number}}</div>
+								<div>{{theta | number}}</div>
 							</div>
 						</li>
-						<li v-if="findProctype().value !== 'OU'">
+						<li v-if="findProctype.value !== 'OU'">
 							<label>Beta</label>
 							<div>
 								<v-icon v-if="userBeta != null">lock</v-icon>
-								<div>{{beta() | number}}</div>
+								<div>{{beta | number}}</div>
 							</div>
 						</li>
 					</ul>
@@ -65,13 +65,8 @@ import { mapState, mapGetters } from "vuex";
 
 export default {
 	computed: {
-		...mapState("fit", [
-			"userKappa",
-			"userSigma",
-			"userTheta",
-			"userBeta",
-			"simStart"
-		]),
+		...mapState("fit", ["userKappa", "userSigma", "userTheta", "userBeta"]),
+		...mapState("fit/sims", ["simStart"]),
 		...mapGetters("fit", [
 			"kappa",
 			"sigma",

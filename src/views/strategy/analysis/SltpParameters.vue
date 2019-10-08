@@ -2,7 +2,7 @@
 	<div class="sltp-fittings">
 		<div class="proctype">
 			<label>Fit Process</label>
-			<div>{{findProctype().text}}</div>
+			<div>{{findProctype.text}}</div>
 		</div>
 		<label>SLTP Parameters</label>
 		<div class="parameters">
@@ -12,28 +12,28 @@
 						<label>Kappa</label>
 						<div>
 							<v-icon v-if="userKappa != null">lock</v-icon>
-							<div class="readonly">{{kappa() | number}}</div>
+							<div class="readonly">{{kappa | number}}</div>
 						</div>
 					</li>
 					<li>
 						<label>Sigma</label>
 						<div>
 							<v-icon v-if="userSigma != null">lock</v-icon>
-							<div class="readonly">{{sigma() | number}}</div>
+							<div class="readonly">{{sigma | number}}</div>
 						</div>
 					</li>
 					<li>
 						<label>Theta</label>
 						<div>
 							<v-icon v-if="userTheta != null">lock</v-icon>
-							<div class="readonly">{{theta() | number}}</div>
+							<div class="readonly">{{theta | number}}</div>
 						</div>
 					</li>
-					<li v-if="findProctype().value !== 'OU'">
+					<li v-if="findProctype.value !== 'OU'">
 						<label>Beta</label>
 						<div>
 							<v-icon v-if="userBeta != null">lock</v-icon>
-							<div class="readonly">{{beta() | number}}</div>
+							<div class="readonly">{{beta | number}}</div>
 						</div>
 					</li>
 					<li>
@@ -131,7 +131,7 @@
 							full-width
 							min-width="290px"
 						>
-							<div slot="activator" class="input">{{formatedDate}}</div>
+							<div slot="activator" class="input">{{start.date | date-short}}</div>
 							<v-date-picker
 								ref="picker"
 								v-model="date"
@@ -146,7 +146,7 @@
 					</li>
 					<li>
 						<label>Start Value</label>
-						<div class="readonly">{{startValue | number}}</div>
+						<div class="readonly">{{start.value | number}}</div>
 					</li>
 				</ul>
 			</div>
@@ -217,12 +217,10 @@ const maxTSDate = arr => {
 export default {
 	data: () => ({
 		carryMenu: false,
-		carry: 0.1,
 		carryErrors: [],
 		actualCarry: 0.1,
 
 		transactionCostMenu: false,
-		transactionCost: 0.05,
 		transactionCostErrors: [],
 		actualTransactionCost: 0.05,
 
@@ -235,14 +233,16 @@ export default {
 			"userKappa",
 			"userSigma",
 			"userTheta",
-			"userBeta",
-			"userValue",
+			"userBeta"
+		]),
+		...mapState("fit/sltp", [
 			"optIRValue",
 			"optSLValue",
 			"optTPValue",
 			"optHorizonValue",
 			"optTradPLValue",
-			"isLoadingSLTP"
+			"isLoadingSLTP",
+			"start"
 		]),
 		...mapGetters("fit", [
 			"kappa",
@@ -251,6 +251,24 @@ export default {
 			"beta",
 			"findProctype"
 		]),
+
+		carry: {
+			get() {
+				return this.$store.state.fit.sltp.carry;
+			},
+			set(value) {
+				this.$store.commit("fit/sltp/setCarry", value);
+			}
+		},
+
+		transactionCost: {
+			get() {
+				return this.$store.state.fit.sltp.transactionCost;
+			},
+			set(value) {
+				this.$store.commit("fit/sltp/setTransactionCost", value);
+			}
+		},
 
 		minDate() {
 			return minTSDate(this.strategy.ts.data);
@@ -262,14 +280,6 @@ export default {
 
 		dateMap() {
 			return arrToMap(this.strategy.ts.data);
-		},
-
-		startValue() {
-			if (this.dateMap[this.date]) return this.dateMap[this.date][1];
-		},
-
-		formatedDate() {
-			return this.date ? moment(this.date).format("DD MMM YYYY") : "";
 		}
 	},
 	watch: {
@@ -277,8 +287,13 @@ export default {
 			val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
 		},
 
-		strategy() {
-			this.date = maxTSDate(this.strategy.ts.data);
+		start: {
+			handler: function(value) {
+				this.date = value
+					? moment(value.date).format("YYYY-MM-DD")
+					: null;
+			},
+			deep: true
 		},
 
 		carry(value) {
@@ -303,6 +318,7 @@ export default {
 	},
 	methods: {
 		save(date) {
+			this.$store.commit("fit/sltp/setStart", this.dateMap[date]);
 			this.$refs.dateMenu.save(date);
 		},
 

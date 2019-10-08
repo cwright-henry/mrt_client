@@ -183,11 +183,14 @@ export default {
 		...mapState("fit", [
 			"strategy",
 			"sims",
-			"selectedSim",
-			"isLoadingSims",
 			"activeTab",
 			"startDate",
-			"endDate",
+			"endDate"
+		]),
+		...mapState("fit/sims", [
+			"sims",
+			"selectedSim",
+			"isLoadingSims",
 			"simStart"
 		])
 	},
