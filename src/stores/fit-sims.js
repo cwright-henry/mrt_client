@@ -130,8 +130,11 @@ export default {
 			state.simStart.date = lastPoint[0]
 			state.simStart.value = lastPoint[1]
 		},
-		
-		resetForFit({state}) {
+
+		/**
+		 * Invalidate the results of the last fit
+		 */
+		resetForFit({ state }) {
 			state.selectedSim = null;
 			state.sims = [];
 			state.simSeed = seedGen()

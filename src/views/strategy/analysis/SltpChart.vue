@@ -393,17 +393,28 @@ export default {
 				zIndex: 20,
 				events: {
 					click: e => {
-						this.addPlotLines(this.optSLValue, this.optTPValue);
+						//this.addPlotLines(this.optSLValue, this.optTPValue);
 					}
 				}
 			});
+			this.addPlotLines(this.optSLValue, this.optTPValue);
 			chart.xAxis[0].setExtremes(from - 4 * ONE_YEAR, to); // my addition as it was going to 'all' by default
 		},
 
 		addPlotLines(sl, tp) {
 			const chart = this.$refs.sltpchart.chart;
 
-			this.clearOptChart();
+			let existing = chart.get("sl-plotline");
+			if (existing) {
+				existing.remove();
+			}
+
+			existing = chart.get("tp-plotline");
+			if (existing) {
+				existing.remove();
+			}
+
+			//this.clearOptChart();
 			chart.yAxis[0].addPlotLine({
 				value: sl, // orig: min
 				color: "red", // TODO: add param to define whether SL or TP (TP = green, SL = red)
@@ -411,7 +422,7 @@ export default {
 				label: {
 					align: "center",
 					useHTML: true,
-					text: '<span class="axis-label lower"></span>'
+					text: '<span class="axis-label1 lower"></span>'
 				},
 				id: "sl-plotline"
 			});
@@ -422,7 +433,7 @@ export default {
 				label: {
 					align: "center",
 					useHTML: true,
-					text: '<span class="axis-label upper"></span>'
+					text: '<span class="axis-label1 upper"></span>'
 				},
 				id: "tp-plotline"
 			});

@@ -5,7 +5,7 @@ import sims from './fit-sims'
 import sltp from './fit-sltp'
 
 
-const DEFAULT_ACTIVE_TAB = '3';
+const DEFAULT_ACTIVE_TAB = '1';
 const DEFAULT_PROCTYPE = 'OU';
 
 export default {
@@ -310,6 +310,7 @@ export default {
 				const fit = await ApiController.fit(payload);
 				commit('updateFit', fit)
 				dispatch('sims/resetForFit');
+				dispatch('sltp/resetForFit');
 			}
 			finally {
 				commit('isFittingTS', false)

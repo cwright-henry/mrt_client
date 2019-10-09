@@ -58,6 +58,10 @@ export default {
 			state.EIR = Object.freeze(data.EIR)
 			state.EPnl = Object.freeze(data.EPnl)
 			state.pblta = Object.freeze(data.pblta)
+
+			console.log(data.opt.TP)
+			state.optSLValue = data.opt.SL['2.0'];
+			state.optTPValue = data.opt.TP['2.0']
 		},
 		isLoadingSLTP(state, status) {
 			state.isLoadingSLTP = status;
@@ -143,5 +147,23 @@ export default {
 			state.optTradPLValue = null;
 			state.isLoadingSLTP = false;
 		},
+
+		/**
+		 * Invalidate the results of the last fit
+		 */
+		resetForFit({ state }) {
+			state.opt = {};
+			state.ET = {};
+			state.ER = {};
+			state.EIR = {};
+			state.EPnl = {};
+			state.pblta = {};
+			state.optSLValue = null;
+			state.optTPValue = null;
+			state.optIRValue = null;
+			state.optHorizonValue = null;
+			state.optTradPLValue = null;
+			state.isLoadingSLTP = false;
+		}
 	}
 }
