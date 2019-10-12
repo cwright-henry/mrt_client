@@ -58,8 +58,6 @@ export default {
 			state.EIR = Object.freeze(data.EIR)
 			state.EPnl = Object.freeze(data.EPnl)
 			state.pblta = Object.freeze(data.pblta)
-
-			console.log(data.opt.TP)
 			state.optSLValue = data.opt.SL['2.0'];
 			state.optTPValue = data.opt.TP['2.0']
 		},

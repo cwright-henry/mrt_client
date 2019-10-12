@@ -12,11 +12,12 @@ const SERIES_COLOR = "#26A69A";
 const OPT = {
 	MAIN: {
 		id: "main_chart",
-		color: SERIES_COLOR
+		color: SERIES_COLOR,
+		axis: 0
 	},
 	SL: {
 		id: "opt_sl_line",
-		color: "#EF5350", // Red
+		color: "#EF9A9A",
 		dashStyle: "",
 		axis: 0,
 		name: "Opt SL",
@@ -24,7 +25,7 @@ const OPT = {
 	},
 	TP: {
 		id: "opt_tp_line",
-		color: "#4CAF50", // Green
+		color: "#4CAF50",
 		dashStyle: "",
 		axis: 0,
 		name: "Opt TP",
@@ -32,7 +33,7 @@ const OPT = {
 	},
 	EXT: {
 		id: "opt_ext_line",
-		color: "blue", // Blue
+		color: "#64B5F6",
 		dashStyle: "",
 		axis: 0,
 		name: "E[x_0] NBC",
@@ -40,7 +41,7 @@ const OPT = {
 	},
 	MAX: {
 		id: "opt_max_Line",
-		color: "yellow", // Teal
+		color: "yellow",
 		dashStyle: "Dot",
 		axis: 1,
 		name: "Max EIR",
@@ -48,7 +49,7 @@ const OPT = {
 	},
 	TRADE: {
 		id: "opt_trade_line",
-		color: "#E1BEE7", // Purple
+		color: "#E1BEE7",
 		dashStyle: "Dot",
 		axis: 2,
 		name: "Trad P/L Ratio",
@@ -70,9 +71,7 @@ const createSeries = (lastDate, series) => {
 	return arr;
 };
 
-const startTypes = ["mousedown", "touchstart"];
 const moveTypes = ["mousemove", "touchmove"];
-const endTypes = ["mouseup", "touchend"];
 
 const addListeners = (container, types, fn) => {
 	types.forEach(type => {
@@ -96,7 +95,7 @@ const options = vm => {
 	return {
 		chart: {
 			height: 500,
-			backgroundColor: vm._props.backgroundColor
+			backgroundColor: "rgba(0, 0, 0, 0.0)"
 		},
 		rangeSelector: {
 			selected: 6,
@@ -161,15 +160,16 @@ const options = vm => {
 						// $("#chart_container").trigger("main-chart:setExtremes", e);
 					}
 				},
-				plotLines: [],
 				opposite: true,
 				visible: true,
 				offset: 28,
-				tickWidth: 0
+				tickWidth: 0,
+				id: "yA0",
+				plotLines: []
 			},
 			{
 				title: {
-					text: "Information Ratio",
+					text: "Max EIR",
 					style: {
 						color: "yellow"
 					}
@@ -257,27 +257,26 @@ export default {
 			options: options(this)
 		};
 	},
-	props: {
-		height: {
-			type: Number,
-			default: 280
-		},
-		backgroundColor: {
-			type: String,
-			default: "rgba(0, 0, 0, 0.0)"
-		}
-	},
 	computed: {
 		...mapState("fit", ["strategy", "activeTab"]),
 		...mapState("fit/sltp", ["opt", "optSLValue", "optTPValue", "start"])
 	},
 	watch: {
+		/**
+		 * When the strategy changes
+		 */
 		strategy() {
 			this.drawStrategyChart();
 		},
+		/**
+		 * When we run SLTP
+		 */
 		opt() {
 			this.drawOptChart();
 		},
+		/**
+		 * When the tab is viewed
+		 */
 		activeTab() {
 			const chart = this.$refs.sltpchart.chart;
 			chart.reflow();
@@ -331,52 +330,40 @@ export default {
 				this.drawOptLine(OPT.TRADE, data);
 
 				this.addPlotBand(this.start.date, maxHorizon);
+				this.addPlotLines(this.optSLValue, this.optTPValue);
 				removeListeners(this.$el, moveTypes, this.toolTipListner);
 				addListeners(this.$el, moveTypes, this.toolTipListner);
-			}
-		},
 
-		clearOptChart() {
-			const chart = this.$refs.sltpchart.chart;
-			removeListeners(this.$el, moveTypes, this.toolTipListner);
-			this.clearFromChart(OPT.PLOT_BAND.id);
-			this.clearFromChart(OPT.SL.id);
-			this.clearFromChart(OPT.TP.id);
-			this.clearFromChart(OPT.EXT.id);
-			this.clearFromChart(OPT.MAX.id);
-			this.clearFromChart(OPT.TRADE.id);
-			this.clearFromChart(OPT.PLOT_BAND.id);
-
-			chart.yAxis[1].update({ visible: false });
-			chart.yAxis[2].update({ visible: false });
-		},
-
-		clearFromChart(id) {
-			const chart = this.$refs.sltpchart.chart;
-			const existing = chart.get(id);
-			if (existing) {
-				existing.remove();
+				this.$nextTick(() => {
+					const chart = this.$refs.sltpchart.chart;
+					chart.yAxis[1].update({ visible: true });
+					chart.yAxis[2].update({ visible: true });
+					chart.xAxis[0].setExtremes(
+						this.start.date - 4 * ONE_YEAR,
+						maxHorizon
+					);
+				});
 			}
 		},
 
 		drawOptLine(opts, data) {
 			const chart = this.$refs.sltpchart.chart;
-			this.clearFromChart(opts.id);
+			const existing = chart.get(opts.id);
+			if (existing) {
+				existing.remove();
+			}
 
 			chart.addSeries({
 				type: "line",
 				data: data,
 				id: opts.id,
 				name: opts.name,
+				lineWidth: 3,
 				color: opts.color,
 				showInNavigator: opts.showInNavigator,
 				yAxis: opts.axis,
 				dashStyle: opts.dashStyle
 			});
-
-			chart.yAxis[opts.axis].update({ visible: true });
-
-			chart.reflow();
 		},
 
 		addPlotBand(from, to) {
@@ -392,48 +379,39 @@ export default {
 				id: OPT.PLOT_BAND.id,
 				zIndex: 20,
 				events: {
-					click: e => {
-						//this.addPlotLines(this.optSLValue, this.optTPValue);
-					}
+					click: () => {}
 				}
 			});
-			this.addPlotLines(this.optSLValue, this.optTPValue);
-			chart.xAxis[0].setExtremes(from - 4 * ONE_YEAR, to); // my addition as it was going to 'all' by default
 		},
 
 		addPlotLines(sl, tp) {
 			const chart = this.$refs.sltpchart.chart;
 
-			let existing = chart.get("sl-plotline");
-			if (existing) {
-				existing.remove();
-			}
+			chart.yAxis[0].removePlotLine("sl-plotline");
+			chart.yAxis[0].removePlotLine("tp-plotline");
 
-			existing = chart.get("tp-plotline");
-			if (existing) {
-				existing.remove();
-			}
-
-			//this.clearOptChart();
 			chart.yAxis[0].addPlotLine({
 				value: sl, // orig: min
-				color: "red", // TODO: add param to define whether SL or TP (TP = green, SL = red)
+				color: "red",
 				width: 2,
+				yAxis: OPT.MAIN.axis,
 				label: {
-					align: "center",
+					align: "left",
 					useHTML: true,
-					text: '<span class="axis-label1 lower"></span>'
+					text: '<span class="sltp-grippy upper"></span>'
 				},
 				id: "sl-plotline"
 			});
+
 			chart.yAxis[0].addPlotLine({
 				value: tp, // orig: max
-				color: "green", // TODO: add param to define whether SL or TP (TP = green, SL = red)
+				color: "green",
 				width: 2,
+				yAxis: OPT.MAIN.axis,
 				label: {
-					align: "center",
+					align: "left",
 					useHTML: true,
-					text: '<span class="axis-label1 upper"></span>'
+					text: '<span class="sltp-grippy lower"></span>'
 				},
 				id: "tp-plotline"
 			});
@@ -498,17 +476,33 @@ export default {
 };
 </script>
 
-<style scoped>
-.axis-label {
-	width: 22px;
-	height: 22px;
-	border-radius: 50%;
+<style lang="less">
+span.sltp-grippy {
+	position: relative;
+	top: 7px;
+	left: -10px;
+	content: "";
+	width: 32px;
+	height: 16px;
 	display: inline-block;
 	overflow: hidden;
-	cursor: ew-resize;
-	background-color: #42a5f5;
-	position: relative;
-	top: 6px;
-	left: 120px;
+	line-height: 5px;
+	padding:4px 3px;
+	cursor: move;
+	vertical-align: top;
+	font-size: 18px;
+	font-family: sans-serif;
+	letter-spacing: 2px;
+	color: white;
+	background-color: red;
+}
+span.sltp-grippy::after {
+	content: '::::';
+}
+span.sltp-grippy.upper {
+	background-color: red;
+}
+span.sltp-grippy.lower {
+	background-color: green;
 }
 </style>
