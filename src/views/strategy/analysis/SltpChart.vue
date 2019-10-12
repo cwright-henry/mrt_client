@@ -156,7 +156,7 @@ const options = vm => {
 				},
 				crosshair: false,
 				events: {
-					afterSetExtremes: function(e) {
+					afterSetExtremes: function() {
 						// $("#chart_container").trigger("main-chart:setExtremes", e);
 					}
 				},
@@ -269,7 +269,8 @@ export default {
 			this.drawStrategyChart();
 		},
 		/**
-		 * When we run SLTP
+		 * When we run SLTP and also a capture when it gets
+		 * reset to null similiar to selectedSIM
 		 */
 		opt() {
 			this.drawOptChart();
@@ -343,6 +344,33 @@ export default {
 						maxHorizon
 					);
 				});
+			} else {
+				this.clearOptChart();
+			}
+		},
+
+		clearOptChart() {
+			const chart = this.$refs.sltpchart.chart;
+			removeListeners(this.$el, moveTypes, this.toolTipListner);
+			this.clearFromChart(OPT.SL.id);
+			this.clearFromChart(OPT.TP.id);
+			this.clearFromChart(OPT.EXT.id);
+			this.clearFromChart(OPT.MAX.id);
+			this.clearFromChart(OPT.TRADE.id);
+			this.clearFromChart(OPT.PLOT_BAND.id);
+			chart.yAxis[1].update({ visible: false });
+			chart.yAxis[2].update({ visible: false });
+			chart.yAxis[0].removePlotLine("sl-plotline");
+			chart.yAxis[0].removePlotLine("tp-plotline");
+			chart.xAxis[0].removePlotBand(OPT.PLOT_BAND.id);
+			chart.rangeSelector.clickButton(6, true);
+		},
+
+		clearFromChart(id) {
+			const chart = this.$refs.sltpchart.chart;
+			const existing = chart.get(id);
+			if (existing) {
+				existing.remove();
 			}
 		},
 
@@ -368,10 +396,7 @@ export default {
 
 		addPlotBand(from, to) {
 			const chart = this.$refs.sltpchart.chart;
-			const existing = chart.get(OPT.PLOT_BAND.id);
-			if (existing) {
-				existing.remove();
-			}
+			chart.xAxis[0].removePlotBand(OPT.PLOT_BAND.id);
 			chart.xAxis[0].addPlotBand({
 				from: from,
 				to: to,
@@ -487,7 +512,7 @@ span.sltp-grippy {
 	display: inline-block;
 	overflow: hidden;
 	line-height: 5px;
-	padding:4px 3px;
+	padding: 4px 3px;
 	cursor: move;
 	vertical-align: top;
 	font-size: 18px;
@@ -497,7 +522,7 @@ span.sltp-grippy {
 	background-color: red;
 }
 span.sltp-grippy::after {
-	content: '::::';
+	content: "::::";
 }
 span.sltp-grippy.upper {
 	background-color: red;
