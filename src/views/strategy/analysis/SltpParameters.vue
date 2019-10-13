@@ -165,7 +165,7 @@
 						<div class="readonly">{{optTPValue | number}}</div>
 					</li>
 					<li>
-						<label>Horizon</label>
+						<label>Forcast Horizon</label>
 						<div class="readonly">{{optHorizonValue | number}}</div>
 					</li>
 					<li>

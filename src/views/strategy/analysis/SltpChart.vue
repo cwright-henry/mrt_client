@@ -208,7 +208,8 @@ const options = vm => {
 			pointFormat:
 				'<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> <br><br/>',
 			valueDecimals: 2,
-			shared: true
+			shared: true,
+			xDateFormat: "%d %b %Y"
 		},
 		plotOptions: {
 			series: {
@@ -481,6 +482,7 @@ export default {
 					}
 				} else {
 					const t = moment(txt, "DD MMM YYYY");
+					console.log(t);
 					var diff = moment(this.start.date).diff(t, "days");
 					if (diff < 0) {
 						this.$store.commit(
