@@ -226,20 +226,23 @@ const options = vm => {
 				const date = moment.utc(this.x).format("DD MMM YYYY");
 				const value = Number.parseFloat(this.y).toFixed(2);
 				const series = this.points[0].series;
-
-				// append this.x and this.series.name if data exits else just show me the data!!
 				let html = `<table class="tooltip">
 								<tr><td colspan="2"><h1>${date}</h1></td></tr>`;
 
+				// I know its strange to identify series by color
+				//  but they are unique!
+				if (series.color == OPT.MAIN.color) {
+					html += `<tr><td>${series.name}</td><td>${value}</td></tr>`;
+				}
+				// Check if we are on SLTP charts
 				if (data) {
 					for (const { name, value } of data) {
 						html += `<tr><td>${name}</td><td>${Number.parseFloat(
 							value
 						).toFixed(2)}</td></tr>`;
 					}
-				} else {
-					html += `<tr><td>${series.name}</td><td>${value}</td></tr>`;
 				}
+
 				html += "</table>";
 
 				return html;
@@ -352,7 +355,6 @@ export default {
 
 		drawOptChart() {
 			let maxHorizon = this.start.date;
-			const chart = this.$refs.sltpchart.chart;
 
 			if (this.opt.SL) {
 				this.optHelper.init(this.start.date, this.opt);
