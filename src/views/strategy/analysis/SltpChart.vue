@@ -5,6 +5,7 @@
 <script>
 import { mapState } from "vuex";
 import moment from "moment";
+import OptHelper from "@/utils/opthelper";
 
 const ONE_YEAR = 1000 * 60 * 60 * 24 * 365;
 const SERIES_COLOR = "#26A69A";
@@ -61,17 +62,25 @@ const OPT = {
 	}
 };
 
+/**
+ * Need to fill in the missing dates so that when you
+ * go back in time the tooltip picks up all series draw.
+ * I think the date need to be aligned on the same date
+ */
 const createSeries = (lastDate, series) => {
 	const arr = [];
 	for (let prop in series) {
-		let date = lastDate + prop * ONE_YEAR;
-		arr.push([date, series[prop]]);
+		let date = moment.utc(lastDate + prop * ONE_YEAR).format("DD MMM YYYY");
+		let t = moment.utc(date, "DD MMM YYYY").valueOf();
+		arr.push([t, series[prop]]);
 	}
 
 	return arr;
 };
 
-const moveTypes = ["mousemove", "touchmove"];
+const startTypes = ["pointerdown"];
+const moveTypes = ["pointermove"];
+const stopTypes = ["pointerup"];
 
 const addListeners = (container, types, fn) => {
 	types.forEach(type => {
@@ -144,6 +153,7 @@ const options = vm => {
 		},
 		xAxis: {
 			type: "datetime",
+			crosshair: true,
 			ordinal: false,
 			title: {
 				text: null
@@ -154,17 +164,16 @@ const options = vm => {
 				title: {
 					text: ""
 				},
-				crosshair: false,
 				events: {
 					afterSetExtremes: function() {
 						// $("#chart_container").trigger("main-chart:setExtremes", e);
 					}
 				},
+				crosshair: false,
 				opposite: true,
 				visible: true,
 				offset: 28,
 				tickWidth: 0,
-				id: "yA0",
 				plotLines: []
 			},
 			{
@@ -174,6 +183,7 @@ const options = vm => {
 						color: "yellow"
 					}
 				},
+				crosshair: false,
 				visible: false,
 				opposite: true,
 				tickWidth: 0,
@@ -191,6 +201,7 @@ const options = vm => {
 						color: "#E1BEE7"
 					}
 				},
+				crosshair: false,
 				visible: false,
 				opposite: true,
 				tickWidth: 0,
@@ -202,19 +213,47 @@ const options = vm => {
 			}
 		],
 		legend: {
-			enabled: false
+			enabled: true
 		},
 		tooltip: {
-			pointFormat:
-				'<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> <br><br/>',
-			valueDecimals: 2,
+			useHTML: true,
 			shared: true,
-			xDateFormat: "%d %b %Y"
+			split: true,
+			distance: 30,
+			padding: 5,
+			formatter: function() {
+				const data = vm.optHelper.getTooltip(this.x);
+				const date = moment.utc(this.x).format("DD MMM YYYY");
+				const value = Number.parseFloat(this.y).toFixed(2);
+				const series = this.points[0].series;
+
+				// append this.x and this.series.name if data exits else just show me the data!!
+				let html = `<table class="tooltip">
+								<tr><td colspan="2"><h1>${date}</h1></td></tr>`;
+
+				if (data) {
+					for (const { name, value } of data) {
+						html += `<tr><td>${name}</td><td>${Number.parseFloat(
+							value
+						).toFixed(2)}</td></tr>`;
+					}
+				} else {
+					html += `<tr><td>${series.name}</td><td>${value}</td></tr>`;
+				}
+				html += "</table>";
+
+				return html;
+			}
 		},
 		plotOptions: {
 			series: {
 				dataGrouping: {
 					enabled: false /* By default highstocks groups data into weeks using average over the week for large datasets */
+				},
+				states: {
+					hover: {
+						enabled: false
+					}
 				}
 			},
 			line: {
@@ -262,6 +301,9 @@ export default {
 		...mapState("fit", ["strategy", "activeTab"]),
 		...mapState("fit/sltp", ["opt", "optSLValue", "optTPValue", "start"])
 	},
+	created() {
+		this.optHelper = new OptHelper(); // Non-reactive data
+	},
 	watch: {
 		/**
 		 * When the strategy changes
@@ -300,6 +342,7 @@ export default {
 					data: this.strategy.ts.data,
 					id: OPT.MAIN.id,
 					color: OPT.MAIN.color,
+					yAxis: 0,
 					showInNavigator: true,
 					name: this.strategy.name
 				});
@@ -309,8 +352,10 @@ export default {
 
 		drawOptChart() {
 			let maxHorizon = this.start.date;
+			const chart = this.$refs.sltpchart.chart;
 
 			if (this.opt.SL) {
+				this.optHelper.init(this.start.date, this.opt);
 				let data = createSeries(this.start.date, this.opt.SL);
 				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
 				this.drawOptLine(OPT.SL, data);
@@ -332,10 +377,9 @@ export default {
 				this.drawOptLine(OPT.TRADE, data);
 
 				this.addPlotBand(this.start.date, maxHorizon);
-				this.addPlotLines(this.optSLValue, this.optTPValue);
-				removeListeners(this.$el, moveTypes, this.toolTipListner);
-				addListeners(this.$el, moveTypes, this.toolTipListner);
-
+				this.addPlotLines(this.optTPValue, this.optSLValue);
+				// removeListeners(this.$el, moveTypes, this.toolTipListner);
+				// addListeners(this.$el, moveTypes, this.toolTipListner);
 				this.$nextTick(() => {
 					const chart = this.$refs.sltpchart.chart;
 					chart.yAxis[1].update({ visible: true });
@@ -352,7 +396,7 @@ export default {
 
 		clearOptChart() {
 			const chart = this.$refs.sltpchart.chart;
-			removeListeners(this.$el, moveTypes, this.toolTipListner);
+			//removeListeners(this.$el, moveTypes, this.toolTipListner);
 			this.clearFromChart(OPT.SL.id);
 			this.clearFromChart(OPT.TP.id);
 			this.clearFromChart(OPT.EXT.id);
@@ -387,9 +431,9 @@ export default {
 				data: data,
 				id: opts.id,
 				name: opts.name,
-				lineWidth: 3,
+				lineWidth: 2,
 				color: opts.color,
-				showInNavigator: opts.showInNavigator,
+				showInNavigator: true,
 				yAxis: opts.axis,
 				dashStyle: opts.dashStyle
 			});
@@ -403,7 +447,6 @@ export default {
 				to: to,
 				color: OPT.PLOT_BAND.color,
 				id: OPT.PLOT_BAND.id,
-				zIndex: 20,
 				events: {
 					click: () => {}
 				}
@@ -416,9 +459,10 @@ export default {
 			chart.yAxis[0].removePlotLine("sl-plotline");
 			chart.yAxis[0].removePlotLine("tp-plotline");
 
+			// Have to be carefull here - could be shorting the stock
 			chart.yAxis[0].addPlotLine({
-				value: sl, // orig: min
-				color: "red",
+				value: tp,
+				color: "#4CAF50",
 				width: 2,
 				yAxis: OPT.MAIN.axis,
 				label: {
@@ -426,12 +470,12 @@ export default {
 					useHTML: true,
 					text: '<span class="sltp-grippy upper"></span>'
 				},
-				id: "sl-plotline"
+				id: "tp-plotline"
 			});
 
 			chart.yAxis[0].addPlotLine({
-				value: tp, // orig: max
-				color: "green",
+				value: sl,
+				color: "#F44336",
 				width: 2,
 				yAxis: OPT.MAIN.axis,
 				label: {
@@ -439,8 +483,79 @@ export default {
 					useHTML: true,
 					text: '<span class="sltp-grippy lower"></span>'
 				},
-				id: "tp-plotline"
+				id: "sl-plotline"
 			});
+
+			// Seems to be inner workings of VUE and interactions
+			// with highcharts!
+			this.$nextTick(() => {
+				this.addPlotLineListeners();
+			});
+		},
+
+		addPlotLineListeners: function() {
+			const chart = this.$refs.sltpchart.chart;
+			let upperLine = chart.yAxis[0].plotLinesAndBands[0].svgElem.translate(
+				0,
+				0
+			);
+			let lowerLine = chart.yAxis[0].plotLinesAndBands[1].svgElem.translate(
+				0,
+				0
+			);
+
+			let upperValue = chart.yAxis[0].plotLinesAndBands[0].options.value;
+			let lowerValue = chart.yAxis[0].plotLinesAndBands[1].options.value;
+			let range = chart.yAxis[0].max - chart.yAxis[0].min; // TODO: determine the best range to use (other max etc)
+			let height = chart.yAxis[0].height;
+			let currentLowerValue = lowerValue;
+			let currentUpperValue = upperValue;
+			let currentRange = range;
+			// Only declarations (variable and function, but not assignment) are hoisted dumbo!
+
+			let initial = 0;
+
+			const grippyUpper = document.querySelector(".sltp-grippy.upper");
+			const grippyLower = document.querySelector(".sltp-grippy.lower");
+			const translate = (lim, value) => {
+				return lim - (range / height) * value;
+			};
+			const startUpper = e => {
+				initial = e.pageY - upperLine.translateY;
+				addListeners(this.$el, moveTypes, moveUpper);
+				addListeners(this.$el, stopTypes, endUpper);
+			};
+			const moveUpper = e => {
+				let diff = e.pageY - initial;
+				let t = translate(upperValue, diff);
+				if (t > currentLowerValue) {
+					upperLine.translate(0, diff);
+					grippyUpper.style.transform = `translate(0px, ${diff}px`;
+				}
+			};
+			const endUpper = e => {
+				removeListeners(this.$el, moveTypes, moveUpper);
+				removeListeners(this.$el, stopTypes, endUpper);
+			};
+			const startLower = e => {
+				initial = e.pageY - lowerLine.translateY;
+				addListeners(this.$el, moveTypes, moveLower);
+				addListeners(this.$el, stopTypes, endLower);
+			};
+			const moveLower = e => {
+				let diff = e.pageY - initial;
+				let t = translate(lowerValue, diff);
+				if (t < currentUpperValue) {
+					lowerLine.translate(0, diff);
+					grippyLower.style.transform = `translate(0px, ${diff}px`;
+				}
+			};
+			const endLower = e => {
+				removeListeners(this.$el, moveTypes, moveLower);
+				removeListeners(this.$el, stopTypes, endLower);
+			};
+			addListeners(grippyUpper, startTypes, startUpper);
+			addListeners(grippyLower, startTypes, startLower);
 		},
 
 		toolTipListner() {
@@ -482,7 +597,6 @@ export default {
 					}
 				} else {
 					const t = moment(txt, "DD MMM YYYY");
-					console.log(t);
 					var diff = moment(this.start.date).diff(t, "days");
 					if (diff < 0) {
 						this.$store.commit(
@@ -509,27 +623,40 @@ span.sltp-grippy {
 	top: 7px;
 	left: -10px;
 	content: "";
-	width: 32px;
+	width: 33px;
 	height: 16px;
 	display: inline-block;
 	overflow: hidden;
 	line-height: 5px;
-	padding: 4px 3px;
-	cursor: move;
+	padding: 5px 4px;
+	cursor: row-resize;
 	vertical-align: top;
-	font-size: 18px;
+	font-size: 16px;
 	font-family: sans-serif;
 	letter-spacing: 2px;
 	color: white;
-	background-color: red;
+	letter-spacing: -1px;
+	border-radius: 3px;
 }
 span.sltp-grippy::after {
-	content: "::::";
+	content: ":::::::";
 }
 span.sltp-grippy.upper {
-	background-color: red;
+	background-color: #4caf50;
 }
 span.sltp-grippy.lower {
-	background-color: green;
+	background-color: #f44336;
+}
+table.tooltip {
+	tr td {
+		&:nth-child(2) {
+			text-align: right;
+		}
+		h1 {
+			font-size: 14px;
+			font-weight: 300;
+			margin: 0 0 2px;
+		}
+	}
 }
 </style>

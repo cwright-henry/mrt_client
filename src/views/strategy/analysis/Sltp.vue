@@ -1,5 +1,6 @@
 <template>
 	<div class="sltp">
+		<div v-if="isLoadingSLTP" class="blocker"></div>
 		<div class="sltp-header">
 			<mrt-sltp-parameters />
 			<div class="sltp-action">
@@ -106,6 +107,7 @@ export default {
 .sltp {
 	background-color: #252525;
 	padding: 16px;
+	position: relative;
 	.sltp-action {
 		display: flex;
 		flex-direction: column;
@@ -124,6 +126,15 @@ export default {
 	}
 	.sltp-graph {
 		width: calc(100% - 0px);
+	}
+	.blocker {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		background-color: rgba(255, 255, 255, 0);
+		z-index: 999;
 	}
 }
 .mrt-optimize--surfaces {

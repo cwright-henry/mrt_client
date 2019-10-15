@@ -35,12 +35,25 @@ export default {
 	},
 
 	getters: {
+		/**
+		 * Find information Ratio
+		 */
 		findEIR: state => (sl, tp) => {
 			return state.EIR[sl][tp]
 		},
 
+		/**
+		 * Find horizon
+		 */
 		findET: state => (sl, tp) => {
 			return state.ET[sl][tp]
+		},
+
+		/**
+		 * Find profit and loss
+		 */
+		findEPnl: state => (sl, tp) => {
+			return state.EPnl[sl][tp]
 		}
 	},
 
@@ -58,8 +71,8 @@ export default {
 			state.EIR = Object.freeze(data.EIR)
 			state.EPnl = Object.freeze(data.EPnl)
 			state.pblta = Object.freeze(data.pblta)
-			state.optSLValue = data.opt.SL['2.0'];
-			state.optTPValue = data.opt.TP['2.0']
+			state.optSLValue = data.opt.SL['2.0']; // last point of greatest value?
+			state.optTPValue = data.opt.TP['2.0'];
 		},
 		isLoadingSLTP(state, status) {
 			state.isLoadingSLTP = status;
