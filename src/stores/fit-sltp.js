@@ -75,9 +75,9 @@ export default {
 			// Defaults
 			state.optSLValue = data.opt.SL['2.0']; // last point of greatest value? Dodgy if Mark changes this
 			state.optTPValue = data.opt.TP['2.0'];
-			state.optHorizonValue = state.ET[state.optSLValue][state.optTPValue];
-			state.optTradPLValue = state.EPnl[state.optSLValue][state.optTPValue];
-			state.optIRValue = state.EIR[state.optSLValue][state.optTPValue];
+			// state.optHorizonValue = state.ET[state.optSLValue][state.optTPValue];
+			// state.optTradPLValue = state.EPnl[state.optSLValue][state.optTPValue];
+			// state.optIRValue = state.EIR[state.optSLValue][state.optTPValue];
 		},
 		isLoadingSLTP(state, status) {
 			state.isLoadingSLTP = status;
