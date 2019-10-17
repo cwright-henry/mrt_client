@@ -66,22 +66,33 @@ export default {
 				maxVal: Object.freeze(data.opt.maxVal),
 				tradePL: Object.freeze(data.opt.tradePL)
 			});
-			state.ET = Object.freeze(data.ET)
-			state.ER = Object.freeze(data.ER)
-			state.EIR = Object.freeze(data.EIR)
-			state.EPnl = Object.freeze(data.EPnl)
-			state.pblta = Object.freeze(data.pblta)
-			state.optSLValue = data.opt.SL['2.0']; // last point of greatest value?
+			state.ET = Object.freeze(data.ET);
+			state.ER = Object.freeze(data.ER);
+			state.EIR = Object.freeze(data.EIR);
+			state.EPnl = Object.freeze(data.EPnl);
+			state.pblta = Object.freeze(data.pblta);
+
+			// Defaults
+			state.optSLValue = data.opt.SL['2.0']; // last point of greatest value? Dodgy if Mark changes this
 			state.optTPValue = data.opt.TP['2.0'];
+			state.optHorizonValue = state.ET[state.optSLValue][state.optTPValue];
+			state.optTradPLValue = state.EPnl[state.optSLValue][state.optTPValue];
+			state.optIRValue = state.EIR[state.optSLValue][state.optTPValue];
 		},
 		isLoadingSLTP(state, status) {
 			state.isLoadingSLTP = status;
 		},
 		setOptSLValue(state, value) {
 			state.optSLValue = value;
+			// state.optHorizonValue = state.ET[state.optSLValue][state.optTPValue];
+			// state.optTradPLValue = state.EPnl[state.optSLValue][state.optTPValue];
+			// state.optIRValue = state.EIR[state.optSLValue][state.optTPValue];
 		},
 		setOptTPValue(state, value) {
 			state.optTPValue = value;
+			// state.optHorizonValue = state.ET[state.optSLValue][state.optTPValue];
+			// state.optTradPLValue = state.EPnl[state.optSLValue][state.optTPValue];
+			// state.optIRValue = state.EIR[state.optSLValue][state.optTPValue];
 		},
 		setOptIRValue(state, value) {
 			state.optIRValue = value;

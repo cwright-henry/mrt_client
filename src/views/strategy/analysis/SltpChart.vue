@@ -62,22 +62,6 @@ const OPT = {
 	}
 };
 
-/**
- * Need to fill in the missing dates so that when you
- * go back in time the tooltip picks up all series draw.
- * I think the date need to be aligned on the same date
- */
-const createSeries = (lastDate, series) => {
-	const arr = [];
-	for (let prop in series) {
-		let date = moment.utc(lastDate + prop * ONE_YEAR).format("DD MMM YYYY");
-		let t = moment.utc(date, "DD MMM YYYY").valueOf();
-		arr.push([t, series[prop]]);
-	}
-
-	return arr;
-};
-
 const startTypes = ["pointerdown"];
 const moveTypes = ["pointermove"];
 const stopTypes = ["pointerup"];
@@ -104,7 +88,25 @@ const options = vm => {
 	return {
 		chart: {
 			height: 500,
-			backgroundColor: "rgba(0, 0, 0, 0.0)"
+			backgroundColor: "rgba(0, 0, 0, 0.0)",
+			events: {
+				load: function() {
+					const legendPaths = document.querySelectorAll(
+						".highcharts-legend-item path"
+					);
+					legendPaths.forEach(item => {
+						item.setAttribute("stroke-width", 12);
+					});
+				},
+				redraw: function() {
+					const legendPaths = document.querySelectorAll(
+						".highcharts-legend-item path"
+					);
+					legendPaths.forEach(item => {
+						item.setAttribute("stroke-width", 12);
+					});
+				}
+			}
 		},
 		rangeSelector: {
 			selected: 6,
@@ -213,7 +215,9 @@ const options = vm => {
 			}
 		],
 		legend: {
-			enabled: true
+			enabled: true,
+			symbolPadding: 5,
+			symbolWidth: 12
 		},
 		tooltip: {
 			useHTML: true,
@@ -224,7 +228,7 @@ const options = vm => {
 			formatter: function() {
 				const data = vm.optHelper.getTooltip(this.x);
 				const date = moment.utc(this.x).format("DD MMM YYYY");
-				const value = Number.parseFloat(this.y).toFixed(2);
+				const value = Number.parseFloat(this.y).toFixed(4);
 				const series = this.points[0].series;
 				let html = `<table class="tooltip">
 								<tr><td colspan="2"><h1>${date}</h1></td></tr>`;
@@ -232,14 +236,14 @@ const options = vm => {
 				// I know its strange to identify series by color
 				//  but they are unique!
 				if (series.color == OPT.MAIN.color) {
-					html += `<tr><td>${series.name}</td><td>${value}</td></tr>`;
+					html += `<tr><td style="color:${series.color}">${series.name}</td><td>${value}</td></tr>`;
 				}
 				// Check if we are on SLTP charts
 				if (data) {
-					for (const { name, value } of data) {
-						html += `<tr><td>${name}</td><td>${Number.parseFloat(
+					for (const { name, value, color } of data) {
+						html += `<tr><td style="color:${color}">${name}</td><td>${Number.parseFloat(
 							value
-						).toFixed(2)}</td></tr>`;
+						).toFixed(4)}</td></tr>`;
 					}
 				}
 
@@ -305,7 +309,7 @@ export default {
 		...mapState("fit/sltp", ["opt", "optSLValue", "optTPValue", "start"])
 	},
 	created() {
-		this.optHelper = new OptHelper(); // Non-reactive data
+		this.optHelper = new OptHelper(OPT); // Non-reactive data
 	},
 	watch: {
 		/**
@@ -354,41 +358,23 @@ export default {
 		},
 
 		drawOptChart() {
-			let maxHorizon = this.start.date;
-
 			if (this.opt.SL) {
-				this.optHelper.init(this.start.date, this.opt);
-				let data = createSeries(this.start.date, this.opt.SL);
-				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
-				this.drawOptLine(OPT.SL, data);
-
-				data = createSeries(this.start.date, this.opt.TP);
-				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
-				this.drawOptLine(OPT.TP, data);
-
-				data = createSeries(this.start.date, this.opt.Ext);
-				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
-				this.drawOptLine(OPT.EXT, data);
-
-				data = createSeries(this.start.date, this.opt.maxVal);
-				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
-				this.drawOptLine(OPT.MAX, data);
-
-				data = createSeries(this.start.date, this.opt.tradePL);
-				maxHorizon = Math.max(maxHorizon, data[data.length - 1][0]);
-				this.drawOptLine(OPT.TRADE, data);
-
-				this.addPlotBand(this.start.date, maxHorizon);
+				this.optHelper.build(this.start.date, this.opt);
+				this.drawOptLine(OPT.SL, this.optHelper.sl);
+				this.drawOptLine(OPT.TP, this.optHelper.tp);
+				this.drawOptLine(OPT.EXT, this.optHelper.ext);
+				this.drawOptLine(OPT.MAX, this.optHelper.maxVal);
+				this.drawOptLine(OPT.TRADE, this.optHelper.tradePL);
+				this.addPlotBand(this.start.date, this.optHelper.horizon);
 				this.addPlotLines(this.optTPValue, this.optSLValue);
-				// removeListeners(this.$el, moveTypes, this.toolTipListner);
-				// addListeners(this.$el, moveTypes, this.toolTipListner);
+
 				this.$nextTick(() => {
 					const chart = this.$refs.sltpchart.chart;
 					chart.yAxis[1].update({ visible: true });
 					chart.yAxis[2].update({ visible: true });
 					chart.xAxis[0].setExtremes(
 						this.start.date - 4 * ONE_YEAR,
-						maxHorizon
+						this.optHelper.horizon
 					);
 				});
 			} else {
@@ -398,7 +384,6 @@ export default {
 
 		clearOptChart() {
 			const chart = this.$refs.sltpchart.chart;
-			//removeListeners(this.$el, moveTypes, this.toolTipListner);
 			this.clearFromChart(OPT.SL.id);
 			this.clearFromChart(OPT.TP.id);
 			this.clearFromChart(OPT.EXT.id);
@@ -512,7 +497,7 @@ export default {
 			let height = chart.yAxis[0].height;
 			let currentLowerValue = lowerValue;
 			let currentUpperValue = upperValue;
-			let currentRange = range;
+		//	let currentRange = range;
 			// Only declarations (variable and function, but not assignment) are hoisted dumbo!
 
 			let initial = 0;
@@ -535,7 +520,9 @@ export default {
 					grippyUpper.style.transform = `translate(0px, ${diff}px`;
 				}
 			};
-			const endUpper = e => {
+			const endUpper = () => {
+				currentUpperValue = translate(upperValue, upperLine.translateY);
+				this.$store.commit("fit/sltp/setOptTPValue", currentUpperValue);
 				removeListeners(this.$el, moveTypes, moveUpper);
 				removeListeners(this.$el, stopTypes, endUpper);
 			};
@@ -552,7 +539,7 @@ export default {
 					grippyLower.style.transform = `translate(0px, ${diff}px`;
 				}
 			};
-			const endLower = e => {
+			const endLower = () => {
 				removeListeners(this.$el, moveTypes, moveLower);
 				removeListeners(this.$el, stopTypes, endLower);
 			};

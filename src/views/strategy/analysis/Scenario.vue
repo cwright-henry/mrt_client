@@ -21,16 +21,16 @@
 					<label>Library</label>
 				</div>
 				<div>
+					<v-btn small outline fab color="#2196F3" @click="toggle">
+						<v-icon>fullscreen</v-icon>
+					</v-btn>
+					<label>Full Screen</label>
+				</div>
+				<div>
 					<v-btn small fab color="#2196F3" :loading="isSavingFit" @click="save">
 						<v-icon>cloud_upload</v-icon>
 					</v-btn>
 					<label>Save Scenario</label>
-				</div>
-				<div>
-					<v-btn small fab color="#2196F3" @click="toggle">
-						<v-icon>fullscreen</v-icon>
-					</v-btn>
-					<label>Full Screen</label>
 				</div>
 			</div>
 		</div>

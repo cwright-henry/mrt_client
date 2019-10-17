@@ -153,24 +153,24 @@
 			<div class="parameter-set">
 				<ul>
 					<li>
-						<label>Max. Information Ratio</label>
-						<div class="readonly">{{optIRValue | number}}</div>
+						<label>Optimal Take Profit</label>
+						<div class="readonly">{{optTPValue | number4}}</div>
 					</li>
 					<li>
 						<label>Optimal Stop Loss</label>
-						<div class="readonly">{{optSLValue | number}}</div>
+						<div class="readonly">{{optSLValue | number4}}</div>
 					</li>
 					<li>
-						<label>Optimal Take Profit</label>
-						<div class="readonly">{{optTPValue | number}}</div>
+						<label>Max. Information Ratio</label>
+						<div class="readonly">{{optIRValue | number4}}</div>
 					</li>
 					<li>
 						<label>Forcast Horizon</label>
-						<div class="readonly">{{optHorizonValue | number}}</div>
+						<div class="readonly">{{optHorizonValue | number4}}</div>
 					</li>
 					<li>
 						<label>Trad. Profit &amp; Loss</label>
-						<div class="readonly">{{optTradPLValue | number}}</div>
+						<div class="readonly">{{optTradPLValue | number4}}</div>
 					</li>
 				</ul>
 			</div>

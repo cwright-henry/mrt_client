@@ -7,7 +7,8 @@ const DATE_FORMAT = "DD MMM YYYY";
  * Helper class to create timeseries and expose tooltip to Highcharts
  */
 export default class {
-	constructor() {
+	constructor(config) {
+		this._config = config;
 		this._minDate = 0;
 		this._maxDate = 0;
 		this._sl = [];
@@ -22,7 +23,7 @@ export default class {
 	 * All Opt data should have the same length so this formaulae is
 	 * using opt.SL as the key series to create a sorted map of value's and dates
 	 */
-	init(startDate, { SL = {}, TP = {}, Ext = {}, maxVal = {}, tradePL = {} }) {
+	build(startDate, { SL = {}, TP = {}, Ext = {}, maxVal = {}, tradePL = {} }) {
 		const map = {}
 		this.reset()
 
@@ -47,23 +48,28 @@ export default class {
 
 			this._buckets.push([value, [
 				{
-					name: 'Opt SL',
+					name: this._config.SL.name,
+					color: this._config.SL.color,
 					value: SL[key]
 				},
 				{
-					name: 'Opt TP',
+					name: this._config.TP.name,
+					color: this._config.TP.color,
 					value: TP[key]
 				},
 				{
-					name: 'Ext',
+					name: this._config.EXT.name,
+					color: this._config.EXT.color,
 					value: Ext[key]
 				},
 				{
-					name: 'Max EIR',
+					name: this._config.MAX.name,
+					color: this._config.MAX.color,
 					value: maxVal[key]
 				},
 				{
-					name: 'Trad P/L Ratio',
+					name: this._config.TRADE.name,
+					color: this._config.TRADE.color,
 					value: tradePL[key]
 				}
 			]]);
@@ -71,6 +77,7 @@ export default class {
 	}
 
 	get sl() {
+		console.log(this._sl)
 		return this._sl;
 	}
 
