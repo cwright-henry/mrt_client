@@ -77,7 +77,6 @@ export default class {
 	}
 
 	get sl() {
-		console.log(this._sl)
 		return this._sl;
 	}
 

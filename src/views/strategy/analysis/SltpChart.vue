@@ -475,9 +475,9 @@ export default {
 
 			// Seems to be inner workings of VUE and interactions
 			// with highcharts!
-			this.$nextTick(() => {
+			setTimeout(() => {
 				this.addPlotLineListeners();
-			});
+			}, 0);
 		},
 
 		addPlotLineListeners: function() {
@@ -497,7 +497,7 @@ export default {
 			let height = chart.yAxis[0].height;
 			let currentLowerValue = lowerValue;
 			let currentUpperValue = upperValue;
-		//	let currentRange = range;
+			//	let currentRange = range;
 			// Only declarations (variable and function, but not assignment) are hoisted dumbo!
 
 			let initial = 0;
@@ -515,10 +515,8 @@ export default {
 			const moveUpper = e => {
 				let diff = e.pageY - initial;
 				let t = translate(upperValue, diff);
-				if (t > currentLowerValue) {
-					upperLine.translate(0, diff);
-					grippyUpper.style.transform = `translate(0px, ${diff}px`;
-				}
+				upperLine.translate(0, diff);
+				grippyUpper.style.transform = `translate(0px, ${diff}px`;
 			};
 			const endUpper = () => {
 				currentUpperValue = translate(upperValue, upperLine.translateY);
@@ -534,10 +532,8 @@ export default {
 			const moveLower = e => {
 				let diff = e.pageY - initial;
 				let t = translate(lowerValue, diff);
-				if (t < currentUpperValue) {
-					lowerLine.translate(0, diff);
-					grippyLower.style.transform = `translate(0px, ${diff}px`;
-				}
+				lowerLine.translate(0, diff);
+				grippyLower.style.transform = `translate(0px, ${diff}px`;
 			};
 			const endLower = () => {
 				removeListeners(this.$el, moveTypes, moveLower);
