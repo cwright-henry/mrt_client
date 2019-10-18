@@ -363,8 +363,12 @@ export default {
 						showInNavigator: true,
 						name: this.strategy.name
 					});
+					this.$nextTick(() => {
+						// Remove any previously setExtremes on yAxis
+						// by setting to null
+						chart.yAxis[0].setExtremes(null, null);
+					});
 				}
-				chart.reflow();
 			}, 0);
 		},
 
