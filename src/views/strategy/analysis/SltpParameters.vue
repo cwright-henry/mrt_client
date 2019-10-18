@@ -148,29 +148,48 @@
 						<label>Start Value</label>
 						<div class="readonly">{{start.value | number}}</div>
 					</li>
+					<li>
+						<label>Position</label>
+						<div>{{isLong == true ? 'TODO' : 'TODO'}}</div>
+					</li>
 				</ul>
 			</div>
 			<div class="parameter-set">
 				<ul>
 					<li>
-						<label>Optimal Take Profit</label>
-						<div class="readonly">{{optTPValue | number4}}</div>
+						<label>Take Profit</label>
+						<div class="readonly">{{tpValue | number4}}</div>
 					</li>
 					<li>
-						<label>Optimal Stop Loss</label>
-						<div class="readonly">{{optSLValue | number4}}</div>
+						<label>Stop Loss</label>
+						<div class="readonly">{{slValue | number4}}</div>
+					</li>
+				</ul>
+			</div>
+			<div class="parameter-set">
+				<ul>
+					<li>
+						<label>
+							Horizon
+							<span>(Days)</span>
+						</label>
+						<div class="readonly">{{ETValue | number-round}}</div>
 					</li>
 					<li>
-						<label>Max. Information Ratio</label>
-						<div class="readonly">{{optIRValue | number4}}</div>
+						<label>EIR</label>
+						<div class="readonly">{{EIRValue | number4}}</div>
 					</li>
 					<li>
-						<label>Forcast Horizon</label>
-						<div class="readonly">{{optHorizonValue | number4}}</div>
+						<label>EPnl</label>
+						<div class="readonly">{{EPnLValue | number4}}</div>
 					</li>
 					<li>
-						<label>Trad. Profit &amp; Loss</label>
-						<div class="readonly">{{optTradPLValue | number4}}</div>
+						<label>ER</label>
+						<div class="readonly">{{ERValue | number4}}</div>
+					</li>
+					<li>
+						<label>pblta</label>
+						<div class="readonly">{{pbltaValue | number4}}</div>
 					</li>
 				</ul>
 			</div>
@@ -236,12 +255,15 @@ export default {
 			"userBeta"
 		]),
 		...mapState("fit/sltp", [
-			"optIRValue",
-			"optSLValue",
-			"optTPValue",
-			"optHorizonValue",
-			"optTradPLValue",
+			"slValue",
+			"tpValue",
+			"ETValue",
+			"ERValue",
+			"EIRValue",
+			"EPnLValue",
+			"pbltaValue",
 			"isLoadingSLTP",
+			"isLong",
 			"start"
 		]),
 		...mapGetters("fit", [
@@ -376,7 +398,12 @@ export default {
 	.parameters {
 		display: flex;
 		.parameter-set {
-			margin: 0 80px 0 0;
+			margin: 0 16px 0 0;
+			background-color: #2e2e2e;
+			border: 1px solid #424242;
+			padding: 8px 12px;
+			border-radius: 4px;
+			min-width: 250px;
 			ul {
 				display: flex;
 				flex-direction: column;
@@ -396,8 +423,8 @@ export default {
 						white-space: nowrap;
 						text-overflow: ellipsis;
 						overflow: hidden;
-						border: 1px solid #757575;
-						background-color: #2e2e2e;
+						border: 1px solid #616161;
+						background-color: #424242;
 						display: flex;
 						justify-content: flex-end;
 					}

@@ -37,7 +37,7 @@ const OPT = {
 		color: "#64B5F6",
 		dashStyle: "",
 		axis: 0,
-		name: "E[x_0] NBC",
+		name: "Opt E[x_0] NBC",
 		showInNavigator: true
 	},
 	MAX: {
@@ -45,7 +45,7 @@ const OPT = {
 		color: "yellow",
 		dashStyle: "Dot",
 		axis: 1,
-		name: "Max EIR",
+		name: "Opt Max EIR",
 		showInNavigator: false
 	},
 	TRADE: {
@@ -53,7 +53,7 @@ const OPT = {
 		color: "#E1BEE7",
 		dashStyle: "Dot",
 		axis: 2,
-		name: "Trad P/L Ratio",
+		name: "Opt Trad P/L Ratio",
 		showInNavigator: false
 	},
 	PLOT_BAND: {
@@ -306,7 +306,15 @@ export default {
 	},
 	computed: {
 		...mapState("fit", ["strategy", "activeTab"]),
-		...mapState("fit/sltp", ["opt", "optSLValue", "optTPValue", "start"])
+		...mapState("fit/sltp", [
+			"opt",
+			"slValue",
+			"tpValue",
+			"start",
+			"isLong",
+			"slRange",
+			"tpRange"
+		])
 	},
 	created() {
 		this.optHelper = new OptHelper(OPT); // Non-reactive data
@@ -339,22 +347,25 @@ export default {
 	methods: {
 		drawStrategyChart() {
 			const chart = this.$refs.sltpchart.chart;
-			const existing = chart.get(OPT.MAIN.id);
-			if (existing) {
-				existing.remove();
-			}
-			if (this.strategy.ts.data) {
-				chart.addSeries({
-					type: "line",
-					data: this.strategy.ts.data,
-					id: OPT.MAIN.id,
-					color: OPT.MAIN.color,
-					yAxis: 0,
-					showInNavigator: true,
-					name: this.strategy.name
-				});
-			}
-			chart.reflow();
+
+			setTimeout(() => {
+				const existing = chart.get(OPT.MAIN.id);
+				if (existing) {
+					existing.remove();
+				}
+				if (this.strategy.ts.data) {
+					chart.addSeries({
+						type: "line",
+						data: this.strategy.ts.data,
+						id: OPT.MAIN.id,
+						color: OPT.MAIN.color,
+						yAxis: 0,
+						showInNavigator: true,
+						name: this.strategy.name
+					});
+				}
+				chart.reflow();
+			}, 0);
 		},
 
 		drawOptChart() {
@@ -366,12 +377,14 @@ export default {
 				this.drawOptLine(OPT.MAX, this.optHelper.maxVal);
 				this.drawOptLine(OPT.TRADE, this.optHelper.tradePL);
 				this.addPlotBand(this.start.date, this.optHelper.horizon);
-				this.addPlotLines(this.optTPValue, this.optSLValue);
+				this.addPlotLines(this.slValue, this.tpValue);
 
 				this.$nextTick(() => {
 					const chart = this.$refs.sltpchart.chart;
 					chart.yAxis[1].update({ visible: true });
 					chart.yAxis[2].update({ visible: true });
+
+					// FIXME
 					chart.xAxis[0].setExtremes(
 						this.start.date - 4 * ONE_YEAR,
 						this.optHelper.horizon
@@ -440,13 +453,30 @@ export default {
 			});
 		},
 
+		addRangeBand(from, to, type) {
+			const chart = this.$refs.sltpchart.chart;
+			chart.yAxis[0].removePlotBand(type);
+			chart.yAxis[0].addPlotBand({
+				from: from,
+				to: to,
+				color:
+					type == "sl"
+						? "rgba(255, 0, 0, 0.1)"
+						: "rgba(0, 255, 0, 0.1)",
+				id: type
+			});
+		},
+
 		addPlotLines(sl, tp) {
 			const chart = this.$refs.sltpchart.chart;
 
 			chart.yAxis[0].removePlotLine("sl-plotline");
 			chart.yAxis[0].removePlotLine("tp-plotline");
 
-			// Have to be carefull here - could be shorting the stock
+			/**
+			 * If we are long then green line on top and red line on the bottom
+			 * If we short then green line on bottom and red on top
+			 */
 			chart.yAxis[0].addPlotLine({
 				value: tp,
 				color: "#4CAF50",
@@ -455,7 +485,7 @@ export default {
 				label: {
 					align: "left",
 					useHTML: true,
-					text: '<span class="sltp-grippy upper"></span>'
+					text: `<span class="sltp-grippy takeProfit"></span>`
 				},
 				id: "tp-plotline"
 			});
@@ -468,135 +498,114 @@ export default {
 				label: {
 					align: "left",
 					useHTML: true,
-					text: '<span class="sltp-grippy lower"></span>'
+					text: `<span class="sltp-grippy stopLoss"></span>`
 				},
 				id: "sl-plotline"
 			});
 
-			// Seems to be inner workings of VUE and interactions
-			// with highcharts!
+			// Wait until Vue has attached the graphs
+			// to the DOM
 			setTimeout(() => {
+				const extremes = chart.yAxis[0].getExtremes();
+				chart.yAxis[0].setExtremes(
+					Math.min(extremes.dataMin, Math.min(tp, sl)),
+					Math.max(extremes.dataMax, Math.max(tp, sl))
+				);
 				this.addPlotLineListeners();
 			}, 0);
 		},
 
 		addPlotLineListeners: function() {
 			const chart = this.$refs.sltpchart.chart;
-			let upperLine = chart.yAxis[0].plotLinesAndBands[0].svgElem.translate(
+			let takeProfitLine = chart.yAxis[0].plotLinesAndBands[0].svgElem.translate(
 				0,
 				0
 			);
-			let lowerLine = chart.yAxis[0].plotLinesAndBands[1].svgElem.translate(
+			let stopLossLine = chart.yAxis[0].plotLinesAndBands[1].svgElem.translate(
 				0,
 				0
 			);
-
-			let upperValue = chart.yAxis[0].plotLinesAndBands[0].options.value;
-			let lowerValue = chart.yAxis[0].plotLinesAndBands[1].options.value;
+			let takeProfitValue =
+				chart.yAxis[0].plotLinesAndBands[0].options.value;
+			let stopLossValue =
+				chart.yAxis[0].plotLinesAndBands[1].options.value;
 			let range = chart.yAxis[0].max - chart.yAxis[0].min; // TODO: determine the best range to use (other max etc)
 			let height = chart.yAxis[0].height;
-			let currentLowerValue = lowerValue;
-			let currentUpperValue = upperValue;
-			//	let currentRange = range;
+			//
+			// Note to self:
 			// Only declarations (variable and function, but not assignment) are hoisted dumbo!
+			//
 
 			let initial = 0;
 
-			const grippyUpper = document.querySelector(".sltp-grippy.upper");
-			const grippyLower = document.querySelector(".sltp-grippy.lower");
+			const grippyTakeProfit = document.querySelector(
+				".sltp-grippy.takeProfit"
+			);
+			const grippyStopLoss = document.querySelector(
+				".sltp-grippy.stopLoss"
+			);
+
 			const translate = (lim, value) => {
 				return lim - (range / height) * value;
 			};
-			const startUpper = e => {
-				initial = e.pageY - upperLine.translateY;
-				addListeners(this.$el, moveTypes, moveUpper);
-				addListeners(this.$el, stopTypes, endUpper);
+
+			const [slMin, slMax] = this.slRange;
+			const [tpMin, tpMax] = this.tpRange;
+
+			/**
+			 *	TAKE PROFIT
+			 */
+			const startTakeProfit = e => {
+				initial = e.pageY - takeProfitLine.translateY;
+				addListeners(this.$el, moveTypes, moveTakeProfit);
+				addListeners(this.$el, stopTypes, endTakeProfit);
 			};
-			const moveUpper = e => {
+			const moveTakeProfit = e => {
 				let diff = e.pageY - initial;
-				let t = translate(upperValue, diff);
-				upperLine.translate(0, diff);
-				grippyUpper.style.transform = `translate(0px, ${diff}px`;
-			};
-			const endUpper = () => {
-				currentUpperValue = translate(upperValue, upperLine.translateY);
-				this.$store.commit("fit/sltp/setOptTPValue", currentUpperValue);
-				removeListeners(this.$el, moveTypes, moveUpper);
-				removeListeners(this.$el, stopTypes, endUpper);
-			};
-			const startLower = e => {
-				initial = e.pageY - lowerLine.translateY;
-				addListeners(this.$el, moveTypes, moveLower);
-				addListeners(this.$el, stopTypes, endLower);
-			};
-			const moveLower = e => {
-				let diff = e.pageY - initial;
-				let t = translate(lowerValue, diff);
-				lowerLine.translate(0, diff);
-				grippyLower.style.transform = `translate(0px, ${diff}px`;
-			};
-			const endLower = () => {
-				removeListeners(this.$el, moveTypes, moveLower);
-				removeListeners(this.$el, stopTypes, endLower);
-			};
-			addListeners(grippyUpper, startTypes, startUpper);
-			addListeners(grippyLower, startTypes, startLower);
-		},
-
-		toolTipListner() {
-			const toolTips = this.$el.querySelectorAll(
-				".highcharts-tooltip text"
-			);
-			for (let tip of toolTips) {
-				let txt = tip.textContent;
-				if (txt && txt.indexOf(":") != -1) {
-					let str = txt.split(":");
-					switch (str[0]) {
-						case "Opt SL":
-							this.$store.commit(
-								"fit/sltp/setOptSLValue",
-								str[1]
-							);
-							break;
-
-						case "Opt TP":
-							this.$store.commit(
-								"fit/sltp/setOptTPValue",
-								str[1]
-							);
-							break;
-
-						case "Max EIR":
-							this.$store.commit(
-								"fit/sltp/setOptIRValue",
-								str[1]
-							);
-							break;
-
-						case "Trad P/L Ratio":
-							this.$store.commit(
-								"fit/sltp/setOptTradPLValue",
-								str[1]
-							);
-							break;
-					}
-				} else {
-					const t = moment(txt, "DD MMM YYYY");
-					var diff = moment(this.start.date).diff(t, "days");
-					if (diff < 0) {
-						this.$store.commit(
-							"fit/sltp/setOptHorizonValue",
-							-1 * diff
-						);
-					} else {
-						this.$store.commit("fit/sltp/setOptSLValue", null);
-						this.$store.commit("fit/sltp/setOptTPValue", null);
-						this.$store.commit("fit/sltp/setOptIRValue", null);
-						this.$store.commit("fit/sltp/setOptTradPLValue", null);
-						this.$store.commit("fit/sltp/setOptHorizonValue", null);
-					}
+				let actual = translate(takeProfitValue, diff);
+				if (actual >= tpMin && actual <= tpMax) {
+					takeProfitLine.translate(0, diff);
+					grippyTakeProfit.style.transform = `translate(0px, ${diff}px`;
 				}
-			}
+			};
+			const endTakeProfit = () => {
+				let value = translate(
+					takeProfitValue,
+					takeProfitLine.translateY
+				);
+				this.$store.commit("fit/sltp/setTPValue", value);
+				removeListeners(this.$el, moveTypes, moveTakeProfit);
+				removeListeners(this.$el, stopTypes, endTakeProfit);
+			};
+
+			/**
+			 *	STOP LOSS
+			 */
+			const startStopLoss = e => {
+				initial = e.pageY - stopLossLine.translateY;
+				addListeners(this.$el, moveTypes, moveStopLoss);
+				addListeners(this.$el, stopTypes, endStopLoss);
+			};
+			const moveStopLoss = e => {
+				let diff = e.pageY - initial;
+				let actual = translate(stopLossValue, diff);
+				if (actual >= slMin && actual <= slMax) {
+					stopLossLine.translate(0, diff);
+					grippyStopLoss.style.transform = `translate(0px, ${diff}px`;
+				}
+			};
+			const endStopLoss = () => {
+				let value = translate(stopLossValue, stopLossLine.translateY);
+				this.$store.commit("fit/sltp/setSLValue", value);
+				removeListeners(this.$el, moveTypes, moveStopLoss);
+				removeListeners(this.$el, stopTypes, endStopLoss);
+			};
+
+			/**
+			 *	SETUP LISTENERS
+			 */
+			addListeners(grippyTakeProfit, startTypes, startTakeProfit);
+			addListeners(grippyStopLoss, startTypes, startStopLoss);
 		}
 	}
 };
@@ -611,7 +620,6 @@ span.sltp-grippy {
 	width: 33px;
 	height: 16px;
 	display: inline-block;
-	overflow: hidden;
 	line-height: 5px;
 	padding: 5px 4px;
 	cursor: row-resize;
@@ -626,10 +634,26 @@ span.sltp-grippy {
 span.sltp-grippy::after {
 	content: ":::::::";
 }
-span.sltp-grippy.upper {
+span.sltp-grippy.takeProfit::before {
+	content: "TP";
+	position: absolute;
+	top: 24px;
+	left: 8px;
+	font-size: 11px;
+	color: #bdbdbd;
+}
+span.sltp-grippy.stopLoss::before {
+	content: "SL";
+	position: absolute;
+	top: 24px;
+	left: 8px;
+	font-size: 11px;
+	color: #bdbdbd;
+}
+span.sltp-grippy.takeProfit {
 	background-color: #4caf50;
 }
-span.sltp-grippy.lower {
+span.sltp-grippy.stopLoss {
 	background-color: #f44336;
 }
 table.tooltip {

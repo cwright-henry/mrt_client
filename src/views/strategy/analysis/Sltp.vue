@@ -15,7 +15,12 @@
 		</div>
 		<ul class="mrt-optimize--surfaces">
 			<li>
-				<mrt-surface-chart id="graphET" @showSurfaceDialog="enableSufaceChart" title="ET" :values="ET"></mrt-surface-chart>
+				<mrt-surface-chart
+					id="graphET"
+					@showSurfaceDialog="enableSufaceChart"
+					title="Horizon"
+					:values="ET"
+				></mrt-surface-chart>
 			</li>
 			<li>
 				<mrt-surface-chart
@@ -58,7 +63,7 @@ import mrtSltpchart from "./SltpChart";
 import mrtSurfaceChart from "./SltpSurfaceChart";
 import mrtSurfaceChartDialog from "./SltpSurfaceChartDialog";
 import mrtSltpParameters from "./SltpParameters";
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 
 export default {
 	props: {

@@ -1,7 +1,27 @@
 import ApiController from '@/services/ApiController'
 
+
 const DEFAULT_CARRY = 0.1;
 const DEFAULT_TRANSACTION_COST = 0.05;
+
+const longOrShort = (kappa, sigma, theta, x_0) => {
+	const sigmaD = sigma / Math.sqrt(2.0 * kappa);
+	const x_0_stdev = (x_0 - theta) / sigmaD;
+
+	return x_0_stdev <= 0 ? 'long' : 'short';
+}
+
+const closestNeighbour = (arr, value) => {
+	return arr.reduce((prev, curr) => {
+		return (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev);
+	});
+}
+
+const findNearest = (matrix, x, y) => {
+	const first = closestNeighbour(Object.keys(matrix), x);
+	const second = closestNeighbour(Object.keys(matrix[first]), y);
+	return matrix[first][second];
+}
 
 export default {
 	namespaced: true,
@@ -15,50 +35,41 @@ export default {
 		carry: DEFAULT_CARRY,
 		transactionCost: DEFAULT_TRANSACTION_COST,
 
-		// SLTP output data
+		// Optimal Values
 		opt: {},
+
+		// Matrix values
 		ET: {},
 		ER: {},
 		EIR: {},
 		EPnl: {},
 		pblta: {},
 
-		// opt values
-		optSLValue: null,
-		optTPValue: null,
-		optIRValue: null,
-		optHorizonValue: null,
-		optTradPLValue: null,
+		// Slider Values
+		slValue: null,
+		tpValue: null,
+
+		// Slider Range
+		slRange: [],
+		tpRange: [],
+
+		// Matrix Values
+		ETValue: null,
+		ERValue: null,
+		EIRValue: null,
+		EPnLValue: null,
+		pbltaValue: null,
+
+		// Strategy type
+		isLong: true,
 
 		// Notifications
 		isLoadingSLTP: false
 	},
 
-	getters: {
-		/**
-		 * Find information Ratio
-		 */
-		findEIR: state => (sl, tp) => {
-			return state.EIR[sl][tp]
-		},
-
-		/**
-		 * Find horizon
-		 */
-		findET: state => (sl, tp) => {
-			return state.ET[sl][tp]
-		},
-
-		/**
-		 * Find profit and loss
-		 */
-		findEPnl: state => (sl, tp) => {
-			return state.EPnl[sl][tp]
-		}
-	},
-
 	mutations: {
 		setSltpData(state, data) {
+			// Optimal Data
 			state.opt = Object.freeze({
 				SL: Object.freeze(data.opt.SL),
 				TP: Object.freeze(data.opt.TP),
@@ -66,42 +77,49 @@ export default {
 				maxVal: Object.freeze(data.opt.maxVal),
 				tradePL: Object.freeze(data.opt.tradePL)
 			});
+
+			// Matrix data
 			state.ET = Object.freeze(data.ET);
 			state.ER = Object.freeze(data.ER);
 			state.EIR = Object.freeze(data.EIR);
 			state.EPnl = Object.freeze(data.EPnl);
 			state.pblta = Object.freeze(data.pblta);
 
-			// Defaults
-			state.optSLValue = data.opt.SL['2.0']; // last point of greatest value? Dodgy if Mark changes this
-			state.optTPValue = data.opt.TP['2.0'];
-			// state.optHorizonValue = state.ET[state.optSLValue][state.optTPValue];
-			// state.optTradPLValue = state.EPnl[state.optSLValue][state.optTPValue];
-			// state.optIRValue = state.EIR[state.optSLValue][state.optTPValue];
+			// Slider ranges
+			const slKeys = Object.keys(state.EIR)
+			const tpKeys = Object.keys(state.EIR[slKeys[0]])
+			state.slRange = [slKeys[0], slKeys[slKeys.length - 1]];
+			state.tpRange = [tpKeys[0], tpKeys[tpKeys.length - 1]];
+
+			// Slider values
+			state.slValue = state.slRange[1];
+			state.tpValue = state.tpRange[0];
+
+			// Matrix values
+			state.ETValue = findNearest(state.ET, state.slValue, state.tpValue) * 365;
+			state.ERValue = findNearest(state.EIR, state.slValue, state.tpValue)
+			state.EIRValue = findNearest(state.EIR, state.slValue, state.tpValue)
+			state.EPnLValue = findNearest(state.EPnl, state.slValue, state.tpValue)
+			state.pbltaValue = findNearest(state.pblta, state.slValue, state.tpValue)
 		},
 		isLoadingSLTP(state, status) {
 			state.isLoadingSLTP = status;
 		},
-		setOptSLValue(state, value) {
-			state.optSLValue = value;
-			// state.optHorizonValue = state.ET[state.optSLValue][state.optTPValue];
-			// state.optTradPLValue = state.EPnl[state.optSLValue][state.optTPValue];
-			// state.optIRValue = state.EIR[state.optSLValue][state.optTPValue];
+		setSLValue(state, value) {
+			state.slValue = value;
+			state.ETValue = findNearest(state.ET, state.slValue, state.tpValue) * 365;
+			state.ERValue = findNearest(state.EIR, state.slValue, state.tpValue)
+			state.EIRValue = findNearest(state.EIR, state.slValue, state.tpValue)
+			state.EPnLValue = findNearest(state.EPnl, state.slValue, state.tpValue)
+			state.pbltaValue = findNearest(state.pblta, state.slValue, state.tpValue)
 		},
-		setOptTPValue(state, value) {
-			state.optTPValue = value;
-			// state.optHorizonValue = state.ET[state.optSLValue][state.optTPValue];
-			// state.optTradPLValue = state.EPnl[state.optSLValue][state.optTPValue];
-			// state.optIRValue = state.EIR[state.optSLValue][state.optTPValue];
-		},
-		setOptIRValue(state, value) {
-			state.optIRValue = value;
-		},
-		setOptHorizonValue(state, value) {
-			state.optHorizonValue = value;
-		},
-		setOptTradPLValue(state, value) {
-			state.optTradPLValue = value;
+		setTPValue(state, value) {
+			state.tpValue = value;
+			state.ETValue = findNearest(state.ET, state.slValue, state.tpValue) * 365;
+			state.ERValue = findNearest(state.EIR, state.slValue, state.tpValue)
+			state.EIRValue = findNearest(state.EIR, state.slValue, state.tpValue)
+			state.EPnLValue = findNearest(state.EPnl, state.slValue, state.tpValue)
+			state.pbltaValue = findNearest(state.pblta, state.slValue, state.tpValue)
 		},
 		setStart(state, value) {
 			state.start.date = value[0]
@@ -112,20 +130,31 @@ export default {
 		},
 		setTransactionCost(state, value) {
 			state.transactionCost = value;
+		},
+		setIsLong(state, value) {
+			state.isLong = value;
 		}
 	},
 
 	actions: {
 		async generate({ commit, state, rootState, rootGetters }) {
-			commit('isLoadingSLTP', true)
+			commit('isLoadingSLTP', true);
+
+			const kappa = rootGetters['fit/kappa'];
+			const sigma = rootGetters['fit/sigma'];
+			const theta = rootGetters['fit/theta'];
+			const x_0 = state.start.value;
+
+			commit('setIsLong', longOrShort(kappa, sigma, theta, x_0));
+
 			try {
 				const payload = {
 					proctype: rootState.fit.strategy.fit.proctype,
-					kappa: rootGetters['fit/kappa'],
-					sigma: rootGetters['fit/sigma'],
-					theta: rootGetters['fit/theta'],
+					kappa,
+					sigma,
+					theta,
 					carry: state.carry,
-					x_0: state.start.value,
+					x_0,
 					trans_oneway_stdev: state.transactionCost
 				}
 				const data = await ApiController.sltp(payload);
@@ -162,12 +191,21 @@ export default {
 			state.EIR = {};
 			state.EPnl = {};
 			state.pblta = {};
-			state.optSLValue = null;
-			state.optTPValue = null;
-			state.optIRValue = null;
-			state.optHorizonValue = null;
-			state.optTradPLValue = null;
-			state.isLoadingSLTP = false;
+
+			// Slider values
+			state.slValue = null
+			state.tpValue = null
+
+			// Slider Range
+			state.slRange = []
+			state.tpRange = []
+
+			// Matrix Values
+			state.ETValue = null
+			state.ERValue = null
+			state.EIRValue = null
+			state.EPnLValue = null
+			state.pbltaValue = null
 		},
 
 		/**
@@ -180,12 +218,20 @@ export default {
 			state.EIR = {};
 			state.EPnl = {};
 			state.pblta = {};
-			state.optSLValue = null;
-			state.optTPValue = null;
-			state.optIRValue = null;
-			state.optHorizonValue = null;
-			state.optTradPLValue = null;
-			state.isLoadingSLTP = false;
+
+			state.slValue = null
+			state.tpValue = null
+
+			// Slider Range
+			state.slRange = []
+			state.tpRange = []
+
+			// Matrix Values
+			state.ETValue = null
+			state.ERValue = null
+			state.EIRValue = null
+			state.EPnLValue = null
+			state.pbltaValue = null
 		}
 	}
 }

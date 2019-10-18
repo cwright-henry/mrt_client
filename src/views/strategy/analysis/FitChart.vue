@@ -190,7 +190,7 @@ export default {
 		update() {
 			const chart = this.$refs.fitchart.chart;
 			if (this.strategy.name) {
-				this.$nextTick(() => {
+				setTimeout(() => {
 					this.clearSeries();
 					chart.addSeries({
 						type: "line",
@@ -201,7 +201,7 @@ export default {
 					//chart.rangeSelector.clickButton(5, true);
 					chart.xAxis[0].setExtremes(this.startDate, this.endDate);
 					chart.reflow();
-				});
+				}, 0);
 			}
 		},
 
