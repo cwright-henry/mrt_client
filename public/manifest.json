@@ -1,6 +1,6 @@
 {
-  "name": "mrt",
-  "short_name": "mrt",
+  "name": "Mean Reversion Trader",
+  "short_name": "MRT",
   "icons": [
     {
       "src": "/img/icons/android-chrome-192x192.png",
