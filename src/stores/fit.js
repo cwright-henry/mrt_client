@@ -5,7 +5,7 @@ import sims from './fit-sims'
 import sltp from './fit-sltp'
 
 
-const DEFAULT_ACTIVE_TAB = '3';
+const DEFAULT_ACTIVE_TAB = '1';
 const DEFAULT_PROCTYPE = 'OU';
 
 export default {
