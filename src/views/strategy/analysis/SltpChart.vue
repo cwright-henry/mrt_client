@@ -1,66 +1,19 @@
 <template>
-	<highcharts :options="options" :constructor-type="'stockChart'" ref="sltpchart"></highcharts>
+	<div>
+		<highcharts :options="options" :constructor-type="'stockChart'" ref="sltpchart"></highcharts>
+		<mrt-sltp-legend />
+	</div>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import moment from "moment";
 import OptHelper from "@/utils/opthelper";
+import mrtSltpLegend from "./SltpLegend";
+import { OPT } from "@/stores/sltp-types";
 
 const ONE_YEAR = 1000 * 60 * 60 * 24 * 365;
 const SERIES_COLOR = "#26A69A";
-
-const OPT = {
-	MAIN: {
-		id: "main_chart",
-		color: SERIES_COLOR,
-		axis: 0
-	},
-	SL: {
-		id: "opt_sl_line",
-		color: "#EF9A9A",
-		dashStyle: "",
-		axis: 0,
-		name: "Opt SL",
-		showInNavigator: true
-	},
-	TP: {
-		id: "opt_tp_line",
-		color: "#4CAF50",
-		dashStyle: "",
-		axis: 0,
-		name: "Opt TP",
-		showInNavigator: true
-	},
-	EXT: {
-		id: "opt_ext_line",
-		color: "#64B5F6",
-		dashStyle: "",
-		axis: 0,
-		name: "Opt E[x_0] NBC",
-		showInNavigator: true
-	},
-	MAX: {
-		id: "opt_max_Line",
-		color: "yellow",
-		dashStyle: "Dot",
-		axis: 1,
-		name: "Opt Max EIR",
-		showInNavigator: false
-	},
-	TRADE: {
-		id: "opt_trade_line",
-		color: "#E1BEE7",
-		dashStyle: "Dot",
-		axis: 2,
-		name: "Opt Trad P/L Ratio",
-		showInNavigator: false
-	},
-	PLOT_BAND: {
-		id: "plotband",
-		color: "rgba(0, 0, 0, 0.15)" // Dark Grey
-	}
-};
 
 const startTypes = ["pointerdown"];
 const moveTypes = ["pointermove"];
@@ -88,25 +41,7 @@ const options = vm => {
 	return {
 		chart: {
 			height: 500,
-			backgroundColor: "rgba(0, 0, 0, 0.0)",
-			events: {
-				load: function() {
-					const legendPaths = document.querySelectorAll(
-						".highcharts-legend-item path"
-					);
-					legendPaths.forEach(item => {
-						item.setAttribute("stroke-width", 12);
-					});
-				},
-				redraw: function() {
-					const legendPaths = document.querySelectorAll(
-						".highcharts-legend-item path"
-					);
-					legendPaths.forEach(item => {
-						item.setAttribute("stroke-width", 12);
-					});
-				}
-			}
+			backgroundColor: "rgba(0, 0, 0, 0.0)"
 		},
 		rangeSelector: {
 			selected: 6,
@@ -166,11 +101,6 @@ const options = vm => {
 				title: {
 					text: ""
 				},
-				events: {
-					afterSetExtremes: function() {
-						// $("#chart_container").trigger("main-chart:setExtremes", e);
-					}
-				},
 				crosshair: false,
 				opposite: true,
 				visible: true,
@@ -215,39 +145,38 @@ const options = vm => {
 			}
 		],
 		legend: {
-			enabled: true,
-			symbolPadding: 5,
-			symbolWidth: 12
+			enabled: false
 		},
 		tooltip: {
 			useHTML: true,
 			shared: true,
 			split: true,
 			distance: 30,
-			padding: 5,
+			padding: 12,
+			hideDelay: 100,
 			formatter: function() {
 				const data = vm.optHelper.getTooltip(this.x);
 				const date = moment.utc(this.x).format("DD MMM YYYY");
 				const value = Number.parseFloat(this.y).toFixed(4);
 				const series = this.points[0].series;
-				let html = `<table class="tooltip">
-								<tr><td colspan="2"><h1>${date}</h1></td></tr>`;
+				let html = `<div class="tooltipppy">
+								<div><span><h1>${date}</h1></span></div>`;
 
 				// I know its strange to identify series by color
 				//  but they are unique!
 				if (series.color == OPT.MAIN.color) {
-					html += `<tr><td style="color:${series.color}">${series.name}</td><td>${value}</td></tr>`;
+					html += `<div><span style="color:${series.color}">${series.name}:</span><span>${value}</span></div>`;
 				}
 				// Check if we are on SLTP charts
 				if (data) {
 					for (const { name, value, color } of data) {
-						html += `<tr><td style="color:${color}">${name}</td><td>${Number.parseFloat(
+						html += `<div><span style="color:${color}">${name}:</span><span>${Number.parseFloat(
 							value
-						).toFixed(4)}</td></tr>`;
+						).toFixed(4)}</span></div>`;
 					}
 				}
 
-				html += "</table>";
+				html += "</div>";
 
 				return html;
 			}
@@ -303,6 +232,9 @@ export default {
 		return {
 			options: options(this)
 		};
+	},
+	components: {
+		mrtSltpLegend
 	},
 	computed: {
 		...mapState("fit", ["strategy", "activeTab"]),
@@ -363,11 +295,7 @@ export default {
 						showInNavigator: true,
 						name: this.strategy.name
 					});
-					this.$nextTick(() => {
-						// Remove any previously setExtremes on yAxis
-						// by setting to null
-						chart.yAxis[0].setExtremes(null, null);
-					});
+					chart.reflow();
 				}
 			}, 0);
 		},
@@ -413,6 +341,9 @@ export default {
 			chart.yAxis[0].removePlotLine("tp-plotline");
 			chart.xAxis[0].removePlotBand(OPT.PLOT_BAND.id);
 			chart.rangeSelector.clickButton(6, true);
+			// Remove any previously setExtremes on yAxis
+			// by setting to null
+			chart.yAxis[0].setExtremes(null, null);
 		},
 
 		clearFromChart(id) {
@@ -437,7 +368,7 @@ export default {
 				name: opts.name,
 				lineWidth: 2,
 				color: opts.color,
-				showInNavigator: true,
+				showInNavigator: opts.showInNavigator,
 				yAxis: opts.axis,
 				dashStyle: opts.dashStyle
 			});
@@ -660,15 +591,20 @@ span.sltp-grippy.takeProfit {
 span.sltp-grippy.stopLoss {
 	background-color: #f44336;
 }
-table.tooltip {
-	tr td {
-		&:nth-child(2) {
-			text-align: right;
-		}
-		h1 {
-			font-size: 14px;
-			font-weight: 300;
-			margin: 0 0 2px;
+div.tooltipppy {
+	h1 {
+		font-size: 14px;
+		font-weight: 300;
+		margin: 0 0 2px;
+	}
+	> div {
+		display: flex;
+		justify-content: space-between;
+		span {
+			&:nth-child(2) {
+				margin: 0 0 0 6px;
+				text-align: right;
+			}
 		}
 	}
 }
