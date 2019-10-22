@@ -1,16 +1,9 @@
 <template>
-	<v-dialog
-		v-model="dialog"
-		width="900"
-		:fullscreen="$vuetify.breakpoint.mdAndDown"
-		style="z-index:-1"
-	>
-		<v-card style="position:relative;">
-			<v-toolbar dense color="#827717">
-				<v-btn icon>
-					<v-icon>blur_on</v-icon>
-				</v-btn>
-				<v-toolbar-title>Surface Chart</v-toolbar-title>
+	<v-dialog v-model="dialog" width="900" :fullscreen="$vuetify.breakpoint.mdAndDown">
+		<v-card class="sltp-surface-dialog">
+			<v-toolbar dense>
+				<v-icon>blur_on</v-icon>
+				<v-toolbar-title>{{title}} Surface Chart</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon @click.stop="dialog=false">
 					<v-icon>close</v-icon>
@@ -93,6 +86,10 @@ export default {
 		title: {
 			type: String,
 			default: ""
+		},
+		attach: {
+			type: String,
+			default: "body"
 		}
 	},
 	data() {
@@ -184,27 +181,29 @@ export default {
 </script>
 
 <style lang="less">
-.chartContainer {
-	height: 100%;
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	#main-surface-chart {
-		height: 600px;
-		width: 600px;
+.sltp-surface-dialog {
+	.chartContainer {
+		height: 100%;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		#main-surface-chart {
+			height: 600px;
+			width: 600px;
+		}
 	}
-}
-.sltp-control {
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-end;
-	padding: 0 8px 8px 8px;
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	> div {
-		text-align: center;
+	.sltp-control {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		padding: 0 8px 8px 8px;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		> div {
+			text-align: center;
+		}
 	}
 }
 </style>

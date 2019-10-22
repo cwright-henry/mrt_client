@@ -85,7 +85,10 @@ export default {
 	},
 	methods: {
 		reveal() {
-			this.$emit("showSurfaceDialog", this.data);
+			this.$emit("showSurfaceDialog", {
+				data: this.data,
+				title: this.title
+			});
 		}
 	}
 };
@@ -116,7 +119,7 @@ export default {
 			bottom: 0;
 			background-color: transparent;
 			content: "";
-			z-index: 999;
+			z-index: 198;
 		}
 	}
 }

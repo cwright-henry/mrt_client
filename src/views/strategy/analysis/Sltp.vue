@@ -51,6 +51,7 @@
 			</li>
 		</ul>
 		<mrt-surface-chart-dialog
+			:title="sufaceChartTitle"
 			:show="showSurfaceChart"
 			:data="sufaceChartData"
 			@close="showSurfaceChart=false"
@@ -75,7 +76,8 @@ export default {
 	data() {
 		return {
 			showSurfaceChart: false,
-			sufaceChartData: null
+			sufaceChartData: null,
+			sufaceChartTitle: ""
 		};
 	},
 	computed: {
@@ -101,7 +103,8 @@ export default {
 		},
 
 		enableSufaceChart(data) {
-			this.sufaceChartData = data;
+			this.sufaceChartTitle = data.title;
+			this.sufaceChartData = data.data;
 			this.showSurfaceChart = true;
 		}
 	}
@@ -139,7 +142,7 @@ export default {
 		bottom: 0;
 		right: 0;
 		background-color: rgba(255, 255, 255, 0);
-		z-index: 999;
+		z-index: 199;
 	}
 }
 .mrt-optimize--surfaces {
