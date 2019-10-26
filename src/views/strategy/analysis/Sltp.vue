@@ -3,11 +3,19 @@
 		<div v-if="isLoadingSLTP" class="blocker"></div>
 		<div class="sltp-header">
 			<mrt-sltp-parameters />
-			<div class="sltp-action">
-				<v-btn small fab color="#0091EA" :loading="isLoadingSLTP" @click="runSltp">
-					<v-icon>autorenew</v-icon>
-				</v-btn>
-				<label>Generate SLTP</label>
+			<div class="sltp-actions">
+				<div class="sltp-action">
+					<v-btn small outline fab color="#0091EA" :disabled="isLoadingSLTP" @click="reset">
+						<v-icon>clear</v-icon>
+					</v-btn>
+					<label>Reset</label>
+				</div>
+				<div class="sltp-action">
+					<v-btn small fab color="#0091EA" :loading="isLoadingSLTP" @click="runSltp">
+						<v-icon>autorenew</v-icon>
+					</v-btn>
+					<label>Generate SLTP</label>
+				</div>
 			</div>
 		</div>
 		<div class="sltp-graph">
@@ -102,6 +110,10 @@ export default {
 			this.$store.dispatch("fit/sltp/generate");
 		},
 
+		reset() {
+			this.$store.dispatch("fit/sltp/reset");
+		},
+
 		enableSufaceChart(data) {
 			this.sufaceChartTitle = data.title;
 			this.sufaceChartData = data.data;
@@ -116,21 +128,27 @@ export default {
 	background-color: #252525;
 	padding: 16px;
 	position: relative;
-	.sltp-action {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: flex-end;
-		label {
-			color: #e0e0e0;
-			font-size: 12px;
-			font-weight: 300;
-		}
-	}
 	.sltp-header {
 		display: flex;
 		justify-content: space-between;
 		margin: 0 0 24px;
+		.sltp-actions {
+			display: flex;
+			.sltp-action {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: flex-end;
+				label {
+					color: #e0e0e0;
+					font-size: 12px;
+					font-weight: 300;
+				}
+				&:first-child {
+					margin: 0 24px 0;
+				}
+			}
+		}
 	}
 	.sltp-graph {
 		width: calc(100% - 0px);

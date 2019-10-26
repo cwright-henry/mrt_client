@@ -150,7 +150,7 @@
 					</li>
 					<li>
 						<label>Position</label>
-						<div>{{isLong == true ? 'TODO' : 'TODO'}}</div>
+						<div>{{position}}</div>
 					</li>
 				</ul>
 			</div>
@@ -263,7 +263,7 @@ export default {
 			"EPnLValue",
 			"pbltaValue",
 			"isLoadingSLTP",
-			"isLong",
+			"position",
 			"start"
 		]),
 		...mapGetters("fit", [
@@ -340,7 +340,7 @@ export default {
 	},
 	methods: {
 		save(date) {
-			this.$store.commit("fit/sltp/setStart", this.dateMap[date]);
+			this.$store.dispatch("fit/sltp/setStart", this.dateMap[date]);
 			this.$refs.dateMenu.save(date);
 		},
 

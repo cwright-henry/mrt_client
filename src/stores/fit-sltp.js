@@ -61,7 +61,7 @@ export default {
 		pbltaValue: null,
 
 		// Strategy type
-		isLong: true,
+		position: '',
 
 		// Notifications
 		isLoadingSLTP: false
@@ -85,45 +85,80 @@ export default {
 			state.EPnl = Object.freeze(data.EPnl);
 			state.pblta = Object.freeze(data.pblta);
 
-			// Slider ranges
-			const slKeys = Object.keys(state.EIR)
-			const tpKeys = Object.keys(state.EIR[slKeys[0]])
-			state.slRange = [slKeys[0], slKeys[slKeys.length - 1]];
-			state.tpRange = [tpKeys[0], tpKeys[tpKeys.length - 1]];
+			// Toggle based on short or long position
+			if (state.position === 'short') {
+				// Slider Ranges
+				const slKeys = Object.keys(state.EIR)
+				const tpKeys = Object.keys(state.EIR[slKeys[0]])
+				state.slRange = [slKeys[0], slKeys[slKeys.length - 1]];
+				state.tpRange = [tpKeys[0], tpKeys[tpKeys.length - 1]];
 
-			// Slider values
-			state.slValue = state.slRange[1];
-			state.tpValue = state.tpRange[0];
+				// Slider values
+				state.slValue = state.slRange[1];
+				state.tpValue = state.tpRange[0];
 
-			// Matrix values
-			state.ETValue = findNearest(state.ET, state.slValue, state.tpValue) * 365;
-			state.ERValue = findNearest(state.EIR, state.slValue, state.tpValue)
-			state.EIRValue = findNearest(state.EIR, state.slValue, state.tpValue)
-			state.EPnLValue = findNearest(state.EPnl, state.slValue, state.tpValue)
-			state.pbltaValue = findNearest(state.pblta, state.slValue, state.tpValue)
+				// Matrix values
+				state.ETValue = findNearest(state.ET, state.slValue, state.tpValue) * 365;
+				state.ERValue = findNearest(state.EIR, state.slValue, state.tpValue)
+				state.EIRValue = findNearest(state.EIR, state.slValue, state.tpValue)
+				state.EPnLValue = findNearest(state.EPnl, state.slValue, state.tpValue)
+				state.pbltaValue = findNearest(state.pblta, state.slValue, state.tpValue)
+			}
+			else {
+				// Slider Ranges
+				const tpKeys = Object.keys(state.EIR)
+				const slKeys = Object.keys(state.EIR[tpKeys[0]])
+				state.tpRange = [tpKeys[0], tpKeys[tpKeys.length - 1]];
+				state.slRange = [slKeys[0], slKeys[slKeys.length - 1]];
+
+				// Slider values
+				state.tpValue = state.tpRange[1];
+				state.slValue = state.slRange[0];
+
+				// Matrix values
+				state.ETValue = findNearest(state.ET, state.tpValue, state.tslValue) * 365;
+				state.ERValue = findNearest(state.EIR, state.tpValue, state.slValue)
+				state.EIRValue = findNearest(state.EIR, state.tpValue, state.slValue)
+				state.EPnLValue = findNearest(state.EPnl, state.tpValue, state.slValue)
+				state.pbltaValue = findNearest(state.pblta, state.tpValue, state.slValue)
+			}
 		},
 		isLoadingSLTP(state, status) {
 			state.isLoadingSLTP = status;
 		},
 		setSLValue(state, value) {
 			state.slValue = value;
-			state.ETValue = findNearest(state.ET, state.slValue, state.tpValue) * 365;
-			state.ERValue = findNearest(state.EIR, state.slValue, state.tpValue)
-			state.EIRValue = findNearest(state.EIR, state.slValue, state.tpValue)
-			state.EPnLValue = findNearest(state.EPnl, state.slValue, state.tpValue)
-			state.pbltaValue = findNearest(state.pblta, state.slValue, state.tpValue)
+			if (state.position === 'short') {
+				state.ETValue = findNearest(state.ET, state.slValue, state.tpValue) * 365;
+				state.ERValue = findNearest(state.EIR, state.slValue, state.tpValue)
+				state.EIRValue = findNearest(state.EIR, state.slValue, state.tpValue)
+				state.EPnLValue = findNearest(state.EPnl, state.slValue, state.tpValue)
+				state.pbltaValue = findNearest(state.pblta, state.slValue, state.tpValue)
+			}
+			else {
+				state.ETValue = findNearest(state.ET, state.tpValue, state.tslValue) * 365;
+				state.ERValue = findNearest(state.EIR, state.tpValue, state.slValue)
+				state.EIRValue = findNearest(state.EIR, state.tpValue, state.slValue)
+				state.EPnLValue = findNearest(state.EPnl, state.tpValue, state.slValue)
+				state.pbltaValue = findNearest(state.pblta, state.tpValue, state.slValue)
+			}
 		},
 		setTPValue(state, value) {
 			state.tpValue = value;
-			state.ETValue = findNearest(state.ET, state.slValue, state.tpValue) * 365;
-			state.ERValue = findNearest(state.EIR, state.slValue, state.tpValue)
-			state.EIRValue = findNearest(state.EIR, state.slValue, state.tpValue)
-			state.EPnLValue = findNearest(state.EPnl, state.slValue, state.tpValue)
-			state.pbltaValue = findNearest(state.pblta, state.slValue, state.tpValue)
-		},
-		setStart(state, value) {
-			state.start.date = value[0]
-			state.start.value = value[1]
+			if (state.position === 'short') {
+				state.ETValue = findNearest(state.ET, state.slValue, state.tpValue) * 365;
+				state.ERValue = findNearest(state.EIR, state.slValue, state.tpValue)
+				state.EIRValue = findNearest(state.EIR, state.slValue, state.tpValue)
+				state.EPnLValue = findNearest(state.EPnl, state.slValue, state.tpValue)
+				state.pbltaValue = findNearest(state.pblta, state.slValue, state.tpValue)
+			}
+			else {
+				state.ETValue = findNearest(state.ET, state.tpValue, state.tslValue) * 365;
+				state.ERValue = findNearest(state.EIR, state.tpValue, state.slValue)
+				state.EIRValue = findNearest(state.EIR, state.tpValue, state.slValue)
+				state.EPnLValue = findNearest(state.EPnl, state.tpValue, state.slValue)
+				state.pbltaValue = findNearest(state.pblta, state.tpValue, state.slValue)
+			}
 		},
 		setCarry(state, value) {
 			state.carry = value;
@@ -131,8 +166,12 @@ export default {
 		setTransactionCost(state, value) {
 			state.transactionCost = value;
 		},
-		setIsLong(state, value) {
-			state.isLong = value;
+		setStart(state, value) {
+			state.start.date = value[0]
+			state.start.value = value[1]
+		},
+		setPosition(state, value) {
+			state.position = value;
 		}
 	},
 
@@ -144,8 +183,6 @@ export default {
 			const sigma = rootGetters['fit/sigma'];
 			const theta = rootGetters['fit/theta'];
 			const x_0 = state.start.value;
-
-			commit('setIsLong', longOrShort(kappa, sigma, theta, x_0));
 
 			try {
 				const payload = {
@@ -179,10 +216,19 @@ export default {
 			}
 		},
 
-		reset({ state, rootGetters }) {
+		setStart({ commit, rootGetters }, value) {
+			const kappa = rootGetters['fit/kappa'];
+			const sigma = rootGetters['fit/sigma'];
+			const theta = rootGetters['fit/theta'];
+			const x_0 = value[1];
+
+			commit('setPosition', longOrShort(kappa, sigma, theta, x_0));
+			commit('setStart', value)
+		},
+
+		reset({ state, dispatch, rootGetters }) {
 			const lastPoint = rootGetters['fit/tsEnd'];
-			state.start.date = lastPoint[0];
-			state.start.value = lastPoint[1];
+			dispatch('setStart', lastPoint)
 			state.carry = DEFAULT_CARRY;
 			state.transactionCost = DEFAULT_TRANSACTION_COST;
 			state.opt = {};
