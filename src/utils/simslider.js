@@ -105,12 +105,14 @@ export default class {
 			this.maxPos = this.scale(this.maxPos)
 			if (this.pos >= this.min && this.pos < this.max) {
 				this.updatePlotLine(this.pos, 'pos')
+
+				this.vm.$emit('startdate', { date: this.pos, type: 'move' })
 			}
 		}
 		const stop = () => {
 			removeListeners(this.container, moveTypes, step)
 			removeListeners(this.container, endTypes, stop)
-			this.vm.$emit('startdate', this.pos)
+			this.vm.$emit('startdate', { date: this.pos, type: 'end' })
 		}
 
 		addListeners(this.container, moveTypes, step)

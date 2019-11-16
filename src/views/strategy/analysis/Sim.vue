@@ -160,13 +160,15 @@ export default {
 			await this.$store.dispatch("fit/sims/loadSims");
 		},
 
-		async loadSimsForDate(date) {
-			const closest = closestNeighbour(this.strategy.ts.data, date);
+		async loadSimsForDate(event) {
+			const closest = closestNeighbour(this.strategy.ts.data, event.date);
 			this.$store.commit("fit/sims/setSimStart", {
 				value: closest[1],
 				date: closest[0]
 			});
-			await this.$store.dispatch("fit/sims/loadSims");
+			if (event.type === "end") {
+				await this.$store.dispatch("fit/sims/loadSims");
+			}
 		},
 
 		autoPlaySims() {
