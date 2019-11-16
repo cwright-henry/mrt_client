@@ -11,7 +11,7 @@
 		item-value="_id"
 		hide-details
 		label="Search Your Library"
-		box
+		filled
 		multiple
 		color="#90CAF9"
 		background-color="#323232"

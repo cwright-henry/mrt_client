@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import vis from "vis";
+import vis from "vis-graph3d";
 
 const options = {
 	width: "200px",

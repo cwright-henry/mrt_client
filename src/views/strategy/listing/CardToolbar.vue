@@ -11,7 +11,7 @@
 			left
 		>
 			<template v-slot:activator="{ on }">
-				<v-btn class="mrt-ctb--link-icon" flat icon v-on="on">
+				<v-btn class="mrt-ctb--link-icon" icon v-on="on">
 					<v-icon>delete</v-icon>
 				</v-btn>
 			</template>

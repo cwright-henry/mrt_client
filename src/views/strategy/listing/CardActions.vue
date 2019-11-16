@@ -33,7 +33,10 @@ export default {
 				return {};
 			}
 		},
-		isLoading: false
+		isLoading: {
+			type: Boolean,
+			default: false
+		}
 	}
 };
 </script>
@@ -44,7 +47,7 @@ export default {
 	.mrt-cla--info {
 		font-size: 12px;
 		line-height: 1.4;
-		color: #fffffff;
+		color: #ffffff;
 		label {
 			color: #e0e0e0;
 			text-transform: uppercase;

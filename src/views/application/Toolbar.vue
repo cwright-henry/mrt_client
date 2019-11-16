@@ -1,6 +1,6 @@
 <template>
-	<v-toolbar dense fixed clipped-left app class="mrt-toolbar">
-		<v-toolbar-side-icon @click.stop="$emit('togglemenu')"></v-toolbar-side-icon>
+	<v-app-bar dense fixed clipped-left app class="mrt-toolbar">
+		<v-icon @click.stop="$emit('togglemenu')">mdi-menu</v-icon>
 		<v-toolbar-title class="hidden-xs-and-down mr-4 pl-2">
 			<div class="mrt-toolbar--app">
 				<logo />
@@ -17,7 +17,7 @@
 				<span class="mrt-toolbar--user-info__company">{{ companyName }}</span>
 			</div>
 		</div>
-	</v-toolbar>
+	</v-app-bar>
 </template>
 
 <script>

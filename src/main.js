@@ -1,4 +1,3 @@
-import '@babel/polyfill'
 import 'intersection-observer'
 import Vue from 'vue'
 import { EventBus } from './events'
@@ -8,6 +7,7 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import 'animate.css/animate.css'
+import vuetify from './plugins/vuetify';
 
 import Highcharts from 'highcharts'
 import HighchartsVue from 'highcharts-vue'
@@ -101,5 +101,6 @@ window.onerror = function (msg, url, line, col, error) {
 new Vue({
 	router,
 	store,
+	vuetify,
 	render: h => h(App)
 }).$mount('#app')

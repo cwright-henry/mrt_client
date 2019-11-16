@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import vis from "vis";
+import vis from "vis-graph3d";
 
 const HORZ_INC = 0.5;
 
