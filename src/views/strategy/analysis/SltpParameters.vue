@@ -11,28 +11,28 @@
 					<li>
 						<label>Kappa</label>
 						<div>
-							<v-icon v-if="userKappa != null">lock</v-icon>
+							<v-icon v-if="userKappa != null">mdi-lock</v-icon>
 							<div class="readonly">{{kappa | number}}</div>
 						</div>
 					</li>
 					<li>
 						<label>Sigma</label>
 						<div>
-							<v-icon v-if="userSigma != null">lock</v-icon>
+							<v-icon v-if="userSigma != null">mdi-lock</v-icon>
 							<div class="readonly">{{sigma | number}}</div>
 						</div>
 					</li>
 					<li>
 						<label>Theta</label>
 						<div>
-							<v-icon v-if="userTheta != null">lock</v-icon>
+							<v-icon v-if="userTheta != null">mdi-lock</v-icon>
 							<div class="readonly">{{theta | number}}</div>
 						</div>
 					</li>
 					<li v-if="findProctype.value !== 'OU'">
 						<label>Beta</label>
 						<div>
-							<v-icon v-if="userBeta != null">lock</v-icon>
+							<v-icon v-if="userBeta != null">mdi-lock</v-icon>
 							<div class="readonly">{{beta | number}}</div>
 						</div>
 					</li>

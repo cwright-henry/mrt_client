@@ -2,11 +2,11 @@
 	<v-dialog v-model="dialog" width="900" eager :fullscreen="$vuetify.breakpoint.mdAndDown">
 		<v-card class="sltp-surface-dialog">
 			<v-toolbar dense>
-				<v-icon color="#FFF176" class="mr-2">blur_on</v-icon>
+				<v-icon color="#FFF176" class="mr-2">mdi-blur</v-icon>
 				<v-toolbar-title>{{title}} Surface Chart</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon @click.stop="dialog=false">
-					<v-icon>close</v-icon>
+					<v-icon>mdi-close</v-icon>
 				</v-btn>
 			</v-toolbar>
 			<div class="chartContainer">
@@ -15,28 +15,28 @@
 			<div class="sltp-control">
 				<div>
 					<div>
-						<v-btn x-small fab color="#0091EA" @click="panUp">
-							<v-icon>arrow_upward</v-icon>
+						<v-btn small fab color="#0091EA" @click="panUp">
+							<v-icon>mdi-chevron-up</v-icon>
 						</v-btn>
 					</div>
 					<div>
-						<v-btn x-small fab color="#0091EA" @click="panLeft">
-							<v-icon>arrow_back</v-icon>
+						<v-btn small fab color="#0091EA" @click="panLeft">
+							<v-icon>mdi-chevron-left</v-icon>
 						</v-btn>
-						<v-btn x-small fab color="#0091EA" @click="panDown">
-							<v-icon>arrow_downward</v-icon>
+						<v-btn small fab color="#0091EA" @click="panDown">
+							<v-icon>mdi-chevron-down</v-icon>
 						</v-btn>
-						<v-btn x-small fab color="#0091EA" @click="panRight">
-							<v-icon>arrow_forward</v-icon>
+						<v-btn small fab color="#0091EA" @click="panRight">
+							<v-icon>mdi-chevron-right</v-icon>
 						</v-btn>
 					</div>
 				</div>
 				<div>
-					<v-btn x-small fab color="#0091EA" @click="zoomOut">
-						<v-icon>remove</v-icon>
+					<v-btn small fab color="#0091EA" @click="zoomOut">
+						<v-icon>mdi-magnify-minus-outline</v-icon>
 					</v-btn>
-					<v-btn x-small fab color="#0091EA" @click="zoomIn">
-						<v-icon>add</v-icon>
+					<v-btn small fab color="#0091EA" @click="zoomIn">
+						<v-icon>mdi-magnify-plus-outline</v-icon>
 					</v-btn>
 				</div>
 			</div>

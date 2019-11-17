@@ -5,14 +5,14 @@
 			<mrt-sltp-parameters />
 			<div class="sltp-actions">
 				<div class="sltp-action">
-					<v-btn small outlined fab color="#0091EA" :disabled="isLoadingSLTP" @click="reset">
-						<v-icon>clear</v-icon>
+					<v-btn x-small outlined fab color="#0091EA" :disabled="isLoadingSLTP" @click="reset">
+						<v-icon>mdi-close</v-icon>
 					</v-btn>
 					<label>Reset</label>
 				</div>
 				<div class="sltp-action">
-					<v-btn small fab color="#0091EA" :loading="isLoadingSLTP" @click="runSltp">
-						<v-icon>autorenew</v-icon>
+					<v-btn x-small fab color="#0091EA" :loading="isLoadingSLTP" @click="runSltp">
+						<v-icon>mdi-autorenew</v-icon>
 					</v-btn>
 					<label>Generate SLTP</label>
 				</div>
@@ -141,8 +141,9 @@ export default {
 				justify-content: flex-end;
 				label {
 					color: #e0e0e0;
-					font-size: 12px;
+					font-size: 11px;
 					font-weight: 300;
+					margin: 4px 0 0;
 				}
 				&:first-child {
 					margin: 0 24px 0;

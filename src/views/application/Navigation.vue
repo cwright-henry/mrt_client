@@ -5,25 +5,25 @@
 				<div class="mrt-menu--item">
 					<v-badge right>
 						<span slot="badge">{{ total }}</span>
-						<v-icon dark>home</v-icon>
+						<v-icon dark>mdi-home</v-icon>
 					</v-badge>
 					<div>Library</div>
 				</div>
 			</router-link>
 			<router-link to="/account">
 				<div class="mrt-menu--item">
-					<v-icon dark>account_box</v-icon>
+					<v-icon dark>mdi-account-box</v-icon>
 					<div>Account</div>
 				</div>
 			</router-link>
 			<router-link to="/guide">
 				<div class="mrt-menu--item">
-					<v-icon dark>help_outline</v-icon>
+					<v-icon dark>mdi-help-circle</v-icon>
 					<div>Guide</div>
 				</div>
 			</router-link>
 			<div class="mrt-menu--item" @click="logout">
-				<v-icon dark>clear</v-icon>
+				<v-icon dark>mdi-close</v-icon>
 				<div>Logout</div>
 			</div>
 		</v-list>
@@ -77,13 +77,13 @@ export default {
 	}
 	.router-link-active {
 		.mrt-menu--item {
-			color: #90CAF9;
+			color: #90caf9;
 			i {
-				color: #2196F3
+				color: #2196f3;
 			}
 		}
 		.v-badge__badge {
-			background-color: #2196F3 !important;
+			background-color: #2196f3 !important;
 			color: #fff;
 		}
 	}

@@ -3,7 +3,7 @@
 		<v-layout row wrap>
 			<v-flex xs8 offset-xs2 class="text-xs-center mt-3">
 				<v-avatar color="#2196F3" size="48">
-					<v-icon dark size="36">account_circle</v-icon>
+					<v-icon dark size="36">mdi-account</v-icon>
 				</v-avatar>
 				<div class="headline mt-2">{{fullName}}</div>
 				<div class="account-status">
@@ -31,7 +31,7 @@
 						<v-card>
 							<v-toolbar dense flat>
 								<v-toolbar-title class="font-weight-light account-password-header">
-									<i class="material-icons">security</i>Reset Password
+									<v-icon>mdi-shield-lock</v-icon>Reset Password
 								</v-toolbar-title>
 								<v-spacer></v-spacer>
 							</v-toolbar>
@@ -39,9 +39,9 @@
 								<v-layout row wrap>
 									<v-flex xs12>
 										<v-text-field
-											prepend-icon="lock"
+											prepend-icon="mdi-lock"
 											v-model="oldPassword"
-											:append-icon="showOldPassword ? 'visibility' : 'visibility_off'"
+											:append-icon="showOldPassword ? 'mdi-eye' : 'mdi-eye-off'"
 											:type="showOldPassword ? 'text' : 'password'"
 											hint="At least 8 characters"
 											:error-messages="oldErrorMessages"
@@ -55,9 +55,9 @@
 									</v-flex>
 									<v-flex xs12>
 										<v-text-field
-											prepend-icon="lock"
+											prepend-icon="mdi-lock"
 											v-model="newPassword"
-											:append-icon="showNewPassword ? 'visibility' : 'visibility_off'"
+											:append-icon="showNewPassword ? 'mdi-eye' : 'mdi-eye-off'"
 											:type="showNewPassword ? 'text' : 'password'"
 											hint="At least 8 characters"
 											:error-messages="newErrorMessages"

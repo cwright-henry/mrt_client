@@ -17,19 +17,19 @@
 			<div class="mrt-scenario--details-action">
 				<div>
 					<v-btn small outlined fab color="#2196F3" :disabled="isSavingFit" @click="home">
-						<v-icon>home</v-icon>
+						<v-icon>mdi-home</v-icon>
 					</v-btn>
 					<label>Library</label>
 				</div>
 				<div>
 					<v-btn small outlined fab color="#2196F3" @click="toggle">
-						<v-icon>fullscreen</v-icon>
+						<v-icon>mdi-fullscreen</v-icon>
 					</v-btn>
 					<label>Full Screen</label>
 				</div>
 				<div>
 					<v-btn small fab color="#2196F3" :loading="isSavingFit" @click="save">
-						<v-icon>cloud_upload</v-icon>
+						<v-icon>mdi-cloud-upload</v-icon>
 					</v-btn>
 					<label>Save Scenario</label>
 				</div>

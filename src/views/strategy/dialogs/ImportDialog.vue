@@ -11,7 +11,7 @@
 				<v-toolbar-title>Import</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon @click.stop="dialog=false">
-					<v-icon>close</v-icon>
+					<v-icon>mdi-close</v-icon>
 				</v-btn>
 			</v-toolbar>
 			<div class="mrt-import">
@@ -32,7 +32,7 @@
 							>
 								<template v-slot:activator="{ on }">
 									<v-btn v-on="on" x-small color="#0091EA" fab class="ml-2">
-										<v-icon>more_vert</v-icon>
+										<v-icon>mdi-dots-vertical</v-icon>
 									</v-btn>
 								</template>
 								<mrtImportOptions :isOpen="imporMenu" :importDefault="importInput" @change="setImportType" />
@@ -65,7 +65,7 @@
 									>
 										<template v-slot:activator="{ on }">
 											<v-btn v-on="on" x-small color="#0091EA" fab dark class="ml-2">
-												<v-icon>more_vert</v-icon>
+												<v-icon>mdi-dots-vertical</v-icon>
 											</v-btn>
 										</template>
 										<mrtImportOptions
@@ -100,7 +100,7 @@
 									>
 										<template v-slot:activator="{ on }">
 											<v-btn v-on="on" x-small color="#0091EA" fab dark class="ml-2">
-												<v-icon>more_vert</v-icon>
+												<v-icon>mdi-dots-vertical</v-icon>
 											</v-btn>
 										</template>
 										<mrtImportOptions

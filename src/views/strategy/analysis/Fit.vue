@@ -52,7 +52,7 @@
 			</div>
 			<div class="mrt-senfit--residuals-graphs__histogram">
 				<h3>
-					Histogram
+					Distribution
 					<span>(Capped at 3 STD)</span>
 				</h3>
 				<mrt-histogramchart />

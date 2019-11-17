@@ -1,6 +1,6 @@
 <template>
 	<v-toolbar dense flat class="mrt-ctb">
-		<v-icon class="mr-2" size="20" color="#FFF176">mdi-target</v-icon>
+		<v-icon class="mr-2" size="24" color="#27a59a">mdi-finance</v-icon>
 		<v-toolbar-title class="mrt-ctb--name">{{strategy.name}}</v-toolbar-title>
 		<v-spacer></v-spacer>
 		<v-menu

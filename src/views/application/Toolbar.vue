@@ -9,9 +9,7 @@
 		</v-toolbar-title>
 		<v-spacer></v-spacer>
 		<div class="mrt-toolbar--user">
-			<v-avatar color="#616161" size="32">
-				<v-icon color="#FFF176">mdi-account</v-icon>
-			</v-avatar>
+			<v-icon color="#FFF176">mdi-account</v-icon>
 			<div class="mrt-toolbar--user-info">
 				<span>{{ userName }}</span>
 				<span class="mrt-toolbar--user-info__company">{{ companyName }}</span>
@@ -57,7 +55,7 @@ export default {
 	.mrt-toolbar--user {
 		display: flex;
 		align-items: center;
-		font-size:13px;
+		font-size: 13px;
 		.mrt-toolbar--user-info {
 			display: flex;
 			flex-direction: column;

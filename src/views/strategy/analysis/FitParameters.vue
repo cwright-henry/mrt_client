@@ -9,7 +9,7 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Kappa</span>
-					<v-icon v-if="userKappa !== null" class="on">lock</v-icon>
+					<v-icon v-if="userKappa !== null" class="on">mdi-lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -43,8 +43,8 @@
 								@keyup.enter="fixKappa"
 							></v-text-field>
 							<div class="mrt-text-field--actions" @click="resetKappa">
-								<v-btn flat icon color="white">
-									<v-icon>clear</v-icon>
+								<v-btn icon color="white">
+									<v-icon>mdi-close</v-icon>
 								</v-btn>
 								<div class="mrt-text-field--actions__text">Reset</div>
 							</div>
@@ -57,7 +57,7 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Sigma</span>
-					<v-icon v-if="userSigma !== null" class="on">lock</v-icon>
+					<v-icon v-if="userSigma !== null" class="on">mdi-lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -91,8 +91,8 @@
 								@keyup.enter="fixSigma"
 							></v-text-field>
 							<div class="mrt-text-field--actions" @click="resetSigma">
-								<v-btn flat icon color="white">
-									<v-icon>clear</v-icon>
+								<v-btn icon color="white">
+									<v-icon>mdi-close</v-icon>
 								</v-btn>
 								<div class="mrt-text-field--actions__text">Reset</div>
 							</div>
@@ -105,7 +105,7 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Theta</span>
-					<v-icon v-if="userTheta !== null" class="on">lock</v-icon>
+					<v-icon v-if="userTheta !== null" class="on">mdi-lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -139,8 +139,8 @@
 								@keyup.enter="fixTheta"
 							></v-text-field>
 							<div class="mrt-text-field--actions" @click="resetTheta">
-								<v-btn flat icon color="white">
-									<v-icon>clear</v-icon>
+								<v-btn icon color="white">
+									<v-icon>mdi-close</v-icon>
 								</v-btn>
 								<div class="mrt-text-field--actions__text">Reset</div>
 							</div>
@@ -153,7 +153,7 @@
 			<div class="mrt-fitparams--section__row" v-if="proctype === 'hypOU'">
 				<label class="input-param">
 					<span>Beta</span>
-					<v-icon v-if="userBeta !== null" class="on">lock</v-icon>
+					<v-icon v-if="userBeta !== null" class="on">mdi-lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -187,8 +187,8 @@
 								@keyup.enter="fixBeta"
 							></v-text-field>
 							<div class="mrt-text-field--actions" @click="resetBeta">
-								<v-btn flat icon color="white">
-									<v-icon>clear</v-icon>
+								<v-btn icon color="white">
+									<v-icon>mdi-close</v-icon>
 								</v-btn>
 								<div class="mrt-text-field--actions__text">Reset</div>
 							</div>
@@ -554,6 +554,7 @@ export default {
 	align-items: center;
 	background-color: #484848;
 	padding: 4px 8px;
+	font-size: 14px;
 	.v-input__slot {
 		margin-bottom: 0px !important;
 	}
@@ -642,7 +643,7 @@ export default {
 				border-radius: 3px;
 				color: #121212;
 				width: 100px;
-				height: 24px;
+				height: 22px;
 				display: inline-block;
 				cursor: pointer;
 				white-space: nowrap;
