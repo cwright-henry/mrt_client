@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import mrtFitProcess from "@/components/fit/Fit";
 import mrtSerieschart from "./SeriesChart";
 import mrtFitParameters from "./FitParameters";
 import mrtDetails from "./Details";
@@ -60,7 +59,6 @@ export default {
 	},
 	components: {
 		mrtSerieschart,
-		mrtFitProcess,
 		mrtFitParameters,
 		mrtDetails
 	},

@@ -21,11 +21,13 @@
 						origin="top right"
 						transition="scale-transition"
 					>
-						<span
-							class="mrt-fitparams--section__row-dyna"
-							:class="userKappa !== null ? 'on' : 'off'"
-							slot="activator"
-						>{{strategy.fit.kappa | number}}</span>
+						<template v-slot:activator="{ on }">
+							<span
+								class="mrt-fitparams--section__row-dyna"
+								:class="userKappa !== null ? 'on' : 'off'"
+								v-on="on"
+							>{{strategy.fit.kappa | number}}</span>
+						</template>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="kappa"
@@ -35,7 +37,6 @@
 								label="Kappa"
 								:color="color"
 								:background-color="backrgoundColor"
-								outline
 								maxlength="10"
 								ref="kappaInput"
 								placeholder="Fix Kappa"
@@ -68,11 +69,13 @@
 						origin="top right"
 						transition="scale-transition"
 					>
-						<span
-							class="mrt-fitparams--section__row-dyna"
-							:class="userSigma !== null ? 'on' : 'off'"
-							slot="activator"
-						>{{strategy.fit.sigma | number}}</span>
+						<template v-slot:activator="{ on }">
+							<span
+								class="mrt-fitparams--section__row-dyna"
+								:class="userSigma !== null ? 'on' : 'off'"
+								v-on="on"
+							>{{strategy.fit.sigma | number}}</span>
+						</template>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="sigma"
@@ -83,7 +86,6 @@
 								:color="color"
 								:background-color="backrgoundColor"
 								ref="sigmaInput"
-								outline
 								maxlength="10"
 								placeholder="Fix Sigma"
 								@keyup.enter="fixSigma"
@@ -115,11 +117,13 @@
 						origin="top right"
 						transition="scale-transition"
 					>
-						<span
-							class="mrt-fitparams--section__row-dyna"
-							:class="userTheta !== null ? 'on' : 'off'"
-							slot="activator"
-						>{{strategy.fit.theta | number}}</span>
+						<template v-slot:activator="{ on }">
+							<span
+								class="mrt-fitparams--section__row-dyna"
+								:class="userTheta !== null ? 'on' : 'off'"
+								v-on="on"
+							>{{strategy.fit.theta | number}}</span>
+						</template>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="theta"
@@ -130,7 +134,6 @@
 								:color="color"
 								:background-color="backrgoundColor"
 								ref="thetaInput"
-								outline
 								maxlength="10"
 								placeholder="Fix Theta"
 								@keyup.enter="fixTheta"
@@ -162,11 +165,13 @@
 						origin="top right"
 						transition="scale-transition"
 					>
-						<span
-							class="mrt-fitparams--section__row-dyna"
-							:class="userBeta !== null ? 'on' : 'off'"
-							slot="activator"
-						>{{strategy.fit.nbeta | number}}</span>
+						<template v-slot:activator="{ on }">
+							<span
+								class="mrt-fitparams--section__row-dyna"
+								:class="userBeta !== null ? 'on' : 'off'"
+								v-on="on"
+							>{{strategy.fit.nbeta | number}}</span>
+						</template>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="beta"
@@ -177,7 +182,6 @@
 								:color="color"
 								:background-color="backrgoundColor"
 								ref="betaInput"
-								outline
 								maxlength="1"
 								placeholder="Fix Beta"
 								@keyup.enter="fixBeta"
@@ -549,6 +553,7 @@ export default {
 	display: flex;
 	align-items: center;
 	background-color: #484848;
+	padding: 4px 8px;
 	.v-input__slot {
 		margin-bottom: 0px !important;
 	}
@@ -586,6 +591,7 @@ export default {
 	flex-direction: column;
 	justify-content: space-around;
 	height: 100%;
+	font-size: 14px;
 	.mrt-fitparams--section {
 		label {
 			width: 120px;

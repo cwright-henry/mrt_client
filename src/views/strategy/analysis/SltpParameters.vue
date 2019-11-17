@@ -47,7 +47,9 @@
 								origin="top right"
 								transition="scale-transition"
 							>
-								<div slot="activator" class="input">{{actualCarry | number}}</div>
+								<template v-slot:activator="{ on }">
+									<div v-on="on" class="input">{{actualCarry | number}}</div>
+								</template>
 								<div class="mrt-text-field">
 									<v-text-field
 										v-model="carry"
@@ -87,7 +89,9 @@
 								origin="top right"
 								transition="scale-transition"
 							>
-								<div slot="activator" class="input">{{actualTransactionCost | number}}</div>
+								<template v-slot:activator="{ on }">
+									<div v-on="on" class="input">{{actualTransactionCost | number}}</div>
+								</template>
 								<div class="mrt-text-field">
 									<v-text-field
 										v-model="transactionCost"
@@ -124,14 +128,14 @@
 							v-model="dateMenu"
 							:close-on-content-click="false"
 							:nudge-right="40"
-							lazy
 							transition="scale-transition"
 							offset-y
 							origin="top left"
-							full-width
 							min-width="290px"
 						>
-							<div slot="activator" class="input">{{start.date | date-short}}</div>
+							<template v-slot:activator="{ on }">
+								<div v-on="on" class="input">{{start.date | date-short}}</div>
+							</template>
 							<v-date-picker
 								ref="picker"
 								v-model="date"
@@ -158,11 +162,11 @@
 				<ul>
 					<li>
 						<label>Take Profit</label>
-						<div class="readonly">{{tpValue | number4}}</div>
+						<div class="readonly">{{tpValue | number(3)}}</div>
 					</li>
 					<li>
 						<label>Stop Loss</label>
-						<div class="readonly">{{slValue | number4}}</div>
+						<div class="readonly">{{slValue | number(3)}}</div>
 					</li>
 				</ul>
 			</div>
@@ -173,23 +177,23 @@
 							Horizon
 							<span>(Days)</span>
 						</label>
-						<div class="readonly">{{ETValue | number-round}}</div>
+						<div class="readonly">{{ETValue | number(0)}}</div>
 					</li>
 					<li>
 						<label>EIR</label>
-						<div class="readonly">{{EIRValue | number4}}</div>
+						<div class="readonly">{{EIRValue | number(3)}}</div>
 					</li>
 					<li>
 						<label>EPnl</label>
-						<div class="readonly">{{EPnLValue | number4}}</div>
+						<div class="readonly">{{EPnLValue | number(3)}}</div>
 					</li>
 					<li>
 						<label>ER</label>
-						<div class="readonly">{{ERValue | number4}}</div>
+						<div class="readonly">{{ERValue | number(3)}}</div>
 					</li>
 					<li>
 						<label>pblta</label>
-						<div class="readonly">{{pbltaValue | number4}}</div>
+						<div class="readonly">{{pbltaValue | number(3)}}</div>
 					</li>
 				</ul>
 			</div>
@@ -373,6 +377,7 @@ export default {
 
 <style lang="less" scoped>
 .sltp-fittings {
+	font-size: 14px;
 	.proctype {
 		margin: 0 0 12px;
 		label {

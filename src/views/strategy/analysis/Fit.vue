@@ -7,7 +7,7 @@
 					:items="proctypes"
 					:loading="isFittingTS || isLoadingTS"
 					dense
-					box
+					filled
 					hide-details
 					flat
 					color="#ce93d8"

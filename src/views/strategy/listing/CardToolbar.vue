@@ -1,5 +1,6 @@
 <template>
 	<v-toolbar dense flat class="mrt-ctb">
+		<v-icon class="mr-2" size="20" color="#FFF176">mdi-target</v-icon>
 		<v-toolbar-title class="mrt-ctb--name">{{strategy.name}}</v-toolbar-title>
 		<v-spacer></v-spacer>
 		<v-menu
@@ -11,9 +12,7 @@
 			left
 		>
 			<template v-slot:activator="{ on }">
-				<v-btn class="mrt-ctb--link-icon" icon v-on="on">
-					<v-icon>delete</v-icon>
-				</v-btn>
+				<v-icon v-on="on" color="#64b5f6">mdi-delete</v-icon>
 			</template>
 			<div class="mrt-ctb--action">
 				<h1 class="text-truncate mb-2">Delete {{strategy.name}}</h1>
@@ -56,10 +55,6 @@ export default {
 	.mrt-ctb--name {
 		color: #ffffff;
 		font-weight: 400;
-	}
-	.mrt-ctb--link-icon {
-		color: #64b5f6;
-		margin: 0 -12px 0 0;
 	}
 }
 .mrt-ctb--action {

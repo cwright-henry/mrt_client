@@ -1,8 +1,8 @@
 <template>
-	<v-dialog v-model="dialog" width="900" :fullscreen="$vuetify.breakpoint.mdAndDown">
+	<v-dialog v-model="dialog" width="900" eager :fullscreen="$vuetify.breakpoint.mdAndDown">
 		<v-card class="sltp-surface-dialog">
 			<v-toolbar dense>
-				<v-icon>blur_on</v-icon>
+				<v-icon color="#FFF176" class="mr-2">blur_on</v-icon>
 				<v-toolbar-title>{{title}} Surface Chart</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon @click.stop="dialog=false">
@@ -10,32 +10,32 @@
 				</v-btn>
 			</v-toolbar>
 			<div class="chartContainer">
-				<div id="main-surface-chart"></div>
+				<div id="mainsurfacechart" ref="mainChart"></div>
 			</div>
 			<div class="sltp-control">
 				<div>
 					<div>
-						<v-btn small fab color="#0091EA" @click="panUp">
+						<v-btn x-small fab color="#0091EA" @click="panUp">
 							<v-icon>arrow_upward</v-icon>
 						</v-btn>
 					</div>
 					<div>
-						<v-btn small fab color="#0091EA" @click="panLeft">
+						<v-btn x-small fab color="#0091EA" @click="panLeft">
 							<v-icon>arrow_back</v-icon>
 						</v-btn>
-						<v-btn small fab color="#0091EA" @click="panDown">
+						<v-btn x-small fab color="#0091EA" @click="panDown">
 							<v-icon>arrow_downward</v-icon>
 						</v-btn>
-						<v-btn small fab color="#0091EA" @click="panRight">
+						<v-btn x-small fab color="#0091EA" @click="panRight">
 							<v-icon>arrow_forward</v-icon>
 						</v-btn>
 					</div>
 				</div>
 				<div>
-					<v-btn small fab color="#0091EA" @click="zoomOut">
+					<v-btn x-small fab color="#0091EA" @click="zoomOut">
 						<v-icon>remove</v-icon>
 					</v-btn>
-					<v-btn small fab color="#0091EA" @click="zoomIn">
+					<v-btn x-small fab color="#0091EA" @click="zoomIn">
 						<v-icon>add</v-icon>
 					</v-btn>
 				</div>
@@ -131,7 +131,7 @@ export default {
 		}
 	},
 	mounted() {
-		const containerT = document.getElementById("main-surface-chart");
+		const containerT = document.getElementById("mainsurfacechart");
 		this.graph = new vis.Graph3d(containerT, null, options);
 	},
 	methods: {
@@ -203,6 +203,9 @@ export default {
 		width: 100%;
 		> div {
 			text-align: center;
+			button {
+				margin: 4px;
+			}
 		}
 	}
 }

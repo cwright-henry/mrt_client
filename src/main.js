@@ -52,25 +52,10 @@ const optionsCompact = {
 	year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC'
 };
 
-Vue.filter('number4', function (value) {
+Vue.filter('number', function (value, precision) {
 	if (value !== null && !isNaN(value)) {
-		const precision = 4;
+		precision = precision !== undefined ? precision : 3;
 		return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: precision, minimumFractionDigits: precision }).format(value);
-	}
-	return ''
-});
-
-Vue.filter('number', function (value) {
-	if (value !== null && !isNaN(value)) {
-		const precision = 2;
-		return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: precision, minimumFractionDigits: precision }).format(value);
-	}
-	return ''
-});
-
-Vue.filter('number-round', function (value) {
-	if (value !== null && !isNaN(value)) {
-		return new Intl.NumberFormat(navigator.language, { maximumFractionDigits: 0, minimumFractionDigits: 0 }).format(value);
 	}
 	return ''
 });
@@ -88,9 +73,6 @@ Vue.filter('date-short', function (value) {
 });
 
 Vue.config.errorHandler = function (err, vm, info) {
-	console.log(err)
-	console.log(vm)
-	console.log(info)
 	EventBus.$emit('api-error', `Vue Error - ${err} - ${info}`);
 }
 

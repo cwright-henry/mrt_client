@@ -9,7 +9,8 @@
 			background-color="#323232"
 			v-model="fileName"
 			hide-details
-			box
+			filled
+			dense
 			readonly
 			:append-outer-icon="errors.length !== 0 ? 'warning' : ''"
 			@click:append-outer="showErrors=true"

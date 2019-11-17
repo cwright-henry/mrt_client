@@ -163,7 +163,7 @@ export default {
 /* MRT strategy-fit */
 .mrt-sfp {
 	font-weight: 300;
-	height: 425px;
+	height: 438px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -207,6 +207,9 @@ export default {
 				text-overflow: ellipsis;
 				overflow: hidden;
 			}
+		}
+		.mrt-sfp--item { 
+			margin: 2px 0;
 		}
 		.mrt-sfp--header {
 			text-transform: uppercase;

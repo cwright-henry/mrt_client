@@ -1,6 +1,6 @@
 <template>
 	<v-app-bar dense fixed clipped-left app class="mrt-toolbar">
-		<v-icon @click.stop="$emit('togglemenu')">mdi-menu</v-icon>
+		<v-app-bar-nav-icon @click.stop="$emit('togglemenu')" class="ml-1"></v-app-bar-nav-icon>
 		<v-toolbar-title class="hidden-xs-and-down mr-4 pl-2">
 			<div class="mrt-toolbar--app">
 				<logo />
@@ -9,8 +9,8 @@
 		</v-toolbar-title>
 		<v-spacer></v-spacer>
 		<div class="mrt-toolbar--user">
-			<v-avatar color="#757575" size="32">
-				<v-icon dark>account_circle</v-icon>
+			<v-avatar color="#616161" size="32">
+				<v-icon color="#FFF176">mdi-account</v-icon>
 			</v-avatar>
 			<div class="mrt-toolbar--user-info">
 				<span>{{ userName }}</span>
@@ -57,13 +57,14 @@ export default {
 	.mrt-toolbar--user {
 		display: flex;
 		align-items: center;
+		font-size:13px;
 		.mrt-toolbar--user-info {
 			display: flex;
 			flex-direction: column;
 			margin: 0 0 0 12px;
 			line-height: 1.2;
 			.mrt-toolbar--user-info__company {
-				color: #FFF59D;
+				color: #fff59d;
 				font-weight: 300;
 			}
 		}

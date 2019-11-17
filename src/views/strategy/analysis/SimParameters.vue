@@ -83,6 +83,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	margin: 0 0 12px;
+	font-size: 14px;
 	.proctype {
 		margin: 0 0 16px;
 		label {

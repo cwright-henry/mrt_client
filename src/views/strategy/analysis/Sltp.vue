@@ -5,7 +5,7 @@
 			<mrt-sltp-parameters />
 			<div class="sltp-actions">
 				<div class="sltp-action">
-					<v-btn small outline fab color="#0091EA" :disabled="isLoadingSLTP" @click="reset">
+					<v-btn small outlined fab color="#0091EA" :disabled="isLoadingSLTP" @click="reset">
 						<v-icon>clear</v-icon>
 					</v-btn>
 					<label>Reset</label>

@@ -7,9 +7,7 @@
 	>
 		<v-card>
 			<v-toolbar dense color="#484848">
-				<v-btn icon>
-					<v-icon>cloud_upload</v-icon>
-				</v-btn>
+				<v-icon color="#FFF176" class="mr-2">mdi-database-import</v-icon>
 				<v-toolbar-title>Import</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon @click.stop="dialog=false">
@@ -28,13 +26,15 @@
 							<v-menu
 								v-model="imporMenu"
 								bottom
-								origin="center center"
-								offset-x
+								origin="top right"
+								offset-y
 								transition="slide-y-transition"
 							>
-								<v-btn slot="activator" small color="#0091EA" fab>
-									<v-icon>more_vert</v-icon>
-								</v-btn>
+								<template v-slot:activator="{ on }">
+									<v-btn v-on="on" x-small color="#0091EA" fab class="ml-2">
+										<v-icon>more_vert</v-icon>
+									</v-btn>
+								</template>
 								<mrtImportOptions :isOpen="imporMenu" :importDefault="importInput" @change="setImportType" />
 							</v-menu>
 						</div>
@@ -63,9 +63,11 @@
 										offset-x
 										transition="slide-y-transition"
 									>
-										<v-btn slot="activator" small color="#0091EA" fab dark>
-											<v-icon>more_vert</v-icon>
-										</v-btn>
+										<template v-slot:activator="{ on }">
+											<v-btn v-on="on" x-small color="#0091EA" fab dark class="ml-2">
+												<v-icon>more_vert</v-icon>
+											</v-btn>
+										</template>
 										<mrtImportOptions
 											:isOpen="imporMenuA"
 											:importDefault="importInputA"
@@ -96,9 +98,11 @@
 										offset-x
 										transition="slide-y-transition"
 									>
-										<v-btn slot="activator" small color="#0091EA" fab dark>
-											<v-icon>more_vert</v-icon>
-										</v-btn>
+										<template v-slot:activator="{ on }">
+											<v-btn v-on="on" x-small color="#0091EA" fab dark class="ml-2">
+												<v-icon>more_vert</v-icon>
+											</v-btn>
+										</template>
 										<mrtImportOptions
 											:isOpen="imporMenuB"
 											:importDefault="importInputB"
@@ -173,12 +177,13 @@
 							label="Save As..."
 							:error-messages="errorMessages"
 							background-color="#323232"
-							box
+							filled
+							dense
 							ref="namefield"
 							required
 						></v-text-field>
 						<div>
-							<v-switch color="#ffeb3b" hide-details label="Plus One" v-model="plusOne"></v-switch>
+							<v-switch color="#FFF176" hide-details label="Plus One" v-model="plusOne"></v-switch>
 							<v-btn color="#2196F3" :loading="uploading" :disabled="importDisabled" @click="upload">Import</v-btn>
 						</div>
 					</div>
@@ -591,6 +596,7 @@ export default {
 	}
 	.import-component {
 		display: flex;
+		align-items: center;
 	}
 	.top-panel {
 		width: 100%;
@@ -686,7 +692,7 @@ export default {
 		> div {
 			display: flex;
 			align-items: center;
-			justify-content: center;
+			justify-content: space-between;
 			margin: -20px 0 0 0;
 			button {
 				margin: 8px 0 0 0;

@@ -20,7 +20,7 @@
 					:loading="isLoadingSims"
 					:disabled="selectedSim == null"
 					dense
-					box
+					filled
 					hide-details
 					return-object
 					flat
@@ -99,7 +99,6 @@
 </template>
 
 <script>
-import mrtFitProcess from "@/components/fit/Fit";
 import mrtSimsSparklineChart from "./SimsSparklineChart";
 import mrtSimchart from "./SimsChart";
 import mrtSimParameters from "./SimParameters";
@@ -116,7 +115,6 @@ export default {
 	components: {
 		mrtSimchart,
 		mrtSimsSparklineChart,
-		mrtFitProcess,
 		mrtSimParameters
 	},
 	computed: {

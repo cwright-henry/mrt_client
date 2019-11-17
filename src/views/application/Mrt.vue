@@ -3,9 +3,11 @@
 		<mrt-navigation :show="showMenu" @close="showMenu=false" />
 		<mrt-toolbar @togglemenu="showMenu = !showMenu" />
 		<v-content>
-			<keep-alive>
-				<router-view></router-view>
-			</keep-alive>
+			<v-container>
+				<keep-alive>
+					<router-view></router-view>
+				</keep-alive>
+			</v-container>
 		</v-content>
 	</v-layout>
 </template>
@@ -13,7 +15,6 @@
 <script>
 import mrtToolbar from "@/views/application/Toolbar";
 import mrtNavigation from "@/views/application/Navigation";
-import mrtFooter from "@/views/application/Footer";
 
 export default {
 	name: "Mrt",
@@ -24,8 +25,7 @@ export default {
 	},
 	components: {
 		mrtToolbar,
-		mrtNavigation,
-		mrtFooter
+		mrtNavigation
 	},
 	mounted() {
 		this.$store.dispatch("library/load");
