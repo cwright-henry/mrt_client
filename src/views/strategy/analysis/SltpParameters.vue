@@ -66,8 +66,8 @@
 										@keyup.enter="setCarry"
 									></v-text-field>
 									<div class="mrt-text-field--actions" @click="resetCarry">
-										<v-btn flat icon color="white">
-											<v-icon>clear</v-icon>
+										<v-btn icon color="white">
+											<v-icon>mdi-close</v-icon>
 										</v-btn>
 										<div class="mrt-text-field--actions__text">Reset</div>
 									</div>
@@ -101,15 +101,14 @@
 										label="Transcation Cost"
 										color="#2196F3"
 										background-color="#424242"
-										outline
 										maxlength="10"
 										ref="carryInput"
 										placeholder="Input Transaction Cost"
 										@keyup.enter="setTransactionCost"
 									></v-text-field>
 									<div class="mrt-text-field--actions" @click="resetTransactionCost">
-										<v-btn flat icon color="white">
-											<v-icon>clear</v-icon>
+										<v-btn icon color="white">
+											<v-icon>mdi-clear</v-icon>
 										</v-btn>
 										<div class="mrt-text-field--actions__text">Reset</div>
 									</div>

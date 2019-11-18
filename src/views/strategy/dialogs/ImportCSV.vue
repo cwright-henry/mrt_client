@@ -1,7 +1,7 @@
 <template>
 	<div class="mrt-import-csv">
 		<v-text-field
-			prepend-icon="attach_file"
+			prepend-icon="mdi-home-import-outline"
 			:loading="parsing"
 			:label="label"
 			:disabled="parsing"

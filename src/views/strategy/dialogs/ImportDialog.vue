@@ -7,7 +7,7 @@
 	>
 		<v-card>
 			<v-toolbar dense color="#484848">
-				<v-icon color="#FFF176" class="mr-2">mdi-database-import</v-icon>
+				<v-icon color="#FFF176" class="mr-2">mdi-finance</v-icon>
 				<v-toolbar-title>Import</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon @click.stop="dialog=false">
