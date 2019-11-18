@@ -143,7 +143,7 @@ export default {
 								border: 1px solid #757575;
 								padding: 1px 8px;
 								border-radius: 4px;
-								width: 100px;
+								width: 110px;
 								display: flex;
 								justify-content: flex-end;
 							}

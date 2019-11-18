@@ -555,8 +555,11 @@ export default {
 	background-color: #484848;
 	padding: 4px 8px;
 	font-size: 14px;
-	.v-input__slot {
-		margin-bottom: 0px !important;
+	.v-text-field > .v-input__control > .v-input__slot::after {
+		border-style: none;
+	}
+	.v-text-field > .v-input__control > .v-input__slot::before {
+		border-style: none;
 	}
 	.v-text-field__details {
 		display: none;
@@ -630,12 +633,13 @@ export default {
 		}
 		.mrt-fitparams--section__row {
 			display: flex;
-			margin: 0 0 3px 0;
-			padding: 0 0 2px 4px;
+			margin: 0 0 2px 0;
+			padding: 0 0 1px 4px;
 			align-items: center;
 			> div {
 				flex: 1;
 				text-align: right;
+				height: 22px;
 			}
 			.mrt-fitparams--section__row-dyna {
 				background-color: #e0e0e0;
@@ -654,7 +658,7 @@ export default {
 				}
 			}
 			.mrt-fitparams--section__row-fitting {
-				height: 24px;
+				height: 22px;
 			}
 		}
 	}
