@@ -101,11 +101,11 @@ export default class {
 
 	move() {
 		const step = (e) => {
-			this.pos = this.toCoords(e.chartX)
-			this.maxPos = this.scale(this.maxPos)
+			this.pos = this.toCoords(e.chartX);
+			// Why is this line here
+			//this.pos = this.scale(this.pos)
 			if (this.pos >= this.min && this.pos < this.max) {
 				this.updatePlotLine(this.pos, 'pos')
-
 				this.vm.$emit('startdate', { date: this.pos, type: 'move' })
 			}
 		}
@@ -134,6 +134,6 @@ export default class {
 	}
 
 	toCoords(value) {
-		return this.chart.xAxis[0].toValue(value, 0)
+		return this.chart.xAxis[0].toValue(value)
 	}
 }
