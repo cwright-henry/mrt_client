@@ -291,8 +291,8 @@ export default {
 
 			// Dont allow slider past last point in the series
 			const extremes = tsExtremes(this.strategy.ts.data);
-			this.simSlider.setPos(this.endDate, extremes.min, extremes.max);
 			chart.xAxis[0].setExtremes(extremes.min, extremes.max);
+			this.simSlider.setPos(extremes.max, extremes.min, extremes.max);
 		},
 
 		resetPos() {

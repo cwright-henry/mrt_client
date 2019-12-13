@@ -57,11 +57,11 @@ export default {
 		 */
 		updateList(state, data) {
 			// A new list
-			if (data.hasOwnProperty('isNew')) {
+			if (Object.prototype.hasOwnProperty.call(data, 'isNew')) {
 				state.strategies = [];
 				state.strategies = data.strategies
 			}
-			else if (data.hasOwnProperty('isUpload')) {
+			else if (Object.prototype.hasOwnProperty.call(data, 'isUpload')) {
 				// Add the new one to top of list
 				state.strategies.unshift(data.strategy)
 				// If there is more to view then pop last one
@@ -81,19 +81,19 @@ export default {
 		 * existence of the property
 		 */
 		setPaging(state, data) {
-			if (data.hasOwnProperty('total')) {
+			if (Object.prototype.hasOwnProperty.call(data, 'total')) {
 				state.total = data.total
 			}
-			if (data.hasOwnProperty('totalPages')) {
+			if (Object.prototype.hasOwnProperty.call(data, 'totalPages')) {
 				state.totalPages = data.totalPages
 			}
-			if (data.hasOwnProperty('hasPrev')) {
+			if (Object.prototype.hasOwnProperty.call(data, 'hasPrev')) {
 				state.hasPrev = data.hasPrev
 			}
-			if (data.hasOwnProperty('hasNext')) {
+			if (Object.prototype.hasOwnProperty.call(data, 'hasNext')) {
 				state.hasNext = data.hasNext
 			}
-			if (data.hasOwnProperty('page')) {
+			if (Object.prototype.hasOwnProperty.call(data, 'page')) {
 				state.page = data.page
 			}
 		},

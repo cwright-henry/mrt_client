@@ -7,7 +7,8 @@
 					label="Name"
 					color="#90CAF9"
 					background-color="#323232"
-					box
+					filled
+					dense
 					hide-details
 					ref="namefield"
 					required
@@ -15,20 +16,20 @@
 			</div>
 			<div class="mrt-scenario--details-action">
 				<div>
-					<v-btn small outline fab color="#2196F3" :disabled="isSavingFit" @click="home">
-						<v-icon>home</v-icon>
+					<v-btn small outlined fab color="#2196F3" :disabled="isSavingFit" @click="home">
+						<v-icon>mdi-home</v-icon>
 					</v-btn>
 					<label>Library</label>
 				</div>
 				<div>
-					<v-btn small outline fab color="#2196F3" @click="toggle">
-						<v-icon>fullscreen</v-icon>
+					<v-btn small outlined fab color="#2196F3" @click="toggle">
+						<v-icon>mdi-fullscreen</v-icon>
 					</v-btn>
 					<label>Full Screen</label>
 				</div>
 				<div>
 					<v-btn small fab color="#2196F3" :loading="isSavingFit" @click="save">
-						<v-icon>cloud_upload</v-icon>
+						<v-icon>mdi-cloud-upload</v-icon>
 					</v-btn>
 					<label>Save Scenario</label>
 				</div>
@@ -154,6 +155,12 @@ export default {
 </script>
 
 <style lang="less">
+.v-stepper__header {
+	height: 56px;
+	.v-stepper__step {
+		padding: 16px 24px;
+	}
+}
 .mrt-scenario {
 	.v-stepper__step__step {
 		color: #121212 !important;
@@ -161,7 +168,7 @@ export default {
 	.mrt-scenario--details {
 		display: flex;
 		justify-content: space-between;
-		margin: 0 0 24px;
+		margin: 4px 0 16px;
 		.mrt-scenario--details-name {
 			width: 400px;
 		}
@@ -177,8 +184,8 @@ export default {
 			label {
 				color: #e0e0e0;
 				font-weight: 300;
-				font-size: 12px;
-				line-height: 1.3;
+				font-size: 11px;
+				line-height: 2;
 			}
 		}
 	}

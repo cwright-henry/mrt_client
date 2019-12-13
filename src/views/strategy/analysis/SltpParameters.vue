@@ -11,28 +11,28 @@
 					<li>
 						<label>Kappa</label>
 						<div>
-							<v-icon v-if="userKappa != null">lock</v-icon>
+							<v-icon v-if="userKappa != null">mdi-lock</v-icon>
 							<div class="readonly">{{kappa | number}}</div>
 						</div>
 					</li>
 					<li>
 						<label>Sigma</label>
 						<div>
-							<v-icon v-if="userSigma != null">lock</v-icon>
+							<v-icon v-if="userSigma != null">mdi-lock</v-icon>
 							<div class="readonly">{{sigma | number}}</div>
 						</div>
 					</li>
 					<li>
 						<label>Theta</label>
 						<div>
-							<v-icon v-if="userTheta != null">lock</v-icon>
+							<v-icon v-if="userTheta != null">mdi-lock</v-icon>
 							<div class="readonly">{{theta | number}}</div>
 						</div>
 					</li>
 					<li v-if="findProctype.value !== 'OU'">
 						<label>Beta</label>
 						<div>
-							<v-icon v-if="userBeta != null">lock</v-icon>
+							<v-icon v-if="userBeta != null">mdi-lock</v-icon>
 							<div class="readonly">{{beta | number}}</div>
 						</div>
 					</li>
@@ -47,7 +47,9 @@
 								origin="top right"
 								transition="scale-transition"
 							>
-								<div slot="activator" class="input">{{actualCarry | number}}</div>
+								<template v-slot:activator="{ on }">
+									<div v-on="on" class="input">{{actualCarry | number}}</div>
+								</template>
 								<div class="mrt-text-field">
 									<v-text-field
 										v-model="carry"
@@ -64,8 +66,8 @@
 										@keyup.enter="setCarry"
 									></v-text-field>
 									<div class="mrt-text-field--actions" @click="resetCarry">
-										<v-btn flat icon color="white">
-											<v-icon>clear</v-icon>
+										<v-btn icon color="white">
+											<v-icon>mdi-close</v-icon>
 										</v-btn>
 										<div class="mrt-text-field--actions__text">Reset</div>
 									</div>
@@ -87,7 +89,9 @@
 								origin="top right"
 								transition="scale-transition"
 							>
-								<div slot="activator" class="input">{{actualTransactionCost | number}}</div>
+								<template v-slot:activator="{ on }">
+									<div v-on="on" class="input">{{actualTransactionCost | number}}</div>
+								</template>
 								<div class="mrt-text-field">
 									<v-text-field
 										v-model="transactionCost"
@@ -97,15 +101,14 @@
 										label="Transcation Cost"
 										color="#2196F3"
 										background-color="#424242"
-										outline
 										maxlength="10"
 										ref="carryInput"
 										placeholder="Input Transaction Cost"
 										@keyup.enter="setTransactionCost"
 									></v-text-field>
 									<div class="mrt-text-field--actions" @click="resetTransactionCost">
-										<v-btn flat icon color="white">
-											<v-icon>clear</v-icon>
+										<v-btn icon color="white">
+											<v-icon>mdi-close</v-icon>
 										</v-btn>
 										<div class="mrt-text-field--actions__text">Reset</div>
 									</div>
@@ -124,14 +127,14 @@
 							v-model="dateMenu"
 							:close-on-content-click="false"
 							:nudge-right="40"
-							lazy
 							transition="scale-transition"
 							offset-y
 							origin="top left"
-							full-width
 							min-width="290px"
 						>
-							<div slot="activator" class="input">{{start.date | date-short}}</div>
+							<template v-slot:activator="{ on }">
+								<div v-on="on" class="input">{{start.date | date-short}}</div>
+							</template>
 							<v-date-picker
 								ref="picker"
 								v-model="date"
@@ -158,11 +161,11 @@
 				<ul>
 					<li>
 						<label>Take Profit</label>
-						<div class="readonly">{{tpValue | number4}}</div>
+						<div class="readonly">{{tpValue | number(3)}}</div>
 					</li>
 					<li>
 						<label>Stop Loss</label>
-						<div class="readonly">{{slValue | number4}}</div>
+						<div class="readonly">{{slValue | number(3)}}</div>
 					</li>
 				</ul>
 			</div>
@@ -173,23 +176,23 @@
 							Horizon
 							<span>(Days)</span>
 						</label>
-						<div class="readonly">{{ETValue | number-round}}</div>
+						<div class="readonly">{{ETValue | number(0)}}</div>
 					</li>
 					<li>
 						<label>EIR</label>
-						<div class="readonly">{{EIRValue | number4}}</div>
+						<div class="readonly">{{EIRValue | number(3)}}</div>
 					</li>
 					<li>
 						<label>EPnl</label>
-						<div class="readonly">{{EPnLValue | number4}}</div>
+						<div class="readonly">{{EPnLValue | number(3)}}</div>
 					</li>
 					<li>
 						<label>ER</label>
-						<div class="readonly">{{ERValue | number4}}</div>
+						<div class="readonly">{{ERValue | number(3)}}</div>
 					</li>
 					<li>
 						<label>pblta</label>
-						<div class="readonly">{{pbltaValue | number4}}</div>
+						<div class="readonly">{{pbltaValue | number(3)}}</div>
 					</li>
 				</ul>
 			</div>
@@ -355,6 +358,7 @@ export default {
 
 		resetCarry() {
 			this.carry = 0.1;
+			this.actualCarry = 0.1;
 			this.carryMenu = false;
 		},
 
@@ -365,6 +369,7 @@ export default {
 
 		resetTransactionCost() {
 			this.transactionCost = 0.05;
+			this.actualTransactionCost = 0.05;
 			this.transactionCostMenu = false;
 		}
 	}
@@ -373,6 +378,7 @@ export default {
 
 <style lang="less" scoped>
 .sltp-fittings {
+	font-size: 14px;
 	.proctype {
 		margin: 0 0 12px;
 		label {

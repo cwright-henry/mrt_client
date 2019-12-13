@@ -43,13 +43,17 @@ export default {
 			console.log("Before Leave " + el.className);
 		},
 
-		leave(el, done) {},
+		leave(el) {
+			console.log("Before Leave " + el.className);
+		},
 
 		afterLeave(el) {
 			console.log("After Leave " + el.className);
 		},
 
-		enter(el, done) {},
+		enter(el) {
+			console.log("Before Leave " + el.className);
+		},
 
 		afterEnter(el) {
 			console.log("After Enter " + el.className);

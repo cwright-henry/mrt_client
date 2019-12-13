@@ -3,7 +3,7 @@
 		<div class="mrt-sf--selection">
 			<label>
 				Full
-				<span>{{fullDays | number-round}} Entries</span>
+				<span>{{fullDays | number(0)}} Entries</span>
 			</label>
 			<div class="mrt-sf--dates">
 				<div>
@@ -19,7 +19,7 @@
 		<div class="mrt-sf--selection">
 			<label>
 				Selection
-				<span v-if="selectionDays">{{selectionDays | number-round}} Entries</span>
+				<span v-if="selectionDays">{{selectionDays | number(0)}} Entries</span>
 			</label>
 			<div class="mrt-sf--dates">
 				<div>
@@ -60,6 +60,7 @@ export default {
 			if (this.strategy.ts) {
 				return this.strategy.ts.data[0][0];
 			}
+			return null;
 		},
 		tsEndDate() {
 			if (this.strategy.ts) {
@@ -67,18 +68,14 @@ export default {
 					this.strategy.ts.data.length - 1
 				][0];
 			}
-		},
-		tsEndValue() {
-			if (this.strategy.ts) {
-				return this.strategy.ts.data[
-					this.strategy.ts.data.length - 1
-				][1];
-			}
+			return null;
 		},
 		fullDays() {
 			if (this.strategy.ts) {
 				return this.strategy.ts.data.length;
 			}
+
+			return null;
 		},
 		selectionDays() {
 			if (

@@ -1,6 +1,6 @@
 <template>
 	<div class="mrt-drop-menu">
-		<p>Import Options</p>
+		<h1>Import Options</h1>
 		<v-radio-group v-model="type">
 			<v-radio
 				color="#ffeb3b"
@@ -46,5 +46,12 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less">
+.mrt-drop-menu {
+	h1 {
+		font-weight: 300;
+		font-size: 16px;
+		color: #e0e0e0;
+	}
+}
 </style>

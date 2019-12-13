@@ -11,12 +11,12 @@
 				</div>
 				<div class="login-box__contents">
 					<div class="logo">
-						<i class="material-icons">person</i>
+						<v-icon>mdi-account</v-icon>
 						<h1>Sign In</h1>
 					</div>
 					<div class="email">
 						<v-text-field
-							prepend-icon="person"
+							prepend-icon="mdi-email-outline"
 							v-model="email"
 							:error-messages="errorMessages"
 							@keypress.enter="login"
@@ -27,9 +27,9 @@
 					</div>
 					<div class="password">
 						<v-text-field
-							prepend-icon="lock"
+							prepend-icon="mdi-lock"
 							v-model="password"
-							:append-icon="show ? 'visibility' : 'visibility_off'"
+							:append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
 							:type="show ? 'text' : 'password'"
 							:error-messages="errorMessages"
 							@keypress.enter="login"

@@ -7,7 +7,7 @@
 					:items="proctypes"
 					:loading="isFittingTS || isLoadingTS"
 					dense
-					box
+					filled
 					hide-details
 					flat
 					color="#ce93d8"
@@ -52,7 +52,7 @@
 			</div>
 			<div class="mrt-senfit--residuals-graphs__histogram">
 				<h3>
-					Histogram
+					Distribution
 					<span>(Capped at 3 STD)</span>
 				</h3>
 				<mrt-histogramchart />

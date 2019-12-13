@@ -134,10 +134,13 @@ export default {
 		/**
 		 * Invalidate the results of the last fit
 		 */
-		resetForFit({ state }) {
+		resetForFit({ state, rootGetters }) {
 			state.selectedSim = null;
 			state.sims = [];
 			state.simSeed = seedGen()
+			const lastPoint = rootGetters['fit/tsEnd'];
+			state.simStart.date = lastPoint[0]
+			state.simStart.value = lastPoint[1]
 		}
 	}
 }

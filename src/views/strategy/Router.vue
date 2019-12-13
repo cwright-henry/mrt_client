@@ -1,5 +1,5 @@
 <template>
-	<v-container fluid>
+	<v-container>
 		<transition>
 			<keep-alive>
 				<router-view></router-view>

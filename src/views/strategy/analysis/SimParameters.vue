@@ -12,28 +12,28 @@
 						<li>
 							<label>Kappa</label>
 							<div>
-								<v-icon v-if="userKappa != null">lock</v-icon>
+								<v-icon v-if="userKappa != null">mdi-lock</v-icon>
 								<div>{{kappa | number}}</div>
 							</div>
 						</li>
 						<li>
 							<label>Sigma</label>
 							<div>
-								<v-icon v-if="userSigma != null">lock</v-icon>
+								<v-icon v-if="userSigma != null">mdi-lock</v-icon>
 								<div>{{sigma | number}}</div>
 							</div>
 						</li>
 						<li>
 							<label>Theta</label>
 							<div>
-								<v-icon v-if="userTheta != null">lock</v-icon>
+								<v-icon v-if="userTheta != null">mdi-lock</v-icon>
 								<div>{{theta | number}}</div>
 							</div>
 						</li>
 						<li v-if="findProctype.value !== 'OU'">
 							<label>Beta</label>
 							<div>
-								<v-icon v-if="userBeta != null">lock</v-icon>
+								<v-icon v-if="userBeta != null">mdi-lock</v-icon>
 								<div>{{beta | number}}</div>
 							</div>
 						</li>
@@ -83,6 +83,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	margin: 0 0 12px;
+	font-size: 14px;
 	.proctype {
 		margin: 0 0 16px;
 		label {
@@ -142,7 +143,7 @@ export default {
 								border: 1px solid #757575;
 								padding: 1px 8px;
 								border-radius: 4px;
-								width: 100px;
+								width: 110px;
 								display: flex;
 								justify-content: flex-end;
 							}

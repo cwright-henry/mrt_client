@@ -1,42 +1,42 @@
 <template>
-	<v-dialog v-model="dialog" width="900" :fullscreen="$vuetify.breakpoint.mdAndDown">
+	<v-dialog v-model="dialog" width="900" eager :fullscreen="$vuetify.breakpoint.mdAndDown">
 		<v-card class="sltp-surface-dialog">
 			<v-toolbar dense>
-				<v-icon>blur_on</v-icon>
+				<v-icon color="#FFF176" class="mr-2">mdi-blur</v-icon>
 				<v-toolbar-title>{{title}} Surface Chart</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon @click.stop="dialog=false">
-					<v-icon>close</v-icon>
+					<v-icon>mdi-close</v-icon>
 				</v-btn>
 			</v-toolbar>
 			<div class="chartContainer">
-				<div id="main-surface-chart"></div>
+				<div id="mainsurfacechart" ref="mainChart"></div>
 			</div>
 			<div class="sltp-control">
 				<div>
 					<div>
 						<v-btn small fab color="#0091EA" @click="panUp">
-							<v-icon>arrow_upward</v-icon>
+							<v-icon>mdi-chevron-up</v-icon>
 						</v-btn>
 					</div>
 					<div>
 						<v-btn small fab color="#0091EA" @click="panLeft">
-							<v-icon>arrow_back</v-icon>
+							<v-icon>mdi-chevron-left</v-icon>
 						</v-btn>
 						<v-btn small fab color="#0091EA" @click="panDown">
-							<v-icon>arrow_downward</v-icon>
+							<v-icon>mdi-chevron-down</v-icon>
 						</v-btn>
 						<v-btn small fab color="#0091EA" @click="panRight">
-							<v-icon>arrow_forward</v-icon>
+							<v-icon>mdi-chevron-right</v-icon>
 						</v-btn>
 					</div>
 				</div>
 				<div>
 					<v-btn small fab color="#0091EA" @click="zoomOut">
-						<v-icon>remove</v-icon>
+						<v-icon>mdi-magnify-minus-outline</v-icon>
 					</v-btn>
 					<v-btn small fab color="#0091EA" @click="zoomIn">
-						<v-icon>add</v-icon>
+						<v-icon>mdi-magnify-plus-outline</v-icon>
 					</v-btn>
 				</div>
 			</div>
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import vis from "vis";
+import vis from "vis-graph3d";
 
 const HORZ_INC = 0.5;
 
@@ -131,7 +131,7 @@ export default {
 		}
 	},
 	mounted() {
-		const containerT = document.getElementById("main-surface-chart");
+		const containerT = document.getElementById("mainsurfacechart");
 		this.graph = new vis.Graph3d(containerT, null, options);
 	},
 	methods: {
@@ -203,6 +203,9 @@ export default {
 		width: 100%;
 		> div {
 			text-align: center;
+			button {
+				margin: 4px;
+			}
 		}
 	}
 }

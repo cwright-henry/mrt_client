@@ -17,13 +17,14 @@
 		label="Search your library"
 		color="blue lighten-2"
 		background-color="#323232"
-		box
+		filled
+		dense
 	>
 		<template slot="item" slot-scope="{ item }">
-			<v-icon left class="mr-1" color="#AEEA00">insert_chart</v-icon>
+			<v-icon left class="mr-1" color="#27a59a">mdi-finance</v-icon>
 			<v-list-tile-content>
-				<v-list-tile-title v-text="item.name"></v-list-tile-title>
-				<v-list-tile-sub-title>Last modified {{item.lastUpdate | date}}</v-list-tile-sub-title>
+				<v-list-item-title v-text="item.name"></v-list-item-title>
+				<v-list-item-subtitle>Last modified {{item.lastUpdate | date}}</v-list-item-subtitle>
 			</v-list-tile-content>
 		</template>
 	</v-autocomplete>

@@ -94,6 +94,7 @@ const options = vm => {
 		plotOptions: {
 			scatter: {
 				clip: false,
+				boostThreshold: 0,
 				marker: {
 					radius: 2,
 					symbol: "circle"

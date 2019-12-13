@@ -7,8 +7,8 @@ const getErrorCode = (error) => {
 	}
 
 	// Handle server side error codes 400 and 500
-	if (error.hasOwnProperty('response') && error.response.hasOwnProperty('data')) {
-		if (error.response.data.hasOwnProperty('code') && error.response.data.code.length > 0) {
+	if (Object.prototype.hasOwnProperty.call(error, 'response') && Object.prototype.hasOwnProperty.call(error.response, 'data')) {
+		if (Object.prototype.hasOwnProperty.call(error.response.data, 'code') && error.response.data.code.length > 0) {
 			return error.response.data.code;
 		}
 	}

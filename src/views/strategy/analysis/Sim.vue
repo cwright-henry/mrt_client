@@ -4,7 +4,7 @@
 			<mrt-sim-parameters />
 			<div class="sim-action">
 				<v-btn small fab color="#0091EA" :loading="isLoadingSims" @click="getMoreSims">
-					<v-icon>autorenew</v-icon>
+					<v-icon>mdi-autorenew</v-icon>
 				</v-btn>
 				<label>New Sims</label>
 			</div>
@@ -20,7 +20,7 @@
 					:loading="isLoadingSims"
 					:disabled="selectedSim == null"
 					dense
-					box
+					filled
 					hide-details
 					return-object
 					flat
@@ -40,7 +40,7 @@
 						:max="8"
 						step="0.5"
 						ticks="always"
-						tick-size="1"
+						tick-size="4"
 						thumb-label="always"
 					>
 						<template slot="thumb-label" slot-scope="props">
@@ -57,7 +57,7 @@
 						:loading="isLoadingSims"
 						@click="autoPlaySims"
 					>
-						<v-icon>{{isPlaying ? 'pause' : 'play_arrow'}}</v-icon>
+						<v-icon>{{isPlaying ? 'mdi-pause' : 'mdi-play'}}</v-icon>
 					</v-btn>
 					<label>{{isPlaying ? 'Stop' : 'Animate'}}</label>
 				</div>
@@ -99,7 +99,6 @@
 </template>
 
 <script>
-import mrtFitProcess from "@/components/fit/Fit";
 import mrtSimsSparklineChart from "./SimsSparklineChart";
 import mrtSimchart from "./SimsChart";
 import mrtSimParameters from "./SimParameters";
@@ -116,7 +115,6 @@ export default {
 	components: {
 		mrtSimchart,
 		mrtSimsSparklineChart,
-		mrtFitProcess,
 		mrtSimParameters
 	},
 	computed: {
@@ -222,6 +220,9 @@ export default {
 			display: flex;
 			.thumb-slider {
 				margin: 0 16px 0 0;
+				width: 300px;
+				display: flex;
+				align-items: center;
 			}
 		}
 		.horizon {

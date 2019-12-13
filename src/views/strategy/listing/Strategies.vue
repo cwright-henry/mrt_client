@@ -20,8 +20,7 @@
 				dark
 				fab
 			>
-				<v-icon>playlist_add</v-icon>
-				<v-icon>edit</v-icon>
+				<v-icon>mdi-playlist-plus</v-icon>
 			</v-btn>
 		</v-speed-dial>
 	</div>

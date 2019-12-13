@@ -9,7 +9,7 @@
 				:vertical="$vuetify.breakpoint.mdAndDown"
 			>
 				{{ text }}
-				<v-btn dark flat @click="apiauth = false">Close</v-btn>
+				<v-btn dark text @click="apiauth = false">Close</v-btn>
 			</v-snackbar>
 			<v-snackbar
 				v-model="apierror"
@@ -19,7 +19,7 @@
 				:vertical="$vuetify.breakpoint.mdAndDown"
 			>
 				{{ text }}
-				<v-btn dark flat @click="apierror = false">Close</v-btn>
+				<v-btn dark text @click="apierror = false">Close</v-btn>
 			</v-snackbar>
 			<v-snackbar
 				v-model="apisuccess"
@@ -30,7 +30,7 @@
 				:vertical="$vuetify.breakpoint.mdAndDown"
 			>
 				{{ text }}
-				<v-btn dark color="#FFEB3B" flat @click="apisuccess = false">Close</v-btn>
+				<v-btn dark color="#FFEB3B" text @click="apisuccess = false">Close</v-btn>
 			</v-snackbar>
 		</v-app>
 	</div>
@@ -128,8 +128,11 @@ a {
 [v-cloak] {
 	display: none;
 }
-.container.fluid {
+.container {
 	max-width: 1785px;
+	background-color: #121212;
+}
+.v-content__wrap {
 	background-color: #121212;
 }
 .menuable__content__active {

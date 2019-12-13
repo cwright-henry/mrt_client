@@ -9,7 +9,7 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Kappa</span>
-					<v-icon v-if="userKappa !== null" class="on">lock</v-icon>
+					<v-icon v-if="userKappa !== null" class="on">mdi-lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -21,11 +21,13 @@
 						origin="top right"
 						transition="scale-transition"
 					>
-						<span
-							class="mrt-fitparams--section__row-dyna"
-							:class="userKappa !== null ? 'on' : 'off'"
-							slot="activator"
-						>{{strategy.fit.kappa | number}}</span>
+						<template v-slot:activator="{ on }">
+							<span
+								class="mrt-fitparams--section__row-dyna"
+								:class="userKappa !== null ? 'on' : 'off'"
+								v-on="on"
+							>{{strategy.fit.kappa | number}}</span>
+						</template>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="kappa"
@@ -35,15 +37,14 @@
 								label="Kappa"
 								:color="color"
 								:background-color="backrgoundColor"
-								outline
 								maxlength="10"
 								ref="kappaInput"
 								placeholder="Fix Kappa"
 								@keyup.enter="fixKappa"
 							></v-text-field>
 							<div class="mrt-text-field--actions" @click="resetKappa">
-								<v-btn flat icon color="white">
-									<v-icon>clear</v-icon>
+								<v-btn icon color="white">
+									<v-icon>mdi-close</v-icon>
 								</v-btn>
 								<div class="mrt-text-field--actions__text">Reset</div>
 							</div>
@@ -56,7 +57,7 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Sigma</span>
-					<v-icon v-if="userSigma !== null" class="on">lock</v-icon>
+					<v-icon v-if="userSigma !== null" class="on">mdi-lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -68,11 +69,13 @@
 						origin="top right"
 						transition="scale-transition"
 					>
-						<span
-							class="mrt-fitparams--section__row-dyna"
-							:class="userSigma !== null ? 'on' : 'off'"
-							slot="activator"
-						>{{strategy.fit.sigma | number}}</span>
+						<template v-slot:activator="{ on }">
+							<span
+								class="mrt-fitparams--section__row-dyna"
+								:class="userSigma !== null ? 'on' : 'off'"
+								v-on="on"
+							>{{strategy.fit.sigma | number}}</span>
+						</template>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="sigma"
@@ -83,14 +86,13 @@
 								:color="color"
 								:background-color="backrgoundColor"
 								ref="sigmaInput"
-								outline
 								maxlength="10"
 								placeholder="Fix Sigma"
 								@keyup.enter="fixSigma"
 							></v-text-field>
 							<div class="mrt-text-field--actions" @click="resetSigma">
-								<v-btn flat icon color="white">
-									<v-icon>clear</v-icon>
+								<v-btn icon color="white">
+									<v-icon>mdi-close</v-icon>
 								</v-btn>
 								<div class="mrt-text-field--actions__text">Reset</div>
 							</div>
@@ -103,7 +105,7 @@
 			<div class="mrt-fitparams--section__row">
 				<label class="input-param">
 					<span>Theta</span>
-					<v-icon v-if="userTheta !== null" class="on">lock</v-icon>
+					<v-icon v-if="userTheta !== null" class="on">mdi-lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -115,11 +117,13 @@
 						origin="top right"
 						transition="scale-transition"
 					>
-						<span
-							class="mrt-fitparams--section__row-dyna"
-							:class="userTheta !== null ? 'on' : 'off'"
-							slot="activator"
-						>{{strategy.fit.theta | number}}</span>
+						<template v-slot:activator="{ on }">
+							<span
+								class="mrt-fitparams--section__row-dyna"
+								:class="userTheta !== null ? 'on' : 'off'"
+								v-on="on"
+							>{{strategy.fit.theta | number}}</span>
+						</template>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="theta"
@@ -130,14 +134,13 @@
 								:color="color"
 								:background-color="backrgoundColor"
 								ref="thetaInput"
-								outline
 								maxlength="10"
 								placeholder="Fix Theta"
 								@keyup.enter="fixTheta"
 							></v-text-field>
 							<div class="mrt-text-field--actions" @click="resetTheta">
-								<v-btn flat icon color="white">
-									<v-icon>clear</v-icon>
+								<v-btn icon color="white">
+									<v-icon>mdi-close</v-icon>
 								</v-btn>
 								<div class="mrt-text-field--actions__text">Reset</div>
 							</div>
@@ -150,7 +153,7 @@
 			<div class="mrt-fitparams--section__row" v-if="proctype === 'hypOU'">
 				<label class="input-param">
 					<span>Beta</span>
-					<v-icon v-if="userBeta !== null" class="on">lock</v-icon>
+					<v-icon v-if="userBeta !== null" class="on">mdi-lock</v-icon>
 				</label>
 				<div v-if="isFittingTS" class="mrt-fitparams--section__row-fitting">...</div>
 				<div v-else>
@@ -162,11 +165,13 @@
 						origin="top right"
 						transition="scale-transition"
 					>
-						<span
-							class="mrt-fitparams--section__row-dyna"
-							:class="userBeta !== null ? 'on' : 'off'"
-							slot="activator"
-						>{{strategy.fit.nbeta | number}}</span>
+						<template v-slot:activator="{ on }">
+							<span
+								class="mrt-fitparams--section__row-dyna"
+								:class="userBeta !== null ? 'on' : 'off'"
+								v-on="on"
+							>{{strategy.fit.nbeta | number}}</span>
+						</template>
 						<div class="mrt-text-field">
 							<v-text-field
 								v-model="beta"
@@ -177,14 +182,13 @@
 								:color="color"
 								:background-color="backrgoundColor"
 								ref="betaInput"
-								outline
 								maxlength="1"
 								placeholder="Fix Beta"
 								@keyup.enter="fixBeta"
 							></v-text-field>
 							<div class="mrt-text-field--actions" @click="resetBeta">
-								<v-btn flat icon color="white">
-									<v-icon>clear</v-icon>
+								<v-btn icon color="white">
+									<v-icon>mdi-close</v-icon>
 								</v-btn>
 								<div class="mrt-text-field--actions__text">Reset</div>
 							</div>
@@ -549,8 +553,13 @@ export default {
 	display: flex;
 	align-items: center;
 	background-color: #484848;
-	.v-input__slot {
-		margin-bottom: 0px !important;
+	padding: 4px 8px;
+	font-size: 14px;
+	.v-text-field > .v-input__control > .v-input__slot::after {
+		border-style: none;
+	}
+	.v-text-field > .v-input__control > .v-input__slot::before {
+		border-style: none;
 	}
 	.v-text-field__details {
 		display: none;
@@ -586,6 +595,7 @@ export default {
 	flex-direction: column;
 	justify-content: space-around;
 	height: 100%;
+	font-size: 14px;
 	.mrt-fitparams--section {
 		label {
 			width: 120px;
@@ -623,12 +633,13 @@ export default {
 		}
 		.mrt-fitparams--section__row {
 			display: flex;
-			margin: 0 0 3px 0;
-			padding: 0 0 2px 4px;
+			margin: 0 0 2px 0;
+			padding: 0 0 1px 4px;
 			align-items: center;
 			> div {
 				flex: 1;
 				text-align: right;
+				height: 22px;
 			}
 			.mrt-fitparams--section__row-dyna {
 				background-color: #e0e0e0;
@@ -636,7 +647,7 @@ export default {
 				border-radius: 3px;
 				color: #121212;
 				width: 100px;
-				height: 24px;
+				height: 22px;
 				display: inline-block;
 				cursor: pointer;
 				white-space: nowrap;
@@ -647,7 +658,7 @@ export default {
 				}
 			}
 			.mrt-fitparams--section__row-fitting {
-				height: 24px;
+				height: 22px;
 			}
 		}
 	}
