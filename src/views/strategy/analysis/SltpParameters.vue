@@ -108,7 +108,7 @@
 									></v-text-field>
 									<div class="mrt-text-field--actions" @click="resetTransactionCost">
 										<v-btn icon color="white">
-											<v-icon>mdi-clear</v-icon>
+											<v-icon>mdi-close</v-icon>
 										</v-btn>
 										<div class="mrt-text-field--actions__text">Reset</div>
 									</div>
@@ -358,6 +358,7 @@ export default {
 
 		resetCarry() {
 			this.carry = 0.1;
+			this.actualCarry = 0.1;
 			this.carryMenu = false;
 		},
 
@@ -368,6 +369,7 @@ export default {
 
 		resetTransactionCost() {
 			this.transactionCost = 0.05;
+			this.actualTransactionCost = 0.05;
 			this.transactionCostMenu = false;
 		}
 	}
