@@ -90,5 +90,9 @@ export default new Router({
       name: 'login',
       component: Login
     },
+    {
+      path: '*',
+      redirect: '/'
+    }
   ]
 })

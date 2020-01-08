@@ -32,6 +32,11 @@ export default () => {
 					EventBus.$emit('api-auth', 'Your security token has expired! Please login again');
 					break;
 
+				case 'TOKEN_REVOKED':
+					store.commit('user/setToken', null);
+					EventBus.$emit('api-auth', 'Your security token has been revoked!');
+					break;
+
 				case 'UNKNOWN_ERROR':
 					EventBus.$emit('api-error', 'Whoops - Unknown error, Bluecrowe team - check logs please!');
 					break;

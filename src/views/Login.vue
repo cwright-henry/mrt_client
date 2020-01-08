@@ -21,6 +21,7 @@
 							:error-messages="errorMessages"
 							@keypress.enter="login"
 							label="Email"
+							maxlength="256"
 							light
 							color="#2196F3"
 						></v-text-field>

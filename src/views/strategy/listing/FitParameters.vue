@@ -13,7 +13,7 @@
 			<div class="mrt-sfp--item">
 				<label class="mrt-sfp--item__dyna">
 					<span>Kappa</span>
-					<v-icon v-if="fit.userKappa != null">lock</v-icon>
+					<v-icon v-if="fit.userKappa != null">mdi-lock</v-icon>
 				</label>
 				<div class="mrt-sfp--selection">{{fit.kappa | number}}</div>
 				<div class="mrt-sfp--full">{{fit.kappa_full | number}}</div>
@@ -21,7 +21,7 @@
 			<div class="mrt-sfp--item">
 				<label class="mrt-sfp--item__dyna">
 					<span>Sigma</span>
-					<v-icon v-if="fit.userSigma != null">lock</v-icon>
+					<v-icon v-if="fit.userSigma != null">mdi-lock</v-icon>
 				</label>
 				<div class="mrt-sfp--selection">{{fit.sigma | number}}</div>
 				<div class="mrt-sfp--full">{{fit.sigma_full | number}}</div>
@@ -29,7 +29,7 @@
 			<div class="mrt-sfp--item">
 				<label class="mrt-sfp--item__dyna">
 					<span>Theta</span>
-					<v-icon v-if="fit.userTheta != null">lock</v-icon>
+					<v-icon v-if="fit.userTheta != null">mdi-lock</v-icon>
 				</label>
 				<div class="mrt-sfp--selection">{{fit.theta | number}}</div>
 				<div class="mrt-sfp--full">{{fit.theta_full | number}}</div>
@@ -37,7 +37,7 @@
 			<div class="mrt-sfp--item" v-if="fit.proctype === 'hypOU'">
 				<label class="mrt-sfp--item__dyna">
 					<span>Beta</span>
-					<v-icon v-if="fit.usernBeta != null">lock</v-icon>
+					<v-icon v-if="fit.usernBeta != null">mdi-lock</v-icon>
 				</label>
 				<div class="mrt-sfp--selection">{{fit.nbeta | number}}</div>
 				<div class="mrt-sfp--full">{{fit.nbeta_full | number}}</div>
@@ -208,7 +208,7 @@ export default {
 				overflow: hidden;
 			}
 		}
-		.mrt-sfp--item { 
+		.mrt-sfp--item {
 			margin: 2px 0;
 		}
 		.mrt-sfp--header {
@@ -235,7 +235,7 @@ export default {
 				align-items: center;
 				i {
 					font-size: 16px;
-					color: #FFF9C4;
+					color: #fff9c4;
 				}
 			}
 		}

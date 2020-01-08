@@ -24,7 +24,7 @@ export default {
 		pageSize: PAGE_SIZE,		/* The number of items in each page */
 		totalPages: 0,				/* Total number of pages */
 		hasPrev: false,				/* Has a previous page */
-		hasNext: true,				/* Has a next page */
+		hasNext: false,				/* Has a next page */
 		loading: false,				/* Called for initial search but not infinite search or load more */
 		loadingStrategy: false,		/* Flag for loading a ts */
 		loadingRm: false,			/* Flag used when removing a stratedgy */

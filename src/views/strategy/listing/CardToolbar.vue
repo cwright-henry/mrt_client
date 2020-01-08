@@ -3,6 +3,7 @@
 		<v-icon class="mr-2" size="24" color="#27a59a">mdi-finance</v-icon>
 		<v-toolbar-title class="mrt-ctb--name">{{strategy.name}}</v-toolbar-title>
 		<v-spacer></v-spacer>
+		<mrt-download :strategy="strategy" />
 		<v-menu
 			origin="top right"
 			transition="scale-transition"
@@ -26,6 +27,7 @@
 </template>
 
 <script>
+import mrtDownload from "./Download";
 export default {
 	props: {
 		strategy: {
@@ -37,6 +39,9 @@ export default {
 				};
 			}
 		}
+	},
+	components: {
+		mrtDownload
 	},
 	methods: {
 		remove(id) {
@@ -66,6 +71,7 @@ export default {
 		font-size: 18px;
 		font-weight: 400;
 		font-weight: inherit;
+		color: #fff59d;
 	}
 }
 </style>

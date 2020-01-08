@@ -34,7 +34,7 @@
 				color="#26A69A"
 				class="white--text"
 			>
-				<v-icon left color="#FFEB3B">check_circle</v-icon>
+				<v-icon left color="#FFEB3B">mdi-check-circle</v-icon>
 				<span v-text="item.name"></span>
 			</v-chip>
 		</template>
