@@ -68,4 +68,11 @@ export default {
 		}
 	}
 }
+@media screen and (max-width: 600px) {
+	.mrt-toolbar {
+		.mrt-toolbar--user {
+			display: none;
+		}
+	}
+}
 </style>

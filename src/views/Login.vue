@@ -20,9 +20,11 @@
 							v-model="email"
 							:error-messages="errorMessages"
 							@keypress.enter="login"
-							label="Email"
+							placeholder="Email"
+							label
 							maxlength="256"
 							light
+							outlined
 							color="#2196F3"
 						></v-text-field>
 					</div>
@@ -35,8 +37,10 @@
 							:error-messages="errorMessages"
 							@keypress.enter="login"
 							hint="At least 8 characters"
-							label="Password"
+							placeholder="Password"
+							label
 							light
+							outlined
 							class="input-group--focused"
 							color="#2196F3"
 							maxlength="32"
@@ -44,7 +48,7 @@
 						></v-text-field>
 					</div>
 					<div class="action">
-						<v-btn @click="login" :loading="loading" large>Sign In</v-btn>
+						<v-btn @click="login" color="#1E88E5" :loading="loading" large>Sign In</v-btn>
 					</div>
 				</div>
 			</div>
@@ -96,7 +100,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	background: center/cover url("/img/bb-login8.jpg") no-repeat;
-	height: 100vh;
+	min-height: 100vh;
 	.v-icon {
 		color: #455a64 !important;
 	}
@@ -129,21 +133,18 @@ export default {
 		}
 		.login-box__contents {
 			background-color: #fff;
-			padding: 36px 36px;
+			padding: 36px;
 			border-radius: 0 0 8px 8px;
 			.action {
-				margin: 12px 0 12px 0;
+				margin: 4px 0 4px 0;
 				text-align: center;
-				button {
-					color: #fff;
-					background: #424242;
-				}
 			}
 			.logo {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 				text-align: center;
+				margin: 0 0 36px 0;
 				i {
 					font-size: 64px;
 					height: 72px;
@@ -159,6 +160,15 @@ export default {
 			}
 		}
 	}
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover,
+	input:-webkit-autofill:focus,
+	input:-webkit-autofill:active {
+		-webkit-box-shadow: 0 0 0 30px #fff inset !important;
+	}
+	input:-webkit-autofill {
+		-webkit-text-fill-color: #212121 !important;
+	}
 }
 .mrt-login--failed {
 	color: var(--error);
@@ -166,5 +176,19 @@ export default {
 	border: 1px solid var(--error);
 	margin: 0px 56px 12px 56px;
 	padding: 8px;
+}
+
+@media screen and (max-width: 600px) {
+	.mrt-login {
+		background: #fff;
+		.login-box {
+			max-width: 100%;
+			margin: 0;
+			box-shadow: none !important;
+			.login-box__contents {
+				padding: 36px 16px;
+			}
+		}
+	}
 }
 </style>

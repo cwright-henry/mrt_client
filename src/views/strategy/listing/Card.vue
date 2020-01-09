@@ -98,14 +98,11 @@ export default {
 }
 @media screen and (max-width: 600px) {
 	.mrt-card {
-		.mrt-card--fittings {
-			margin: 4px 0 12px 8px;
-			> div {
-				margin: 0 12px 0 0;
-				div {
-					font-size: 18px;
-				}
-			}
+		.mrt-card--graphs {
+			width: 100%;
+		}
+		.mrt-card--info {
+			display: none;
 		}
 	}
 }
