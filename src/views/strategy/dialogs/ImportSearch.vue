@@ -1,6 +1,6 @@
 <template>
 	<v-autocomplete
-		prepend-icon="search"
+		prepend-icon="mdi-magnify"
 		:loading="loading"
 		:items="library"
 		v-model="selected"
