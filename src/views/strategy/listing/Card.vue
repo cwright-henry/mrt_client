@@ -96,14 +96,4 @@ export default {
 		width: 330px;
 	}
 }
-@media screen and (max-width: 600px) {
-	.mrt-card {
-		.mrt-card--graphs {
-			width: 100%;
-		}
-		.mrt-card--info {
-			display: none;
-		}
-	}
-}
 </style>

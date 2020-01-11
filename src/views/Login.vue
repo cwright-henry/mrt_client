@@ -1,5 +1,5 @@
 <template>
-	<div app light class="mrt-login">
+	<div app light class="mrt-login" :class="{'full-screen': $vuetify.breakpoint.mdAndDown}">
 		<section class="section">
 			<div class="login-box elevation-20">
 				<div class="login-box__intro">
@@ -178,16 +178,25 @@ export default {
 	padding: 8px;
 }
 
-@media screen and (max-width: 600px) {
-	.mrt-login {
-		background: #fff;
-		.login-box {
-			max-width: 100%;
-			margin: 0;
-			box-shadow: none !important;
-			.login-box__contents {
-				padding: 36px 16px;
+.mrt-login.full-screen {
+	background: #fff;
+	.login-box {
+		box-shadow: none !important;
+		max-width: 100%;
+		margin: 0px auto 100px auto;
+		.login-box__intro {
+			text-align: center;
+			padding: 16px 0 16px 0;
+			background-color: #121212;
+			border-radius: 0;
+			h1, h3 {
+				color:#fff;
 			}
+		}	
+		.login-box__contents {
+			max-width: 550px;
+			margin: 60px auto;
+			padding: 36px 16px;
 		}
 	}
 }

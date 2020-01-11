@@ -1,39 +1,37 @@
 <template>
-	<div id="app" v-cloak>
-		<v-app dark>
-			<router-view></router-view>
-			<v-snackbar
-				v-model="apiauth"
-				:timeout="timeout"
-				color="error"
-				:vertical="$vuetify.breakpoint.mdAndDown"
-			>
-				{{ text }}
-				<v-btn dark text @click="apiauth = false">Close</v-btn>
-			</v-snackbar>
-			<v-snackbar
-				v-model="apierror"
-				:top="true"
-				:timeout="timeout"
-				color="error"
-				:vertical="$vuetify.breakpoint.mdAndDown"
-			>
-				{{ text }}
-				<v-btn dark text @click="apierror = false">Close</v-btn>
-			</v-snackbar>
-			<v-snackbar
-				v-model="apisuccess"
-				color="#8E24AA"
-				:timeout="5000"
-				:left="true"
-				:bottom="true"
-				:vertical="$vuetify.breakpoint.mdAndDown"
-			>
-				{{ text }}
-				<v-btn dark color="#FFEB3B" text @click="apisuccess = false">Close</v-btn>
-			</v-snackbar>
-		</v-app>
-	</div>
+	<v-app dark>
+		<router-view></router-view>
+		<v-snackbar
+			v-model="apiauth"
+			:timeout="timeout"
+			color="error"
+			:vertical="$vuetify.breakpoint.mdAndDown"
+		>
+			{{ text }}
+			<v-btn dark text @click="apiauth = false">Close</v-btn>
+		</v-snackbar>
+		<v-snackbar
+			v-model="apierror"
+			:top="true"
+			:timeout="timeout"
+			color="error"
+			:vertical="$vuetify.breakpoint.mdAndDown"
+		>
+			{{ text }}
+			<v-btn dark text @click="apierror = false">Close</v-btn>
+		</v-snackbar>
+		<v-snackbar
+			v-model="apisuccess"
+			color="#8E24AA"
+			:timeout="5000"
+			:left="true"
+			:bottom="true"
+			:vertical="$vuetify.breakpoint.mdAndDown"
+		>
+			{{ text }}
+			<v-btn dark color="#FFEB3B" text @click="apisuccess = false">Close</v-btn>
+		</v-snackbar>
+	</v-app>
 </template>
 
 <script>

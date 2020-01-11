@@ -22,12 +22,6 @@
 					<label>Library</label>
 				</div>
 				<div>
-					<v-btn small outlined fab color="#2196F3" @click="toggle">
-						<v-icon>mdi-fullscreen</v-icon>
-					</v-btn>
-					<label>Full Screen</label>
-				</div>
-				<div>
 					<v-btn small fab color="#2196F3" :loading="isSavingFit" @click="save">
 						<v-icon>mdi-cloud-upload</v-icon>
 					</v-btn>
@@ -35,30 +29,27 @@
 				</div>
 			</div>
 		</div>
+		<v-stepper v-model="activeTab">
+			<v-stepper-header>
+				<v-stepper-step editable color="#FFEE58" step="1">Fit Process</v-stepper-step>
+				<v-divider></v-divider>
+				<v-stepper-step editable color="#FFEE58" step="2">Run Simulations</v-stepper-step>
+				<v-divider></v-divider>
+				<v-stepper-step editable color="#FFEE58" step="3">Stop Loss / Take Profit</v-stepper-step>
+			</v-stepper-header>
 
-		<fullscreen :fullscreen.sync="fullscreen" ref="fullscreen">
-			<v-stepper v-model="activeTab">
-				<v-stepper-header>
-					<v-stepper-step editable color="#FFEE58" step="1">Fit Process</v-stepper-step>
-					<v-divider></v-divider>
-					<v-stepper-step editable color="#FFEE58" step="2">Run Simulations</v-stepper-step>
-					<v-divider></v-divider>
-					<v-stepper-step editable color="#FFEE58" step="3">Stop Loss / Take Profit</v-stepper-step>
-				</v-stepper-header>
-
-				<v-stepper-items>
-					<v-stepper-content step="1" style="padding:0">
-						<mrt-fit />
-					</v-stepper-content>
-					<v-stepper-content step="2" style="padding:0">
-						<mrt-sims />
-					</v-stepper-content>
-					<v-stepper-content step="3" style="padding:0">
-						<mrt-sltp />
-					</v-stepper-content>
-				</v-stepper-items>
-			</v-stepper>
-		</fullscreen>
+			<v-stepper-items>
+				<v-stepper-content step="1" style="padding:0">
+					<mrt-fit />
+				</v-stepper-content>
+				<v-stepper-content step="2" style="padding:0">
+					<mrt-sims />
+				</v-stepper-content>
+				<v-stepper-content step="3" style="padding:0">
+					<mrt-sltp />
+				</v-stepper-content>
+			</v-stepper-items>
+		</v-stepper>
 	</div>
 </template>
 
@@ -145,10 +136,6 @@ export default {
 
 		home() {
 			this.$router.push("/library");
-		},
-
-		toggle() {
-			this.$refs["fullscreen"].toggle();
 		}
 	}
 };
@@ -189,9 +176,6 @@ export default {
 			}
 		}
 	}
-}
-
-.fullscreen {
 }
 
 .mrt-fit--details {
