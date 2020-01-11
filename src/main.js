@@ -70,12 +70,10 @@ Vue.filter('date-short', function (value) {
 });
 
 Vue.config.errorHandler = function (err, vm, info) {
-	console.log(err)
 	EventBus.$emit('api-error', `Vue Error - ${err} - ${info}`);
 }
 
 window.onerror = function (msg, url, line, col, error) {
-	console.log(error)
 	EventBus.$emit('api-error', `Window Error - ${msg} - ${line} - ${col} - ${error}`);
 }
 
